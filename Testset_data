@@ -1,0 +1,32 @@
+1. Testsets
+
+1.1. small test set
+
+Virus:    Influenca a Virus (H7N9) (Testset segment 2 polymerase PB1)
+NCBI: 		NC_003977
+Nucleotids: 	2328 bp
+Size:	 	RNA, ss
+published:	2014 in press
+
+Fasta:
+http://www.ncbi.nlm.nih.gov/nuccore/570933563?report=fasta
+Graph:
+http://www.ncbi.nlm.nih.gov/nuccore/570933563?report=graph
+
+
+1.2.big test Set
+
+Virus:    HumanHerpesVirus 4  (complete genome)
+NCBI: 		NC_007605
+Nucleotid: DNA circular
+Size:	 	  171.823 bp
+Detected:	05-Nov-2013
+
+Fasta:
+http://www.ncbi.nlm.nih.gov/nuccore/82503188?report=fasta&to=171823
+Graph HHV4 
+http://www.ncbi.nlm.nih.gov/nuccore/82503188?report=graph
+
+###Please dont hesitate to let me know other ideas for our testset:
+###criteria for selection: small genome and big genome (RNA/DNA)
+###may be, we need a combination between? Martina

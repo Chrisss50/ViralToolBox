@@ -1,0 +1,30 @@
+
+1. Testset for similar virus genomes: Influenca Shanghai RNA
+Influenza A (H7N9) Shanghai (PD2 polymerase)
+RNA virus, with 2280 bp
+Influenza A virus (A/Shanghai/CN02/2013(H7N9)) segment 1 polymerase PB2 (PB2) gene, complete cds
+ORGANISM Influenza A virus (A/Shanghai/CN02/2013(H7N9)) Viruses; ssRNA negative-strand viruses; Orthomyxoviridae; Fasta: http://www.ncbi.nlm.nih.gov/nuccore/570933619?report=fasta Graph http://www.ncbi.nlm.nih.gov/nuccore/570933619?report=graph
+￼
+Influenza A (H7N9) Shanghai (PD2 polymerase) with mutation in E627K
+RNA virus, with 2285 bp
+Influenza A virus (A/Shanghai/5190T/2013(H7N9)) segment 1 polymerase PB2 (PB2) gene, complete cds
+ORGANISM Influenza A virus (A/Shanghai/5190T/2013(H7N9))
+Viruses; ssRNA negative-strand viruses; Orthomyxoviridae;
+Influenzavirus A.
+Fasta: http://www.ncbi.nlm.nih.gov/nuccore/576602885?report=fasta Graph: http://www.ncbi.nlm.nih.gov/nuccore/576602885?report=graph
+￼
+￼
+￼
+
+2. Testset for different virus genomes: Banana and Cacao DNA Virus
+DNA Virus 7801 bp ssDNA
+Banana streak virus strain Acuminata Vietnam, complete genome
+NCBI Reference Sequence: NC_007003.1
+Fasta http://www.ncbi.nlm.nih.gov/nuccore/65362558?report=fasta Graph http://www.ncbi.nlm.nih.gov/nuccore/65362558?report=graph
+
+DNA Virus 7161 bp cDNA
+Cacao swollen shoot virus, complete genome
+NCBI Reference Sequence: NC_001574.1
+Fasta: http://www.ncbi.nlm.nih.gov/nuccore/9627246?report=fasta
+Graph:
+http://www.ncbi.nlm.nih.gov/nuccore/9627246?report=graph

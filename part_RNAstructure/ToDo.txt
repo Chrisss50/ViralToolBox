@@ -1,0 +1,19 @@
+##########################################
+#
+# ToDo List for module RNAstructure
+#
+#########################################
+
+
+----open tasks:
+
+ * parser for ct-files:
+	Function, that reads a list of ct-files and creates a dictionary
+	with hashValue of the sequence as key and the corresponding 
+	newick string as value.
+ * Create class rna_structure:
+	# conatains the sequence
+	# the newick string
+        # information about the method used ('structure prediction' or 'database hit')
+ 
+

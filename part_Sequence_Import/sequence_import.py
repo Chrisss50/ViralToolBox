@@ -15,19 +15,11 @@ from Bio import Entrez
 # Get sequence from NCBI's Entrez databases
 # Output of this function is of class:
 # <class 'Bio.SeqRecord.SeqRecord'>
-# The input file must contain only 1 gene ID 
-# input type: string/integer.
+# 'geneID' must contain only 1 gene ID 
+# input type: integer.
 # 'err' is an error file
 def inputFromDB(geneID,err):
-    # convert 'geneID' to string
     geneID = str(geneID)
-    # check if geneID contains only numbers:
-    if(not bool(re.match("^[0-9]+$",geneID))):
-        tmp = "Error in function 'inputFromDB'. "
-        tmp += "Variable 'geneID' contains wrong characters. "
-        tmp += "Gene ID must be a number."
-        # write error message to error file
-        err.write(tmp)
     # try to download the sequence from database
     try:
         handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text")

@@ -103,7 +103,7 @@ def inputFromFile(filePath,err):
     # check if sequence contains wrong characters.
     # the sequence have to be an RNA (aminoacids)
     # or DNA (nucleotides)
-    sequence = str(SeqRecord.seq)
+    sequence = str(SeqRecord.seq).upper()
     # check sequence length - it have to be > 0
     if(len(sequence) == 0):
         # write error message to error file
@@ -111,10 +111,10 @@ def inputFromFile(filePath,err):
         tmp += "Sequence has length 0."
         err.write(tmp)
     # is it a DNA ?
-    if(bool(re.match("[ACGT]+", sequence))):
+    if(bool(re.match("^[ACGT]+$", sequence))):
         return SeqRecord
     # is it a RNA ?
-    if(bool(re.match("[ACGU]+", sequence))):
+    if(bool(re.match("^[ACGU]+$", sequence))):
         return SeqRecord
     else:
         tmp = "Error in function 'inputFromFile'. "

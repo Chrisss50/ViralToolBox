@@ -109,7 +109,7 @@ def alignSequences(
             print"Sequence2 is a DNA sequence?", dna_seq2
             return
     if RNA:
-        if((rna_seq1 and not rna_seq2) or (rna_seq2 and not rna_seq1)):
+        if(not rna_seq1 or not rna_seq2):
             print("Error in aligning two sequences:\n\
                     Given sequences are not both RNA sequences:")
             print"Sequence1 is a RNA sequence?", rna_seq1

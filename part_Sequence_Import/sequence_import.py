@@ -69,7 +69,7 @@ def inputFromFile(filePath,err):
         tmp += "Error in function 'inputFromFile'. No file was chosen."
         # write error message to error file
         err.write(tmp)
-    # check if 'fileName' has the correct extension.
+    # check if current file has the correct extension.
     # Allowed are: '.txt', '.fa', '.fasta'
     fileExtensions = ['.txt', '.fa', '.fasta']
     if(fileExtension not in fileExtensions):

@@ -16,6 +16,8 @@
 #              @authors: Simon Heumos and Sven Fillinger
 # :::::::: # :::::::: # :::::::: # :::::::: # :::::::: #
 import os
+import hashlib
+from db_entry import DB_entry
 from time import gmtime, strftime
 
 
@@ -83,32 +85,49 @@ def parse_database(path_db):
             ct_file = open(path_db+file, "r")
             seq_length = 0
             newick_str = None
-            sequence_str = None
+            sequence_str = ""
             # go through every line of the file
             for line in ct_file:
                 # skip the comment lines
                 if line[0] is not "#":
-                    print file
-                    print line
-                    print seq_length
                     if seq_length is 0:
                         # get the sequence length number
-                        seq_length = int(filter(None, (line.split(" ")))[0])
+                        seq_length = int(filter(None, (line.split()))[0])
                         newick_str = [None] * seq_length
                     else:
                         # make list from to extract the bracket and dots
                         # positions
-                        line = filter(None, line.split(" "))
-                        if newick_str[int(line[2])] is None:
-                            # when a dot notation should be done
-                            if int(line[4]) is 0:
-                                newick_str[int(line[2])] = "."
-                            else:
-                                # make the opening and closing brackets
-                                newick_str[int(line[2])] = "("
-                                newick_str[int(line[4])] = ")"
-        print "".join(newick_str)
+                        line = filter(None, line.split())
+                        sequence_str += line[1]
+                        try:
+                            
+                            if newick_str[int(line[2])] is None:
+                                # when a dot notation should be done
+                                if int(line[4]) is 0:
+                                    newick_str[int(line[2])] = "."
+                                else:
+                                    # make the opening and closing brackets
+                                    newick_str[int(line[2])] = "("
+                                    newick_str[int(line[4])-1] = ")"
+                        except:
+                            print "Corrupt file: ", file
+                            """self._err.write("-------Error in mod RNA_molecule: \n",\
+                                            strftime("%a, %d %b %Y %H:%M:%S", gmtime()), "\n",\
+                                            "Corrupt file: ", file,\
+                                            "\n-------------------------------")"""
+                            break
+            newick_str = "".join(newick_str)
+            hash_object = hashlib.sha256(sequence_str)
+            print_str = (hash_object.hexdigest() + "\t" +
+                         sequence_str + "\t" + newick_str + "\n")
+            handler.write(print_str)
+        #except:
+        #    print "ohoooo"
+    handler.close()
     return path_db_file
+
+
+#def line_filter:
 
 
 if __name__ == "__main__":

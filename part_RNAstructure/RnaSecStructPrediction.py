@@ -35,6 +35,11 @@ def get_score(output):
 		print "Error: ",e
 		print output
 	return energy
+
+
+def get_sec_struct(rna_string):
+	output = runRNAfold(rna_string)
+	return get_sec_struct(out_split), get_score(output)
 	
 
 ################### -- main -- ###################
@@ -61,4 +66,4 @@ if  __name__ =='__main__':
 
 	#else:
 	#	main(sys.argv[1],sys.argv[2])
-	main()
+	# main()

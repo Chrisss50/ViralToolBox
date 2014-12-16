@@ -54,9 +54,14 @@ class RNA_molecule:
                 self._database = parse_database(path_db)
                 return True
             except OSError:
-                print "Error while trying to find the parsed database..."
+                print "-------Error in mod RNA_molecule: \n",\
+                      strftime("%a, %d %b %Y %H:%M:%S", gmtime()), "\n",\
+                      "Issue with the path to the database. File "\
+                      "or directory does not exists.",\
+                      "\n-------------------------------"
                 return False
                 #self._err.write("-------Error in mod RNA_molecule: \n",
+                #                "strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())\n",
                 #                "Issue with the path to the database. File "\
                 #                "or directory does not exists.",\
                 #                "\n-------------------")
@@ -77,7 +82,7 @@ def parse_database(path_db):
 def main():
     mol = RNA_molecule("CATGC", "HI-V", "test")
     mol.print_rna_information()
-    mol.db_parsed("RNA_STRAND_data/")
+    mol.db_parsed("RNA_STRAND_daa/")
     mol.print_rna_information()
 
 main()

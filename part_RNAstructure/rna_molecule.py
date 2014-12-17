@@ -22,14 +22,39 @@ from time import gmtime, strftime
 
 
 class RNA_molecule:
+    '''The RNA_molecule class.
+       Contains information about:
+            * the sequence
+            * the name
+            * the error pipe for err logging
+            * the structure in newick format
+            * the path to the <struc> database'''
     def __init__(self, sequence, name, err):
         self._sequence = sequence
         self._name = name
+        # the error pipe
         self._err = err
         self._structure = None
         self._database = None
+        print "Object RNA_molecule created."
+        print self.print_rna_information()
+
+    def get_sequence(self):
+        return self._sequence
+
+    def get_structure(self):
+        return self._structure
+
+    def get_database(self):
+        return self._database
+
+    def get_name(self):
+        return self._name
 
     def print_rna_information(self):
+        '''Prints the information stored in the RNA molecule
+           object. (Sequence, structure, name, database, etc)'''
+
         print "\n--------RNA molecule information"
         print "Sequence: \t", len(self._sequence), "bp"
         print "Name: \t\t", self._name
@@ -42,13 +67,20 @@ class RNA_molecule:
         print "--------end information\n"
 
     def db_parsed(self, path_db):
+        '''This function searches in the given path (has to be a directory)
+           for an <struc> database. 
+           If one is there, assign it to the RNA_molecule, if not, create
+           a <struc> database out of all ct-files.
+           !! NOTE: the path has also to contain the ct-files, otherwise
+           you cannot construct a <struc> database'''
+
         if self._database is None:
             try:
                 print "Searching for <struc> database..."
                 for file in os.listdir(path_db):
                     if file.endswith(".struc"):
                         print "Found db: ", file
-                        self._database = file
+                        self._database = path_db + file
                         return True
                 print "No parsed database found so far."
                 print "..Building <struc> database from ct-files in:",\
@@ -70,8 +102,47 @@ class RNA_molecule:
         else:
             return True
 
+    def search_rna_struc(self, dict_db):
+        '''Given a directory with hash values of sequences
+           as <keys> and DB_entry objects as <values>,
+           this function searches the given sequence of the
+           rna_molecule object in the directory.
+           If no entry is found, then automatically predict
+           the structure with the Zucker algorithm'''
+
+        hash_object = hashlib.sha256(self._sequence)
+        try:
+            db_entry = dict_db[hash_object.hexdigest()]
+            print "Found structure in database!"
+            self._structure = db_entry.get_newick_str()
+            print "Newick format:\n", self._structure
+        except:
+            print "Structure not found in database!"
+            print "Initiating structure prediction...."
+            ####implement simons stuff
+            self._structure = "(...)"
+        return True
+
+
+def parse_struc_db(path_db):
+    '''Creates a dictionary out of a <struc> database'''
+
+    dic_structures = {}
+    try:
+        struc_file = open(path_db)
+        for line in struc_file:
+            line = line.split()
+            dic_structures[line[0]] = DB_entry(line[0], line[1], line[2])
+    except:
+        print "Could not open file: ", path_db
+    return dic_structures
+
 
 def parse_database(path_db):
+    ''' Pasrsing of all the ct-files and creates the <struc>
+        database. The database will contain lines with following format:
+            <hash-value seq>    <sequence>      <newick_str>'''
+
     db_name = "rna.struc"
     path_db_file = path_db + db_name
     print path_db_file
@@ -100,7 +171,6 @@ def parse_database(path_db):
                         line = filter(None, line.split())
                         sequence_str += line[1]
                         try:
-                            
                             if newick_str[int(line[2])] is None:
                                 # when a dot notation should be done
                                 if int(line[4]) is 0:
@@ -123,18 +193,33 @@ def parse_database(path_db):
                              sequence_str + "\t" + newick_str + "\n")
                 handler.write(print_str)
             except:
-                print "iuuu"
+                print "Corrupt file: ", file
         #except:
         #    print "ohoooo"
     handler.close()
+    print "<struc> database build successfully"
     return path_db_file
 
 
-#def line_filter:
-
-
 if __name__ == "__main__":
-    mol = RNA_molecule("CATGC", "HI-V", "test")
-    mol.print_rna_information()
+    """ You can test the functions here."""
+    # create a RNA_molecule object
+    mol = RNA_molecule("TAGTC", "HI-V", "test")
+    # search for the <struc> database in a directory
+    # if not there, from the ct-files a <struc>database is
+    # created
     mol.db_parsed("RNA_STRAND_data/")
+    # Print the information of your current RNA object
+    #    * Structure
+    #    * Name
+    #    * Database path
+    #    * Sequence
     mol.print_rna_information()
+    # parse the <struc> database and create a dictionary with
+    # the hash values of the sequence as <keys> and DB_entry
+    # objects as <value>
+    struc_db = parse_struc_db(mol.get_database())
+    # once you have a dictionary with all the database entries
+    # you can call the search_rna_struc() function from your
+    # rna_molecule object
+    mol.search_rna_struc(struc_db)

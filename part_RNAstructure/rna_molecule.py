@@ -19,6 +19,7 @@ import os
 import hashlib
 from db_entry import DB_entry
 from time import gmtime, strftime
+import RnaSecStructPrediction as prediction
 
 
 class RNA_molecule:
@@ -36,6 +37,7 @@ class RNA_molecule:
         self._err = err
         self._structure = None
         self._database = None
+        self._energy = 0
         print "Object RNA_molecule created."
         print self.print_rna_information()
 
@@ -51,6 +53,9 @@ class RNA_molecule:
     def get_name(self):
         return self._name
 
+    def get_energy(self):
+        return self._energy
+
     def print_rna_information(self):
         '''Prints the information stored in the RNA molecule
            object. (Sequence, structure, name, database, etc)'''
@@ -63,6 +68,7 @@ class RNA_molecule:
             print "Structure: \tNot searched in database yet."\
                   "No prediction done so far."
         else:
+            print "Energy: \t", self._energy
             print "Structure: \n", self._structure
         print "--------end information\n"
 
@@ -117,10 +123,20 @@ class RNA_molecule:
             self._structure = db_entry.get_newick_str()
             print "Newick format:\n", self._structure
         except:
+            # Do the structure prediction if the structure is not
+            # in the database
             print "Structure not found in database!"
             print "Initiating structure prediction...."
             ####implement simons stuff
-            self._structure = "(...)"
+            try:
+                structure_pred = prediction.runRNAfold(self._sequence)
+                print "Structure predicted sucessfully"
+                self._structure = prediction.get_sec_struc(structure_pred)
+                self._energy = prediction.get_score(structure_pred)
+                print structure_pred
+            except:
+                print "Error, something went wrong with the structure\
+                       prediction"
         return True
 
 
@@ -204,7 +220,7 @@ def parse_database(path_db):
 if __name__ == "__main__":
     """ You can test the functions here."""
     # create a RNA_molecule object
-    mol = RNA_molecule("TAGTC", "HI-V", "test")
+    mol = RNA_molecule("ACACGACGUAGCGUUAGACGUGACGUAGACGUAGAC", "HI-V", "test")
     # search for the <struc> database in a directory
     # if not there, from the ct-files a <struc>database is
     # created
@@ -223,3 +239,4 @@ if __name__ == "__main__":
     # you can call the search_rna_struc() function from your
     # rna_molecule object
     mol.search_rna_struc(struc_db)
+    mol.print_rna_information()

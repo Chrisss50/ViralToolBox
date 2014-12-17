@@ -116,11 +116,14 @@ def parse_database(path_db):
                                             "Corrupt file: ", file,\
                                             "\n-------------------------------")"""
                             break
-            newick_str = "".join(newick_str)
-            hash_object = hashlib.sha256(sequence_str)
-            print_str = (hash_object.hexdigest() + "\t" +
-                         sequence_str + "\t" + newick_str + "\n")
-            handler.write(print_str)
+            try:
+                newick_str = "".join(newick_str)
+                hash_object = hashlib.sha256(sequence_str)
+                print_str = (hash_object.hexdigest() + "\t" +
+                             sequence_str + "\t" + newick_str + "\n")
+                handler.write(print_str)
+            except:
+                print "iuuu"
         #except:
         #    print "ohoooo"
     handler.close()

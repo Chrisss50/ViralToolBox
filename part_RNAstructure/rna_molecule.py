@@ -141,7 +141,9 @@ class RNA_molecule:
 
 
 def parse_struc_db(path_db):
-    '''Creates a dictionary out of a <struc> database'''
+    '''Creates a dictionary out of a <struc> database
+       Key will be the hash-code of the sequence and value
+       will be a DB_entgry object'''
 
     dic_structures = {}
     try:

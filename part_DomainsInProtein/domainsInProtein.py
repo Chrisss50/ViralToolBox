@@ -197,7 +197,7 @@ def getPictureOfDomain(json, baseDir):
     # Get WebElement dimension
     size = canvas.size
     # Crop WebElement image from page screenshot
-    im = Image.open('screenshot.png')
+    im = Image.open(baseDir + 'screenshot.png')
     box = (pos['x'], pos['y'],
            pos['x'] + size['width'], pos['y'] + size['height'])
     im = im.crop(box)
@@ -232,6 +232,10 @@ def findDomains(proteins, baseDir, err):
     # Ensure that the base directory is correct path
     if(baseDir[-1] != '/'):
         baseDir = baseDir + '/'
+            
+    # Make shure that the base dicrectory exists
+    if not os.path.exists(baseDir):
+        os.makedirs(baseDir)
 
     # This is a new list with proteins and results
     proteinsWithResults = []

@@ -8,7 +8,7 @@ __author__ = 'Felix Bartusch'
 # sequences. This function returns two lists:
 # First list: headers
 # Second list: sequences
-def readFasta(path):
+def readFasta(path, w):
     # Open the file
     try:
         f = open(path, 'r')
@@ -34,7 +34,19 @@ def readFasta(path):
         # Delete all newline characters
         return headers, seqs
     except IOError as e:
-        print "I/O error({0}): {1}".format(e.errno, e.strerror) + ": " + path
+        w.write("________________")
+        w.write("PredictORFs:")
+        w.write("\tError while reading file:")
+        w.write("\tI/O error({0}): {1}".format(e.errno, e.strerror) + ": " + path)
+
+
+# Test whether the given sequence is a DNA sequence.
+def isDNA(seq):
+    # A DNA sequence just contain the four nucleotides A,G,T,C
+    for c in seq:
+        if str.upper(c) not in ['A', 'G', 'G', 'C']:
+            return False
+    return True
 
 
 # Find potential ORFS and return them as list of strings.
@@ -42,7 +54,7 @@ def readFasta(path):
 def predictORFS_helper(seq):
     orfs = []
     start_orf = 0
-    while start_orf < len(seq) - 2:  #in range(0, len(seq) - 2):    # sliding window
+    while start_orf < len(seq) - 2:  # sliding window
         orf = {}
         s = seq[start_orf:start_orf + 3]
         if s in ["ATG", "GTG", "TTG"]:  # found a start codon
@@ -58,42 +70,53 @@ def predictORFS_helper(seq):
                         orfs.append(orf)
                         start_orf += 1
                     break
-                #else:
-                    #start_orf += 1
-        #else:
-            #start_orf += 1
-        start_orf += 1  
+        start_orf += 1
     return orfs
 
 
 # Find potential ORFS and return them as list of dicts.
 # Each dict contains 'start', 'end' and 'sequence' as keys.
 def predictORFS(seq, w):
+    # Test wheter we have a valid input sequence
+    if(seq == None or len(seq) == 0):
+        w.write("________________")
+        w.write("PredictORFs:")
+        w.write("\tNo input sequence.")
+    elif not isDNA(seq):
+        w.write("________________")
+        w.write("PredictORFs:")
+        w.write("\tInput sequence is no DNA sequence.")
+
     print "Starting predicting ORFs ..."
     # Search the sequence from both sides.
     orfs = predictORFS_helper(seq) + predictORFS_helper(seq[::-1])
     if orfs is None or len(orfs) == 0:
         w.write("________________")
-        w.write("Error-Log of predictORFs:")
-        w.write("No ORFs found")
+        w.write("PredictORFs:")
+        w.write("\tNo ORFs found")
     print "Found", len(orfs), "ORFs"
     print "End predicting ORFs!"
-    # Write the orfs to file or return as
-    # TODO? Or return just the list
     return orfs
 
 
-if __name__ == "__main__":
+# Test!
+def main():
+    # Error log
+    r, err = os.pipe()
+    err = os.fdopen(err, 'w')
     # path to the fasta input file
     path = sys.argv[1]
     # Read the input file
-    headers, seqs = readFasta(path)
+    headers, seqs = readFasta(path, err)
     # We have just one sequence
     seq = seqs[0]
     # Predict the ORFs
-    w = os.pipe()
-    orfs = predictORFS(seq, w)
-    # How many ORFs have we found?
+    orfs = predictORFS(seq, err)
     # Print the ORFs
     for orf in orfs:
         print orf
+    print "Predicted", len(orfs), "ORFs."
+
+
+if __name__ == "__main__":
+    main()

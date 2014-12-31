@@ -6,8 +6,8 @@ __author__ = 'Felix Bartusch'
 
 
 # Transcribe a given DNA sequence to the corresponding RNA sequence.
-dna2rna = {"A": "U", "T": "A", "C": "G", "G": "C"}
 def transcribe(seq):
+    dna2rna = {"A": "U", "T": "A", "C": "G", "G": "C"}
     transcript = ""
     for c in seq:
         transcript += dna2rna[c]
@@ -23,10 +23,11 @@ def dnaAsRNA(seq):
 # from:
 # http://www.petercollingridge.co.uk/python-bioinformatics-tools/codon-table
 # because this is easier than writing all the codons with my hands ;)
-bases = ['U', 'C', 'A', 'G']
-codons = [a + b + c for a in bases for b in bases for c in bases]
-aa = 'FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG'
-codon_table = dict(zip(codons, aa))
+def getCodonTable():
+    bases = ['U', 'C', 'A', 'G']
+    codons = [a + b + c for a in bases for b in bases for c in bases]
+    aa = 'FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRRIIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG'
+    return dict(zip(codons, aa))
 
 
 # Translate a given RNA sequence to the corresponding protein.
@@ -36,6 +37,7 @@ def translate(seq):
     # Translate each codon to the corresponding amino acid
     for x in range(0, len(seq), 3):
         codon = seq[x:x + 3]
+        codon_table = getCodonTable()
         aa = codon_table[codon]
         if aa != "*":
             protein += aa
@@ -50,12 +52,12 @@ def translateToProtein(orfs, w):
     # Handling errors
     if orfs is None or len(orfs) == 0:
         w.write("________________")
-        w.write("Error-Log of translateToProtein:")
-        w.write("There are no ORFs to translate!")
+        w.write("TranslateToProtein:")
+        w.write("\tThere are no ORFs to translate!")
     print "Start translating ORFs to proteins"
     for orf in orfs:
         # TODO is it correct to just replace "T" with "U"?
-        # I think at least for HIV-1 it is correct accord
+        # I think at least for HIV-1 it is correct
         orf["sequence"] = translate(dnaAsRNA(orf["sequence"]))
     print "Translated", len(orfs), "ORFs to proteins"
     print "End translating ORFs to proteins!"
@@ -63,19 +65,27 @@ def translateToProtein(orfs, w):
     # so we're done here!
     return orfs
 
-if __name__ == "__main__":
-    # path to the fasta input file
+
+# Test!
+def main():
+    # Error log
+    r, err = os.pipe()
+    err = os.fdopen(err, 'w')
+    # Predict ORFs
     path = sys.argv[1]
     # Read the input file
-    headers, seqs = p.readFasta(path)
+    headers, seqs = p.readFasta(path, err)
     # We have just one sequence
     seq = seqs[0]
     # Predict the ORFs
-    w = os.pipe()
-    orfs = p.predictORFS(seq, w)
-    
-    proteins = translateToProtein(orfs, w)
-    # How many ORFs have we found?
-    # Print the ORFs
+    orfs = p.predictORFS(seq, err)
+    # Translate the ORFs into the protein sequence
+    proteins = translateToProtein(orfs, err)
+    # How Print the resulting list of proteins
     for protein in proteins:
         print protein
+    print "Translated", len(proteins), "proteins."
+
+
+if __name__ == "__main__":
+    main()

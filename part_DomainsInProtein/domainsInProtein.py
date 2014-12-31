@@ -1,0 +1,309 @@
+import os
+import sys
+import pycurl
+import urllib
+import urllib2
+import time
+from StringIO import StringIO
+from selenium import webdriver
+from pyvirtualdisplay import Display
+from PIL import Image
+
+
+__author__ = 'Felix Bartusch'
+
+
+# An example Protein sequence
+def getExampleProteinSequence():
+    s = ("MAGAASPCANGCGPSAPSDAEVVHLCRSLEVGTVMTLFYSKKSQRPERKTFQVKLETRQI"
+        "TWSRGADKIEGAIDIREIKEIRPGKTSRDFDRYQEDPAFRPDQSHCFVILYGMEFRLKTL"
+        "SLQATSEDEVNMWIRGLTWLMEDTLQAATPLQIERWLRKQFYSVDRNREDRISAKDLKNM"
+        "LSQVNYRVPNMRFLRERLTDLEQRTSDITYGQFAQLYRSLMYSAQKTMDLPFLEASALRA"
+        "GERPELCRVSLPEFQQFLLEYQGELWAVDRLQVQEFMLSFLRDPLREIEEPYFFLDEFVT"
+        "FLFSKENSIWNSQLDEVCPDTMNNPLSHYWISSSHNTYLTGDQFSSESSLEAYARCLRMG"
+        "CRCIELDCWDGPDGMPVIYHGHTLTTKIKFSDVLHTIKEHAFVASEYPVILSIEDHCSIA"
+        "QQRNMAQYFKKVLGDTLLTKPVDIAADGLPSPNQLKRKILIKHKKLAEGSAYEEVPTSVM"
+        "YSENDISNSIKNGILYLEDPVNHEWYPHYFVLTSSKIYYSEETSSDQGNEDEEEPKEASG"
+        "STELHSNEKWFHGKLGAGRDGRHIAERLLTEYCIETGAPDGSFLVRESETFVGDYTLSFW"
+        "RNGKVQHCRIHSRQDAGTPKFFLTDNLVFDSLYDLITHYQQVPLRCNEFEMRLSEPVPQT"
+        "NAHESKEWYHASLTRAQAEHMLMRVPRDGAFLVRKRNEPNSYAISFRAEGKIKHCRVQQE"
+        "GQTVMLGNSEFDSLVDLISYYEKHPLYRKMKLRYPINEEALEKIGTAEPDYGALYEGRNP"
+        "GFYVEANPMPTFKCAVKALFDYKAQREDELTFTKSAIIQNVEKQEGGWWRGDYGGKKQLW"
+        "FPSNYVEEMVSPAALEPEREHLDENSPLGDLLRGVLDVPACQIAVRPEGKNNRLFVFSIS"
+        "MASVAHWSLDVAADSQEELQDWVKKIREVAQTADARLTEGKMMERRKKIALELSELVVYC"
+        "RPVPFDEEKIGTERACYRDMSSFPETKAEKYVNKAKGKKFLQYNRLQLSRIYPKGQRLDS"
+        "SNYDPLPMWICGSQLVALNFQTPDKPMQMNQALFLAGGHCGYVLQPSVMRDEAFDPFDKS"
+        "SLRGLEPCAICIEVLGARHLPKNGRGIVCPFVEIEVAGAEYDSIKQKTEFVVDNGLNPVW"
+        "PAKPFHFQISNPEFAFLRFVVYEEDMFSDQNFLAQATFPVKGLKTGYRAVPLKNNYSEGL"
+        "ELASLLVKIDVFPAKQENGDLSPFGGASLRERSCDASGPLFHGRAREGSFEARYQQPFED"
+        "FRISQEHLADHFDGRDRRTPRRTRVNGDNRL")
+    return s
+
+
+# An example xml describing a job and containing the result_url
+def getExampleXMLJobDescription():
+    s = '<?xml version="1.0" encoding="UTF-8"?>\n\
+        <jobs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"\n\
+              xmlns="http://pfam.xfam.org/"\n\
+              xsi:schemaLocation="http://pfam.xfam.org/\n\
+                                  http://pfam.xfam.org/static/documents/schemas/submission.xsd">\n\
+          <job job_id="383F64A2-901A-11E4-9395-3A825F09777C">\n\
+            <opened>2014-12-30T11:51:41</opened>\n\
+            <result_url>http://pfam.xfam.org/search/sequence/resultset/383F64A2-901A-11E4-9395-3A825F09777C?output=xml</result_url>\n\
+          </job>\n\
+        </jobs>'
+
+    return s
+
+
+# An example json string describing protein domains
+def getExampleJSONProteinDomainString():
+    s = '{ "length" : "534",  \
+        "regions" : [  \
+            {  \
+              "type" : "pfama",  \
+              "text" : "Peptidase_S8",  \
+              "colour" : "#2dcfff",  \
+              "display": "true", \
+              "startStyle" : "curved", \
+              "endStyle" : "curved", \
+              "start" : "159", \
+              "end" : "361",  \
+              "aliEnd" : "350",  \
+              "aliStart" : "163"\
+            }, \
+            { \
+              "type" : "pfama", \
+              "text" : "PA", \
+              "colour" : "#ff5353", \
+              "display" : true, \
+              "startStyle" : "jagged", \
+              "endStyle" : "curved", \
+              "start" : "388",\
+              "end" : "469", \
+              "aliEnd" : "469", \
+              "aliStart" : "396"\
+            } \
+          ] \
+        }'
+
+    return s
+
+
+# Extract the result_url of a xml job description
+def extractResultURL(xml):
+    # Split the xml string at the line breaks and remove whitespaces
+    split = xml.split("\n")
+    split = [s.strip() for s in split]
+
+    # Get the result url
+    for s in split:
+        if s.startswith("<result_url>"):
+            result_url = s.split(">")[1].split("<")[0]
+    return result_url
+
+
+# Extract the job_id of a xml job description
+def extractJobID(xml):
+    # Split the xml string at the line breaks and remove whitespaces
+    split = xml.split("\n")
+    split = [s.strip() for s in split]
+
+    # Get the result url
+    for s in split:
+        if s.startswith("<job job_id"):
+            job_id = s.split('"')[1]
+    return job_id
+
+
+# Query the pfam database for protein domains of the protein sequence.
+# Return the result_url from there the result can be obtained.
+def queryPfam(seq, err):
+    # Try it with pycurl
+    buffer = StringIO()
+    c = pycurl.Curl()
+    c.setopt(c.URL, 'http://pfam.xfam.org/search/sequence')
+    c.setopt(c.WRITEDATA, buffer)
+
+    # The form data
+    formData = {'seq': seq, 'output': 'xml'}
+    postfields = urllib.urlencode(formData)
+    c.setopt(c.POSTFIELDS, postfields)
+    c.setopt(c.FOLLOWLOCATION, True)
+    c.perform()
+    c.close()
+    # testing
+    xml = buffer.getvalue()
+    result_url = extractResultURL(xml)
+    job_id = extractJobID(xml)
+    buffer.close()
+    return result_url, job_id
+
+
+# Obtain the query result for a protein as a json string
+def obtainQueryResult(protein, err):
+    status = "RUN"
+    # Try it with pycurl
+    c = pycurl.Curl()
+    url = "http://pfam.xfam.org/search/sequence/graphic/" + protein["job_id"]
+    c.setopt(c.URL, url)
+    # Check the response header
+    # http://pfam.xfam.org/help#tabview=tab10
+    if status not in ["RUN", "PEND"]:
+        err.write("________________")
+        err.write("DomainsInProtein:")
+        err.write("\tError obtaining a query result from Pfam:")
+        sys.exit()
+    while(status == "RUN" or status == "PEND"):
+        # obtain status
+        buffer = StringIO()
+        c.setopt(c.WRITEDATA, buffer)
+        c.perform()
+        status = buffer.getvalue()
+        if(status == "RUN"):
+            time.sleep(1)
+            
+    c.close()
+    # testing
+    domainsJSON = status
+    return domainsJSON
+
+
+# Get the picture of domains
+def getPictureOfDomain(json, baseDir):
+    # use firefox to get page with javascript generated content
+    url = "http://pfam.xfam.org/help/domain_graphics_example.html"
+    # Use a virtual display
+    display = Display(visible=0, size=(800, 600))
+    display.start()
+    # Start the browser
+    browser = webdriver.Firefox()
+    # Load the site
+    browser.get(url)
+    # Set the json string
+    browser.find_element_by_id("seq").clear()
+    browser.find_element_by_id("seq").send_keys(json)
+
+    # Generate the domain graphic
+    browser.find_element_by_id("submit").click()
+    time.sleep(1)
+
+    # Take screenshot
+    browser.save_screenshot(baseDir + 'screenshot.png')
+    # Get WebElement position (position of domain graphic)
+    dg = browser.find_elements_by_tag_name("div")[0]
+    canvas = dg.find_element_by_id("anonymous_element_1")
+    pos = canvas.location
+    # Get WebElement dimension
+    size = canvas.size
+    # Crop WebElement image from page screenshot
+    im = Image.open('screenshot.png')
+    box = (pos['x'], pos['y'],
+           pos['x'] + size['width'], pos['y'] + size['height'])
+    im = im.crop(box)
+    # Delete the screenshot
+    os.remove(baseDir + 'screenshot.png')
+    # exit browser and display
+    browser.quit()
+    display.stop()
+    return im
+
+
+# Ensure that there is a network connection
+def networkAvailable():
+    try:
+        urllib2.urlopen('http://74.125.228.100', timeout=1)
+        return True
+    except urllib2.URLError:
+        pass
+    return False
+
+
+# Find domains in the protein. To achieve this, query the pfam database.
+# Save resulting pictures and json strings in the baseDir
+def findDomains(proteins, baseDir, err):
+    # Test internet connection
+    if not networkAvailable():
+        err.write("________________")
+        err.write("DomainsInProtein:")
+        err.write("\tNo network connection")
+        sys.exit()
+
+    # Ensure that the base directory is correct path
+    if(baseDir[-1] != '/'):
+        baseDir = baseDir + '/'
+
+    # This is a new list with proteins and results
+    proteinsWithResults = []
+    print "Start finding domains for", len(proteins), "proteins"
+    count = 0
+    # Make a query for each protein
+    for protein in proteins:
+        count += 1
+        print "Query pfam for protein", count
+        protein["result_url"], protein["job_id"] = queryPfam(protein["sequence"], err)
+        proteinsWithResults.append(protein)
+
+    # Wait for 5 seconds
+    time.sleep(10)
+    # Try to open the result file
+    try:
+        path = baseDir + 'domains.txt'
+        f = open(path, 'w')
+    except IOError as e:
+        err.write("________________")
+        err.write("DomainsInProtein:")
+        err.write("\tError opening new file for domains:")
+        err.write("\tI/O error({0}): {1}".format(e.errno, e.strerror) + ": " + path)
+
+    # Try to obtain the results
+    count = 0
+    domains = []
+    for protein in proteinsWithResults:
+        count += 1
+        print "Obtain protein domains from pfam for protein", count
+        # Get the json string describing the domains
+        d = obtainQueryResult(protein, err)
+        d = d[1:-1]
+        protein["domains"] = d
+        domains.append(protein)
+        # Get a picture of the domains
+        im = getPictureOfDomain(d, baseDir)
+        # Save the picture and domains
+        path = baseDir + 'domain_graphic' + str(count) + ".png"
+        protein["domain_graphic_path"] = path
+        try:
+            im.save(protein["domain_graphic_path"])
+        except IOError as e:
+            err.write("________________")
+            err.write("DomainsInProtein:")
+            err.write("\tError saving domain graphics:")
+            err.write("\tI/O error({0}): {1}".format(e.errno, e.strerror) + ": " + path)
+        # Append the json string to file
+        try:
+            f.write(d + '\n')
+        except IOError as e:
+            err.write("________________")
+            err.write("DomainsInProtein:")
+            err.write("\tError writing domains to file:")
+            err.write("\tI/O error({0}): {1}".format(e.errno, e.strerror) + ": " + path)
+    
+    # End
+    print "End finding domains!"
+    return domains
+
+
+# Test!
+def main():
+    # Error log
+    r, err = os.pipe()
+    err = os.fdopen(err, 'w')
+    # The example protein sequence
+    seq = {"sequence": getExampleProteinSequence(),
+           "start": 1, "end": 1337}
+    # Find domains in the protein
+    findDomains([seq], ".", err)
+
+
+if __name__ == "__main__":
+    main()

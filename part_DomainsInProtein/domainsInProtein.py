@@ -97,6 +97,7 @@ def extractResultURL(xml):
     split = [s.strip() for s in split]
 
     # Get the result url
+    result_url = None
     for s in split:
         if s.startswith("<result_url>"):
             result_url = s.split(">")[1].split("<")[0]
@@ -110,6 +111,7 @@ def extractJobID(xml):
     split = [s.strip() for s in split]
 
     # Get the result url
+    job_id = None
     for s in split:
         if s.startswith("<job job_id"):
             job_id = s.split('"')[1]
@@ -119,24 +121,35 @@ def extractJobID(xml):
 # Query the pfam database for protein domains of the protein sequence.
 # Return the result_url from there the result can be obtained.
 def queryPfam(seq, err):
-    # Try it with pycurl
-    buffer = StringIO()
-    c = pycurl.Curl()
-    c.setopt(c.URL, 'http://pfam.xfam.org/search/sequence')
-    c.setopt(c.WRITEDATA, buffer)
+    result_url = None
+    job_id = None
+    while result_url is None or job_id is None:
+        # Try it with pycurl
+        b = StringIO()
+        c = pycurl.Curl()
+        c.setopt(c.URL, 'http://pfam.xfam.org/search/sequence')
+        c.setopt(c.WRITEDATA, b)
 
-    # The form data
-    formData = {'seq': seq, 'output': 'xml'}
-    postfields = urllib.urlencode(formData)
-    c.setopt(c.POSTFIELDS, postfields)
-    c.setopt(c.FOLLOWLOCATION, True)
-    c.perform()
-    c.close()
-    # testing
-    xml = buffer.getvalue()
-    result_url = extractResultURL(xml)
-    job_id = extractJobID(xml)
-    buffer.close()
+        # The form data
+        formData = {'seq': seq, 'output': 'xml'}
+        postfields = urllib.urlencode(formData)
+        c.setopt(c.POSTFIELDS, postfields)
+        c.setopt(c.FOLLOWLOCATION, True)
+        c.perform()
+
+        # for testing
+        # HTTP response code, e.g. 200.
+        print('Status: %d' % c.getinfo(c.RESPONSE_CODE))
+        # Elapsed time for the transfer.
+        print('Status: %f' % c.getinfo(c.TOTAL_TIME))
+
+        # testing
+        xml = b.getvalue()
+
+        result_url = extractResultURL(xml)
+        job_id = extractJobID(xml)
+        b.close()
+        c.close()
     return result_url, job_id
 
 
@@ -174,7 +187,7 @@ def getPictureOfDomain(json, baseDir):
     # use firefox to get page with javascript generated content
     url = "http://pfam.xfam.org/help/domain_graphics_example.html"
     # Use a virtual display
-    display = Display(visible=0, size=(800, 600))
+    display = Display(visible=0, size=(1600, 800))
     display.start()
     # Start the browser
     browser = webdriver.Firefox()
@@ -183,10 +196,11 @@ def getPictureOfDomain(json, baseDir):
     # Set the json string
     browser.find_element_by_id("seq").clear()
     browser.find_element_by_id("seq").send_keys(json)
+    time.sleep(2)
 
     # Generate the domain graphic
     browser.find_element_by_id("submit").click()
-    time.sleep(1)
+    time.sleep(3)
 
     # Take screenshot
     browser.save_screenshot(baseDir + 'screenshot.png')
@@ -248,8 +262,8 @@ def findDomains(proteins, baseDir, err):
         protein["result_url"], protein["job_id"] = queryPfam(protein["sequence"], err)
         proteinsWithResults.append(protein)
 
-    # Wait for 5 seconds
-    time.sleep(10)
+    # Wait for 10 seconds
+    time.sleep(20)
     # Try to open the result file
     try:
         path = baseDir + 'domains.txt'
@@ -306,7 +320,7 @@ def main():
     seq = {"sequence": getExampleProteinSequence(),
            "start": 1, "end": 1337}
     # Find domains in the protein
-    findDomains([seq], ".", err)
+    print findDomains([seq], ".", err)
 
 
 if __name__ == "__main__":

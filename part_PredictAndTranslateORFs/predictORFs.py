@@ -57,8 +57,9 @@ def predictORFS_helper(seq):
     while start_orf < len(seq) - 2:  # sliding window
         orf = {}
         s = seq[start_orf:start_orf + 3]
-        if s in ["ATG", "GTG", "TTG"]:  # found a start codon
+        if s in ["ATG", "GTG", "TTG", "ATT", "CTG"]:  # found a start codon
             #  search for the stop codon and an ORF longer than 100n
+            #print "found start ORF at", start_orf
             for end_orf in range(start_orf + 3, len(seq), 3):
                 e = seq[end_orf:end_orf + 3]
                 if e in ["TAA", "TAG", "TGA"]:
@@ -68,9 +69,9 @@ def predictORFS_helper(seq):
                         orf["end"] = end_orf + 3
                         orf["sequence"] = seq[start_orf:end_orf + 3]
                         orfs.append(orf)
-                        start_orf += 1
+                    start_orf = end_orf - 2
                     break
-        start_orf += 1
+        start_orf += 1  
     return orfs
 
 
@@ -89,7 +90,7 @@ def predictORFS(seq, w):
 
     print "Starting predicting ORFs ..."
     # Search the sequence from both sides.
-    orfs = predictORFS_helper(seq) + predictORFS_helper(seq[::-1])
+    orfs = predictORFS_helper(seq)# + predictORFS_helper(seq[::-1])
     if orfs is None or len(orfs) == 0:
         w.write("________________")
         w.write("PredictORFs:")

@@ -4,6 +4,8 @@ import pycurl
 import urllib
 import urllib2
 import time
+import json
+import pickle
 from StringIO import StringIO
 from selenium import webdriver
 from pyvirtualdisplay import Display
@@ -233,6 +235,46 @@ def networkAvailable():
     return False
 
 
+# Produce an output file summarising all findings
+def saveResultsAsTextFile(domains, baseDir, err):
+    # The seperator symbol
+    sep = ' '
+
+    # Open the result file
+    f = open(baseDir + "result.txt", 'w')
+
+    # For each domain, write the important information
+    f.write("NumberOfProteins" + sep + str(len(domains)) + '\n\n')
+    i = 1
+    for domain in domains:
+        d = json.loads(domain['domains'])
+        # Infos about the ORF
+        f.write("Protein" + str(i) + '\n')
+        f.write("NumberOfDomains" + sep + str(len(d['regions'])) + '\n')
+        f.write("pathToImage" + sep + str(domain['domain_graphic_path']) + '\n')
+        f.write("aminoAcidSequence" + sep + str(domain['sequence']) + '\n')
+        f.write("startInDNASequence" + sep + str(domain['start']) + '\n')
+        f.write("endInDNASequence" + sep + str(domain['end']) + '\n')
+
+        # Infos about domains in the ORF
+        # Read the json representation of the domains in the protein
+        # For each domain a the ORF a list of domains exist
+        d = json.loads(domain['domains'])
+        j = 1
+        for region in d['regions']:
+            metadata = region['metadata']
+            f.write("Domain" + str(j) + '\n')
+            f.write("startInProteinSequence" + sep + metadata['start'] + '\n')
+            f.write("endInProteinSequence" + sep + metadata['end'] + '\n')
+            f.write("description" + sep + metadata['description'] + '\n')
+            f.write("identifier" + sep + metadata['identifier'] + '\n')
+            j += 1
+    
+        # Next 
+        f.write('\n')
+        i += 1
+
+
 # Find domains in the protein. To achieve this, query the pfam database.
 # Save resulting pictures and json strings in the baseDir
 def findDomains(proteins, baseDir, err):
@@ -305,6 +347,9 @@ def findDomains(proteins, baseDir, err):
             err.write("DomainsInProtein:")
             err.write("\tError writing domains to file:")
             err.write("\tI/O error({0}): {1}".format(e.errno, e.strerror) + ": " + path)
+
+    # Write the results into a file
+    saveResultsAsTextFile(domains, baseDir, err)
     
     # End
     print "End finding domains!"
@@ -321,6 +366,10 @@ def main():
            "start": 1, "end": 1337}
     # Find domains in the protein
     print findDomains([seq], ".", err)
+    
+    #domains = pickle.load(open("./CacaoSwollenShootVirus/domains_dump.txt", "rb"))
+    #saveResultsAsTextFile(domains, "./CacaoSwollenShootVirus/", err)
+
 
 
 if __name__ == "__main__":

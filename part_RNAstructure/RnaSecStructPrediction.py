@@ -18,6 +18,16 @@ def runRNAfold(RNA):
     return str(output)
 
 
+# runs RNAplot
+def runRNAplot(name, RNA, struct):
+    cmd = ['echo']
+    cmd.append("-e")
+    cmd.append(">" + name + "\n" + RNA + "\n" + struct)
+    p1 = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    p2 = subprocess.Popen(['RNAplot'], stdin=p1.stdout, stdout=subprocess.PIPE)
+    p1.stdout.close()
+
+
 # takes the output of an RNAfold or RNAcofold and returns
 # the secondary structure
 def get_sec_struc(output):
@@ -50,3 +60,6 @@ if __name__ == '__main__':
     print output
     print get_sec_struc(output)
     print get_score(output)
+    name = "test1"
+    struct = get_sec_struc(output)
+    runRNAplot(name, rna, struct)

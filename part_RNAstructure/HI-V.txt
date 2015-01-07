@@ -1,0 +1,5 @@
+HI-V
+dot_bracket
+ACACGACGUAGCGUUAGACGUGACGUAGACGUAGAC
+.....((((.((((((....))))))..))))....
+-9.4

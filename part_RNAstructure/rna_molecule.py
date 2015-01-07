@@ -17,6 +17,7 @@
 # :::::::: # :::::::: # :::::::: # :::::::: # :::::::: #
 import os
 import hashlib
+import shutil
 from db_entry import DB_entry
 from time import gmtime, strftime
 import RnaSecStructPrediction as prediction
@@ -66,10 +67,10 @@ class RNA_molecule:
         print "Database: \t", self._database
         if self._structure is None:
             print "Structure: \tNot searched in database yet."\
-                  "No prediction done so far."
+                  " No prediction done so far."
         else:
             print "Energy: \t", self._energy
-            print "Structure: \n", self._structure
+            print "Structure: \n", self._sequence + "\n" + self._structure
         print "--------end information\n"
 
     def db_parsed(self, path_db):
@@ -121,23 +122,32 @@ class RNA_molecule:
             db_entry = dict_db[hash_object.hexdigest()]
             print "Found structure in database!"
             self._structure = db_entry.get_newick_str()
-            print "Newick format:\n", self._structure
+            print "Dot bracket format:\n", self._structure
+            prediction.runRNAplot(self._name, self._sequence, self._structure)
+            os.remove(self._name + ".ps")
+            shutil.move(self._name + "_ss.ps", self._name + ".ps")
         except:
             # Do the structure prediction if the structure is not
             # in the database
             print "Structure not found in database!"
-            print "Initiating structure prediction...."
+            print "Trying secondary structure prediction using RNAfold...."
             ####implement simons stuff
             try:
                 structure_pred = prediction.runRNAfold(self._sequence)
-                print "Structure predicted sucessfully"
                 self._structure = prediction.get_sec_struc(structure_pred)
                 self._energy = prediction.get_score(structure_pred)
-                print structure_pred
+                shutil.move("rna.ps", self._name + ".ps")
+                print "Structure predicted sucessfully."
             except:
-                print "Error, something went wrong with the structure\
-                       prediction"
+                print "Error, something went wrong with the structure "\
+                        "prediction!"
         return True
+
+
+    def writeTXT(self):
+        handler = open(self._name + ".txt", "w")
+        n = "\n"
+        handler.write(self._name + n + "dot_bracket" + n + self._sequence + n + self._structure + n + str(self._energy))
 
 
 def parse_struc_db(path_db):
@@ -242,3 +252,4 @@ if __name__ == "__main__":
     # rna_molecule object
     mol.search_rna_struc(struc_db)
     mol.print_rna_information()
+    mol.writeTXT()

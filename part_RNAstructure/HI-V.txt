@@ -1,5 +1,4 @@
-HI-V
-dot_bracket
-ACACGACGUAGCGUUAGACGUGACGUAGACGUAGAC
-.....((((.((((((....))))))..))))....
--9.4
+NAME:	HI-V
+SEQUENCE:	ACACGACGUAGCGUUAGACGUGACGUAGACGUAGAC
+STRUCTURE:	.....((((.((((((....))))))..))))....
+ENERGY:	-9.4

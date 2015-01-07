@@ -148,7 +148,7 @@ class RNA_molecule:
         handler = open(self._name + ".txt", "w")
         n = "\n"
 	t = "\t"
-        handler.write("NAME:" + t + self._name + n + "SEQUENCE:" + t + self._sequence + n + "STRUCTURE:" + t + self._structure + n + "ENERGY:" + t + str(self._energy))
+        handler.write("NAME:" + n + self._name + n + "SEQUENCE:" + n + self._sequence + n + "STRUCTURE:" + n + self._structure + n + "ENERGY:" + n + str(self._energy))
 
 
 def parse_struc_db(path_db):

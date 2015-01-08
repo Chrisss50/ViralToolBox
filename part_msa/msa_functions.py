@@ -5,6 +5,7 @@ import sys
 from Bio import SeqIO as seqio
 
 def checkargs(args):
+    print "Checking parameters"
     if len(args) < 3:
         print "ERROR: Incorrect usage, not enough parameters\n" \
               "Usage: python msa_clustalo.py <fastai input> <output file name>"
@@ -34,9 +35,18 @@ def checkclustal():
         return None
 
 def checkfasta(fastafile):
+    print "Checking",fastafile,"is valid"
     seqs = seqio.parse(fastafile,'fasta')
     flag = 0
     for seq in seqs:
+        if len(seq.seq) <= 0:
+            print "ERROR: Sequence",seq.id,"has 0 residues"
+            sys.exit(1)
+        for nuc in str(seq.seq):
+            if nuc not in ['A','C','G','T','a','g','c','t','N']:
+                print "ERROR: In sequence",seq.id,"nucleotide not " \
+                      "recognized got",nuc,"instead."
+                sys.exit(1)
         flag += 1
     if not flag:
         print "ERROR: File",fastafile,"is not a fasta file"
@@ -45,7 +55,8 @@ def checkfasta(fastafile):
         return None
 
 def runclustal(fastafile,outfile):
-    proc = subprocess.Popen(["clustalo","-i","ms.fasta","-o",outfile,
+    print "Running: clustalo -i",fastafile,"-o",outfile
+    proc = subprocess.Popen(["clustalo","-i",fastafile,"-o",outfile,
                              "--outfmt","phy","-v"],stdout=subprocess.PIPE)
     res =  proc.communicate()
     print res[0]

@@ -29,40 +29,45 @@ def getProteinInfo(pdf):
         i = 1
         # for each protein get its aminoacid sequence and its domains
         while i <= numProteins:
-            protein = 'Protein' + i
+            protein = 'Protein' + str(i)
             protein_start = pdf.find(protein) + len(protein + '\n')
             protein_end = pdf.find('\n\n', protein_start)
+            # amino acid sequence
             aaSeq = getMetadata(
                 'aminoAcidSequence', pdf, protein_start, protein_end)
             proteins[protein] = {'aminoAcidSequence': aaSeq}
+            # start and end in DNA sequence
+            startInDNASequence = getMetadata(
+                'startInDNASequence', pdf, protein_start, protein_end)
+            endInDNASequence = getMetadata(
+                'endInDNASequence', pdf, protein_start, protein_end)
+            proteins[protein].update(
+                {'startInDNASequence': startInDNASequence},
+                {'endInDNASequence': endInDNASequence})
+            # number of domains
             numDomains = int(getMetadata(
                 'NumberOfDomains', pdf, protein_start, protein_end))
+
             # get information for each domain (position, description, ...)
             if numDomains > 0:
                 domains = {}
                 j = 1
                 while j <= numDomains:
-                    domain = 'Domain' + j
+                    domain = 'Domain' + str(j)
                     domain_start = pdf.find(
                         domain, protein_start, protein_end) + \
                         len(domain + '\n')
                     domain_end = pdf.find('\n\n', domain_start)
+                    description = getMetadata(
+                        'description', pdf, domain_start, domain_end)
                     startInProteinSequence = getMetadata(
                         'startInProteinSequence', pdf,
                         domain_start, domain_end)
                     endInProteinSequence = getMetadata(
                         'endInProteinSequence', pdf, domain_start, domain_end)
-                    description = getMetadata(
-                        'description', pdf, domain_start, domain_end)
-                    startInDNASequence = getMetadata(
-                        'startInDNASequence', pdf, domain_start, domain_end)
-                    endInDNASequence = getMetadata(
-                        'endInDNASequence', pdf, domain_start, domain_end)
                     identifier = getMetadata(
                         'identifier', pdf, domain_start, domain_end)
                     domains[domain] = (
-                        {'startInDNASequence': startInDNASequence},
-                        {'endInDNASequence': endInDNASequence},
                         {'startInProteinSequence': startInProteinSequence},
                         {'endInProteinSequence': endInProteinSequence},
                         {'description': description},
@@ -71,6 +76,7 @@ def getProteinInfo(pdf):
                 if numDomains == 0:
                     i += 1
             proteins[protein].update(domains)
+            i += 1
         return numProteins, proteins
 
 

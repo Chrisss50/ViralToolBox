@@ -73,8 +73,8 @@ def getProteinInfo(pdf):
                         {'description': description},
                         {'identifier': identifier})
                     j += 1
-                if numDomains == 0:
-                    i += 1
+            elif numDomains == 0:
+                i += 1
             proteins[protein].update(domains)
             i += 1
         return numProteins, proteins

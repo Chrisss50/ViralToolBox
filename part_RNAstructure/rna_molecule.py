@@ -125,7 +125,7 @@ class RNA_molecule:
             print "Dot bracket format:\n", self._structure
             prediction.runRNAplot(self._name, self._sequence, self._structure)
             os.remove(self._name + ".ps")
-            shutil.move(self._name + "_ss.ps", self._name + ".ps")
+            shutil.move(self._name + "_ss.ps", "sec_struct" + ".ps")
         except:
             # Do the structure prediction if the structure is not
             # in the database
@@ -136,7 +136,7 @@ class RNA_molecule:
                 structure_pred = prediction.runRNAfold(self._sequence)
                 self._structure = prediction.get_sec_struc(structure_pred)
                 self._energy = prediction.get_score(structure_pred)
-                shutil.move("rna.ps", self._name + ".ps")
+                shutil.move("rna.ps", "sec_struct" + ".ps")
                 print "Structure predicted sucessfully."
             except:
                 print "Error, something went wrong with the structure "\
@@ -145,7 +145,7 @@ class RNA_molecule:
 
 
     def writeTXT(self):
-        handler = open(self._name + ".txt", "w")
+        handler = open("sec_struct" + ".txt", "w")
         n = "\n"
 	t = "\t"
         handler.write("NAME:" + n + self._name + n + "SEQUENCE:" + n + self._sequence + n + "STRUCTURE:" + n + self._structure + n + "ENERGY:" + n + str(self._energy))

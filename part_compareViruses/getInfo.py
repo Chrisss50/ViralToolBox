@@ -42,8 +42,8 @@ def getProteinInfo(pdf):
             endInDNASequence = getMetadata(
                 'endInDNASequence', pdf, protein_start, protein_end)
             proteins[protein].update(
-                {'startInDNASequence': startInDNASequence},
-                {'endInDNASequence': endInDNASequence})
+                {'startInDNASequence': startInDNASequence})
+            proteins[protein].update({'endInDNASequence': endInDNASequence})
             # number of domains
             numDomains = int(getMetadata(
                 'NumberOfDomains', pdf, protein_start, protein_end))

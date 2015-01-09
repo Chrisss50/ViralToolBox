@@ -1,0 +1,5 @@
+msa_functions - Basic functions for checking status of files used, and 3rd part programs required.
+msa_clustalo - Runs clustal omega with default parameters on a multiple sequence fasta file and writting results to an output file
+
+To DO:
+Add logging

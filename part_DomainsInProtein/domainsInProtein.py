@@ -238,7 +238,7 @@ def networkAvailable():
 # Produce an output file summarising all findings
 def saveResultsAsTextFile(domains, baseDir, err):
     # The seperator symbol
-    sep = ' '
+    sep = '\n'
 
     # Open the result file
     f = open(baseDir + "result.txt", 'w')
@@ -367,6 +367,7 @@ def main():
     # Find domains in the protein
     print findDomains([seq], ".", err)
     
+    # Generate result files for max
     #domains = pickle.load(open("./CacaoSwollenShootVirus/domains_dump.txt", "rb"))
     #saveResultsAsTextFile(domains, "./CacaoSwollenShootVirus/", err)
 

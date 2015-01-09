@@ -4,7 +4,7 @@ def getMetadata(substring, pdf, start=0, end=None):
     substring_start = pdf.find(
         substring + '\n', start, end) + len(substring + '\n')
     substring_end = pdf.find('\n', substring_start)
-    indices = pdf[substring_start, substring_end]
+    indices = pdf[substring_start: substring_end]
     return indices
 
 

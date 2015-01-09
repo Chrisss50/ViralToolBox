@@ -8,7 +8,7 @@ def getMetadata(substring, pdf, start=0, end=None):
     return indices
 
 
-def getInformation(pdf):
+def getSecStructInfo(pdf):
     # get sequence
     seq = getMetadata('dot_bracket', pdf)
     # get dot bracket notation for sequence
@@ -19,7 +19,10 @@ def getInformation(pdf):
     seq_energy_start = secstruct_end + len(seq)
     seq_energy_end = pdf.find('\n', seq_energy_start)
     seq_energy = pdf[seq_energy_start, seq_energy_end]
-    # get proteins and their domains
+    return seq, secstruct, seq_energy
+
+
+def getProteinInfo(pdf):
     numProteins = int(getMetadata('NumberOfProteins', pdf))
     if numProteins > 0:
         proteins = {}
@@ -68,6 +71,13 @@ def getInformation(pdf):
                 if numDomains == 0:
                     i += 1
             proteins[protein].update(domains)
-        return seq, secstruct, seq_energy, numProteins, proteins
-    #else:
-       #error
+        return numProteins, proteins
+
+
+def getInformation(pdf):
+    # get sequence, dot bracket notation for sequence and
+    # energy of secondary structure
+    seq, secstruct, seq_energy = getSecStructInfo(pdf)
+    # get proteins and their domains
+    numProteins, proteins = getProteinInfo(pdf)
+    return seq, secstruct, seq_energy, numProteins, proteins

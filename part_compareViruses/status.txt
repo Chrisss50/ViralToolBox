@@ -1,7 +1,3 @@
 TODO:
-
-Functions:
-compareSecondaryStructures()
-compareGenes(): similiar ORFs/proteins and their positions, 
-				getProcentualSimilarity()
+error-log
 

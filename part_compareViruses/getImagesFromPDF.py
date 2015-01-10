@@ -1,6 +1,6 @@
 # by
 # https://github.com/dpapathanasiou/pdfminer-layout-scanner/blob/master/layout_scanner.py
-
+# changed by Mirjam Figaschewski
 
 import sys
 import os
@@ -12,14 +12,14 @@ from binascii import b2a_hex
 ###
 
 from pdfminer.pdfparser import PDFParser
-from pdfminer.pdfdocument import PDFDocument, PDFNoOutlines
+from pdfminer.pdfdocument import PDFDocument
 from pdfminer.pdfpage import PDFPage
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import PDFPageAggregator
-from pdfminer.layout import LAParams, LTTextBox, LTTextLine, LTFigure, LTImage, LTChar
+from pdfminer.layout import LAParams, LTFigure, LTImage
 
 
-def with_pdf(pdf_doc, fn, *args):
+def with_pdf(pdf_doc, fn, pdf_num, images_folder):
     """Open the pdf document, and apply the function, returning the results"""
     result = None
     try:
@@ -31,11 +31,9 @@ def with_pdf(pdf_doc, fn, *args):
         doc = PDFDocument(parser)
         # connect the parser and document objects
         parser.set_document(doc)
-
         if doc.is_extractable:
             # apply the function and return the result
-            result = fn(doc, *args)
-
+            result = fn(doc=doc, pdf_num=pdf_num, images_folder=images_folder)
         # close the pdf file
         fp.close()
     except IOError:
@@ -44,37 +42,10 @@ def with_pdf(pdf_doc, fn, *args):
     return result
 
 
-###
-# Table of Contents
-###
-
-def _parse_toc(doc):
-    """With an open PDFDocument object, get the table of contents (toc) data
-    [this is a higher-order function to be passed to with_pdf()]"""
-    toc = []
-    try:
-        outlines = doc.get_outlines()
-        for (level, title, dest, a, se) in outlines:
-            toc.append((level, title))
-    except PDFNoOutlines:
-        pass
-    return toc
-
-
-def get_toc(pdf_doc):
-    """Return the table of contents (toc), if any, for this pdf file"""
-    return with_pdf(pdf_doc, _parse_toc)
-
-
-###
-# Extracting Images
-###
-
 def write_file(folder, filename, filedata, flags='w'):
     """Write the file data to the folder and filename combination
     (flags: 'w' for write text, 'wb' for write binary, use 'a' instead of 'w' for append)"""
     result = False
-    print os.path.isdir(folder)
     if os.path.isdir(folder):
         try:
             file_obj = open(os.path.join(folder, filename), flags)
@@ -85,6 +56,10 @@ def write_file(folder, filename, filedata, flags='w'):
             pass
     return result
 
+
+###
+# Extracting Images
+###
 
 def determine_image_type(stream_first_4_bytes):
     """Find out the image file type based on the magic number comparison of the first 4 (or 2) bytes"""
@@ -101,7 +76,7 @@ def determine_image_type(stream_first_4_bytes):
     return file_type
 
 
-def save_image(lt_image, page_number, images_folder):
+def save_image(lt_image, filename, images_folder, pdf_num):
     """Try to save the image data from this LTImage object, and return the file name, if successful"""
     result = None
     if lt_image.stream:
@@ -109,93 +84,55 @@ def save_image(lt_image, page_number, images_folder):
         if file_stream:
             file_ext = determine_image_type(file_stream[0:4])
             if file_ext:
-                file_name = ''.join(
-                    [str(page_number), '_', lt_image.name, file_ext])
-                if write_file(images_folder, file_name, file_stream, flags='wb'):
-                    result = file_name
+                name = list(filename)
+                if os.path.exists(images_folder + filename + file_ext) and \
+                        name[-1].isdigit():
+                    num = int(name[-1]) + 1
+                    filename = pdf_num + '_domain' + num
+                filename = filename + file_ext
+                if write_file(images_folder, filename, file_stream, flags='wb'):
+                    result = filename
     return result
 
 
-###
-# Extracting Text
-###
-
-def to_bytestring(s, enc='utf-8'):
-    """Convert the given unicode string to a bytestring, using the standard encoding,
-    unless it's already a bytestring"""
-    if s:
-        if isinstance(s, str):
-            return s
-        else:
-            return s.encode(enc)
-
-
-def update_page_text_hash(h, lt_obj, pct=0.2):
-    """Use the bbox x0,x1 values within pct% to produce lists of associated text within the hash"""
-
-    x0 = lt_obj.bbox[0]
-    x1 = lt_obj.bbox[2]
-
-    key_found = False
-    for k, v in h.items():
-        hash_x0 = k[0]
-        if x0 >= (hash_x0 * (1.0 - pct)) and (hash_x0 * (1.0 + pct)) >= x0:
-            hash_x1 = k[1]
-            if x1 >= (hash_x1 * (1.0 - pct)) and (hash_x1 * (1.0 + pct)) >= x1:
-                # the text inside this LT* object was positioned at the same
-                # width as a prior series of text, so it belongs together
-                key_found = True
-                v.append(to_bytestring(lt_obj.get_text()))
-                h[k] = v
-    if not key_found:
-        # the text, based on width, is a new series,
-        # so it gets its own series (entry in the hash)
-        h[(x0, x1)] = [to_bytestring(lt_obj.get_text())]
-
-    return h
-
-
-def parse_lt_objs(lt_objs, page_number, images_folder, text=[]):
+def parse_lt_objs(lt_objs, page_number, images_folder, pdf_num):
     """Iterate through the list of LT* objects and capture the text or image data contained in each"""
     text_content = []
-
-    # k=(x0, x1) of the bbox, v=list of text strings within that bbox width
-    # (physical column)
-    page_text = {}
+    images = []
     for lt_obj in lt_objs:
-        if isinstance(lt_obj, LTTextBox) or isinstance(lt_obj, LTTextLine):
-            # text, so arrange is logically based on its column width
-            page_text = update_page_text_hash(page_text, lt_obj)
-        elif isinstance(lt_obj, LTImage):
+        if isinstance(lt_obj, LTImage):
             # an image, so save it to the designated folder, and note its place
             # in the text
-            saved_file = save_image(lt_obj, page_number, images_folder)
-            if saved_file:
-                # use html style <img /> tag to mark the position of the image
-                # within the text
-                text_content.append(
-                    '<img src="' + os.path.join(images_folder, saved_file) + '" />')
-            else:
-                print >> sys.stderr, "error saving image on page", page_number, lt_obj.__repr__
+            images.append(lt_obj)
+            # saved_file = save_image(lt_obj, page_number, images_folder)
         elif isinstance(lt_obj, LTFigure):
             # LTFigure objects are containers for other LT* objects, so recurse
             # through the children
             text_content.append(
-                parse_lt_objs(lt_obj, page_number, images_folder, text_content))
-
-    for k, v in sorted([(key, value) for (key, value) in page_text.items()]):
-        # sort the page_text hash by the keys (x0,x1 values of the bbox),
-        # which produces a top-down, left-to-right sequence of related columns
-        text_content.append(''.join(v))
-
-    return '\n'.join(text_content)
+                parse_lt_objs(
+                    lt_obj, page_number, images_folder, pdf_num))
+    for i in range(0, len(images)):
+        if page_number == 1 and i == 0:
+            filename = str(pdf_num) + '_sec_struct'
+        else:
+            filename = str(pdf_num) + '_domain' + str(i)
+        saved_file = save_image(images[i], filename, images_folder, pdf_num)
+        if saved_file:
+                # use html style <img /> tag to mark the position of the image
+                # within the text
+                text_content.append(
+                    '<img src="' + os.path.join(images_folder, saved_file) +
+                    '" />')
+        else:
+            print >> sys.stderr, "error saving image on page", page_number, \
+                filename
 
 
 ###
 # Processing Pages
 ###
 
-def _parse_pages(doc, images_folder):
+def _parse_pages(doc, images_folder, pdf_num):
     """With an open PDFDocument object, get the pages and parse each one
     [this is a higher-order function to be passed to with_pdf()]"""
     rsrcmgr = PDFResourceManager()
@@ -210,12 +147,16 @@ def _parse_pages(doc, images_folder):
         layout = device.get_result()
         # layout is an LTPage object which may contain child objects like
         # LTTextBox, LTFigure, LTImage, etc.
-        text_content.append(parse_lt_objs(layout, (i + 1), images_folder))
+        text_content.append(
+            parse_lt_objs(layout, (i + 1), images_folder, pdf_num))
 
     return text_content
 
 
-def get_pages(pdf_doc, images_folder='/tmp'):
+def get_pages(pdf_doc, pdf_num, images_folder='/tmp'):
     """Process each of the pages in this pdf file and return a list of strings representing the text found in each page"""
-    return with_pdf(pdf_doc, _parse_pages, *tuple([images_folder]))
+    return with_pdf(pdf_doc, _parse_pages, pdf_num, images_folder)
 
+
+if __name__ == "__main__":
+    print get_pages(pdf_doc="051.pdf", images_folder='C:/Users/Mimi/Desktop/BioInfo/test/', pdf_num=1)

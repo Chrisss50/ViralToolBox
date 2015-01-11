@@ -1,0 +1,24 @@
+Sequences
+HI-V: ACACGACGUAGCGUUAGACGUGACGUAGACGUAGAC
+HI-V: ACACGACGUAGCGUUAGACGUGACGUAGACGUAGAC
+Secondary structure:
+HI-V .....((((.((((((....))))))..)))).... Energy: -9.4
+HI-V .....((((.((((((....))))))..)))).... Energy: -9.4
+
+GC content
+HI-V: 52.7777777778
+HI-V: 52.7777777778
+
+Number of Proteins
+HI-V: 3
+HI-V: 3
+
+Percentual similarity: 100%
+
+Common domains|Position in HI-V |Position in HI-V |
+--------------|-----------------|-----------------|
+DUF1319       |15753:1451191    |15753:1451191    |
+zf-CCHC       |7631681:7807378  |7631681:7807378  |
+RVP           |10901681:12017378|10901681:12017378|
+RVT_1         |13491681:15097378|13491681:15097378|
+MP            |1251681:2467378  |1251681:2467378  |

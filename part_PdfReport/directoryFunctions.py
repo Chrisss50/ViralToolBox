@@ -14,7 +14,7 @@ import fnmatch
 # Search by name for a file in a directory
 def findFileByName(path, name):
     error = []
-    if(checkDirExists(path) is False or checkFileExists(path) is False):
+    if(checkDirExists(path) is False):  #'or checkFileExists(path) is False):
         error.append("The file doesn't exist")
         return error
     else:
@@ -28,7 +28,7 @@ def findFileByName(path, name):
 # Search by pattern for a file in a directory
 def findFileByPattern(path, pattern):
     error = []
-    if(checkDirExists(path) is False or checkFileExists(path) is False):
+    if(checkDirExists(path) is False):  #or checkFileExists(path) is False):
         error.append("The file doesn't exist")
         return error
     else:
@@ -97,7 +97,12 @@ def checkEmptyFile(path):
     return os.path.getsize(path) > 0
 
 
+def sumUpStringList(stringList):
+    numlist = map(int, stringList)
+    result = sum(numlist)
+    return result
+
 if __name__ == "__main__":
     pathdir = sys.argv[1]
-    print findLineByKeyword(pathdir, "Alignment Score")
-    print findNextLineByKeyword(pathdir, "Mapping Score")
+    print findFileByPattern(pathdir, "domain_graphic*")
+    StringList = map(str, [1, 2, 3])

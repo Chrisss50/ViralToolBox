@@ -179,7 +179,7 @@ def writeReportAsPdf(resultpath, outputpath):
             Report.append(Spacer(1, 12))
             del DescriptionInDomain[0]
             
-            ptext = '<font name=Helvetica size=12>%s</font>' % "Domain descreption:"
+            ptext = '<font name=Helvetica size=12>%s</font>' % "Identifier:"
             Report.append(Paragraph(ptext, styles["Normal"]))
 
             ptext = '<font name=Helvetica size=12>%s</font>' % IdentifierInDomain[0]

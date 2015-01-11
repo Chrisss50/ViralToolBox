@@ -1,5 +1,4 @@
 from convertPDF2txt import convert_pdf_to_txt as conv
-import getImagesFromPDF as parse
 import getInfo as info
 from Bio.SeqUtils import GC
 import sys
@@ -13,19 +12,59 @@ def getDomains(proteins):
     domains = []
     for val_protein in proteins.values():
         for val_domain in val_protein.values():
+            # print val_domain
             if isinstance(val_domain, dict):
                 domains.append(val_domain.get('identifier'))
     return domains
 
 
-def compare(pdf1, pdf2, result_path):
-    images_folder1 = result_path + '/images1'
-    images_folder2 = result_path + '/images2'
+def getPositions(proteins):
+    position = {}
+    for val_protein in proteins.values():
+        start_nucleo = val_protein.get('Starting nucleotide position')
+        end_nucleo = val_protein.get('Ending nucleotide position')
+        for val_domain in val_protein.values():
+            if isinstance(val_domain, dict):
+                start = val_domain.get('Starting aminoacid position') + \
+                    start_nucleo
+                end = val_domain.get('Ending aminoacid position') + end_nucleo
+                ident = val_domain.get('identifier')
+                position[ident] = [start, end]
+    return position
+
+
+def compare(pdf1, pdf2, result_path, err):
+    if pdf1 == "":
+        err.write("________________")
+        err.write("compareViruses:")
+        err.write("\tPath to pdf for first virus is missing")
+        sys.exit()
+    if pdf2 == "":
+        err.write("________________")
+        err.write("compareViruses:")
+        err.write("\tPath to pdf for second virus is missing")
+        sys.exit()
+    if result_path == "":
+        err.write("________________")
+        err.write("compareViruses:")
+        err.write(
+            "\tPath to location, where results should be saved, is missing")
+        sys.exit()
+    if not os.path.exists(pdf1):
+        err.write("________________")
+        err.write("compareViruses:")
+        err.write("\tPath to pdf for first virus does not exist")
+        sys.exit()
+    if not os.path.exists(pdf2):
+        err.write("________________")
+        err.write("compareViruses:")
+        err.write("\tPath to pdf for second virus does not exist")
+        sys.exit()
+    if not os.path.exists(result_path):
+        os.makedirs(result_path)
     print 'Parsing ' + pdf1
-    parse.get_pages(pdf1, images_folder1)
     pdf1 = conv(pdf1)
     print 'Parsing ' + pdf2
-    parse.get_pages(pdf2, images_folder2)
     pdf2 = conv(pdf2)
     # get information from pdf files
     print 'Get information from pdf1'
@@ -40,14 +79,21 @@ def compare(pdf1, pdf2, result_path):
     gc2 = GC(seq2)
     # get similar domains and percentual similarity
     print 'Calculating percentual similarity'
-    # domains1 = set(getDomains(proteins1))
-    # domains2 = set(getDomains(proteins2))
-    # similarDomains = domains1 & domains2
-    # allDomains = domains1 | domains2
-    # percentualSimilarity = (len(similarDomains) / len(allDomains)) * 100
+    domains1 = set(getDomains(proteins1))
+    domainPositions1 = getPositions(proteins1)
+    domains2 = set(getDomains(proteins2))
+    domainPositions2 = getPositions(proteins2)
+    similarDomains = domains1 & domains2
+    allDomains = domains1 | domains2
+    percentualSimilarity = (len(similarDomains) / len(allDomains)) * 100
     # write results to file
-    print 'Writing results to file'
-    f = open(result_path + '/results.txt', 'w+')
+    file_path = result_path + '/results.txt'
+    if not os.path.exists(file_path):
+        print 'Creating directory' + file_path
+    else:
+        print 'Overwriting ' + file_path
+    print 'Writing results to ' + file_path
+    f = open(file_path, 'w+')
     f.write('Sequences\n' + name1 + ': ' + seq1 + '\n' +
             name2 + ': ' + seq2 + '\n')
     f.write('Secondary structure:\n' + name1 + ' ' + secstruct1 + ' Energy: ' +
@@ -57,18 +103,32 @@ def compare(pdf1, pdf2, result_path):
             name2 + ': ' + str(gc2) + '\n\n')
     f.write('Number of Proteins\n' + name1 + ': ' + str(numProteins1) + '\n' +
             name2 + ': ' + str(numProteins2) + '\n\n')
-    # f.write('Percentual similarity: ' +
-    #         percentualSimilarity + '\n\n')
-    # f.write('Common domains\n' + '\n'.join(list(similarDomains)))
+    f.write('Percentual similarity: ' +
+            str(percentualSimilarity) + '%\n\n')
+    first_column = len('Common domains')
+    second_column = len('Position in ' + name1 + ' ')
+    third_column = len('Position in ' + name2 + ' ')
+    f.write('Common domains|' + 'Position in ' + name1 + ' '
+            + '|' + 'Position in ' + name2 + ' |\n')
+    f.write('-' * first_column + '|' + '-' * second_column + '|' +
+            '-' * third_column + '|' + '\n')
+    domains = list(similarDomains)
+    for i in range(0, len(similarDomains)):
+        domain = domains[i]
+        first = first_column - len(domain)
+        position1 = ':'.join(domainPositions1.get(domain))
+        sec = second_column - len(position1)
+        position2 = ':'.join(domainPositions2.get(domain))
+        third = third_column - len(position2)
+        f.write(domain + ' ' * first + '|' + position1 + ' ' * sec
+                + '|' + position2 + ' ' * third + '|\n')
     f.close()
 
 
 if __name__ == "__main__":
-    # pdf1 = sys.arg[0]
-    # pdf1 = sys.arg[1]
-    # result_path = sys.arg[2]
-    # err = sys.arg[3]
-    pdf1 = 'test.pdf'
-    pdf2 = 'test.pdf'
-    result_path = 'C:/Users/Mimi/Documents/GitHub/ViralToolBox/part_compareViruses/test'
-    compare(pdf1, pdf2, result_path)
+    r, err = os.pipe()
+    err = os.fdopen(err, 'w')
+    pdf1 = sys.argv[1]
+    pdf2 = sys.argv[2]
+    result_path = sys.argv[3]
+    compare(pdf1, pdf2, result_path, err)

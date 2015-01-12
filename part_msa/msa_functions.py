@@ -1,4 +1,4 @@
-
+import time
 import subprocess
 import os
 import sys
@@ -6,9 +6,9 @@ from Bio import SeqIO as seqio
 
 def checkargs(args,error):
     print "Checking parameters"
-    if len(args) < 3:
+    if len(args) < 2:
         error.write("ERROR: Incorrect usage, not enough parameters\nUsage:\
-                    python msa_clustalo.py <fastai input> <output file name>")
+                    python msa_clustalo.py <fasta input>")
         sys.exit(1)
 
     if os.path.isfile(args[1]):
@@ -16,14 +16,15 @@ def checkargs(args,error):
     else:
         error.write("ERROR:",args[1],"could not be found.")
         sys.exit(1)
-    if os.path.isfile(args[2]):
-        error.write("ERROR",args[2],"already exists.")
-        sys.exit(1)
-    else:
-        pass
+    #if os.path.isfile(args[2]):
+    #    error.write("ERROR",args[2],"already exists.")
+    #    sys.exit(1)
+    #else:
+    #    pass
     return None
 
 def checkclustal(error):
+    print "Checking clustalo is installed"
     DEVNULL = open(os.devnull,'wb')
     flag = subprocess.call("which clustalo", shell=True, stdout=DEVNULL)
     if flag:
@@ -54,9 +55,13 @@ def checkfasta(fastafile,error):
     else:
         return None
 
-def runclustal(fastafile,outfile,error):
-    print "Running: clustalo -i",fastafile,"-o",outfile
-    proc = subprocess.Popen(["clustalo","-i",fastafile,"-o",outfile,
-                             "--outfmt","phy","-v"],stdout=subprocess.PIPE)
+def runclustal(fastafile,error):
+    print "Running: clustalo -i",fastafile,"-o infile"
+    start = time.time()
+    proc = subprocess.Popen(["clustalo","-i",fastafile,"-o","infile",
+                             "--outfmt","phy","-v"])
     res =  proc.communicate()
+    end = time.time()
+    total = end - start
     print res[0]
+    print "MSA computed in",total,"seconds"

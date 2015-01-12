@@ -10,12 +10,11 @@ def main():
     err = os.fdopen(err, 'w')
     msa_functions.checkargs(args,err)
     fastafile = args[1]
-    outfile = args[2]
-    print "Infile is",fastafile,"\nOutfile is",outfile
+    print "Infile is",fastafile,"\nOutfile is infile"
     msa_functions.checkclustal(err)
     msa_functions.checkfasta(fastafile,err)
     print "Starting clustalo"
-    msa_functions.runclustal(fastafile,outfile,err)
+    msa_functions.runclustal(fastafile,err)
 
 
 

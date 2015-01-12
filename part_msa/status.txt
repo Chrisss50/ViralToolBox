@@ -1,5 +1,15 @@
-msa_functions - Basic functions for checking status of files used, and 3rd part programs required.
-msa_clustalo - Runs clustal omega with default parameters on a multiple sequence fasta file and writting results to an output file
+msa_functions - Basic functions for checking status of files used, and 3rd part 
+                programs required.
+msa_clustalo - Runs clustal omega with default parameters on a multiple sequence 
+               fasta file and writting results to an output file
 
 To DO:
-Add logging
+Logging implemented module complete
+
+What this does:
+
+Given a multiple set of sequences, msa_clustalo.py will perform a multiple sequence
+alignment using clustal-omega with standard parameters. 
+
+Running this script requieres clustalo instaled, a fasta input file with multiple 
+sequences, and a name for the output file.

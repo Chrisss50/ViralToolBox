@@ -5,6 +5,7 @@
 
 import re
 import ntpath
+import datetime
 from Bio import SeqIO
 from Bio import Entrez
 
@@ -18,13 +19,14 @@ from Bio import Entrez
 # 'geneID' must contain only 1 gene ID 
 # input type: integer.
 # 'err' is an error file
-def inputFromDB(geneID,err):
+def inputFromDB(geneID,err,email):
     # get current time:
-    timeStamp = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
+    timeStamp = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     geneID = str(geneID)
+    Entrez.email = email
     # try to download the sequence from database
     try:
-        handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text")
+        handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text",email)
     except ValueError, e:
         tmp = timeStamp+". Error in function 'inputFromDB'. "+str(e)
         # write error message to error file
@@ -53,7 +55,7 @@ def inputFromDB(geneID,err):
 # 'err' is an error file
 def inputFromFile(filePath,err):
     # get current time
-    timeStamp = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
+    timeStamp = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     # Check if file was chosen
     if(filePath == None):
         tmp = timeStamp + ". "
@@ -69,7 +71,7 @@ def inputFromFile(filePath,err):
         tmp += "Error in function 'inputFromFile'. No file was chosen."
         # write error message to error file
         err.write(tmp)
-    # check if current file has the correct extension.
+    # check if 'fileName' has the correct extension.
     # Allowed are: '.txt', '.fa', '.fasta'
     fileExtensions = ['.txt', '.fa', '.fasta']
     if(fileExtension not in fileExtensions):
@@ -142,7 +144,7 @@ def inputFromFile(filePath,err):
 # maxSeqSize = max allowed size of the sequence
 def checkSeqSize(seq,maxSeqSize,err):
     # get current time:
-    timeStamp = strftime("%a, %d %b %Y %H:%M:%S +0000", gmtime())
+    timeStamp = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     # sequence have to be of type string
     if(type(seq) != str):
         tmp = timeStamp + ". "

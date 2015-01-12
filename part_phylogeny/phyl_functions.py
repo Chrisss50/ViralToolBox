@@ -41,10 +41,9 @@ def runphylogeny(error):
     start = time.time()
     proc = subprocess.Popen(["dnadist"],\
            stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-    res = proc.communicate(input='y')[0]
+    proc.communicate(input='y')[0]
     end = time.time()
     total = end - start
-    print res[0]
     print "distance matrix computed in",total,"seconds"
     flag = subprocess.call("mv infile msa.fasta",shell=True,stdout=subprocess.PIPE)
     if flag:
@@ -58,14 +57,75 @@ def runphylogeny(error):
         else:
             pass
     
-    print "Running neighbor"
+    print "Running neighbor joining algorithm"
     start = time.time()
     proc = subprocess.Popen(["neighbor"],\
            stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-    res = proc.communicate(input='y')[0]
+    proc.communicate(input='y')[0]
     end = time.time()
     total = end - start
-    print res[0]
     print "Neighbor joining tree computed in",total,"seconds"
+    flag = subprocess.call("mv infile distance_matrix.txt",shell=True,\
+                           stdout=subprocess.PIPE)
+    if flag:
+        error.write("ERROR: Can't change filename")
+        sys.exit(1)
+    else:
+        flag = subprocess.call("mv outfile neighbor.out",shell=True,\
+                               stdout=subprocess.PIPE)
+        if flag:
+            error.write("ERROR: Can't change filename")
+            sys.exit(1)
+        else:
+            flag = subprocess.call("mv outtree neighbor.tree",shell=True,\
+                                   stdout=subprocess.PIPE)
+            if flag:
+                error.write("ERROR: Can't change filename")
+                sys.exit(1)
+            else:
+                flag = subprocess.call("mv msa.fasta infile",shell=True,\
+                                       stdout=subprocess.PIPE)
+                if flag:
+                    error.write("ERROR: Can't change filename")
+                    sys.exit(1)
 
+    print "Running maximum likelyhood algorithm"
+    start = time.time()
+    proc = subprocess.Popen(["dnaml"],\
+           stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc.communicate(input='y')[0]
+    end = time.time()
+    total = end - start
+    print "ML tree computed in",total,"seconds"
+    flag = subprocess.call("mv outtree ml.tree",shell=True,\
+                                       stdout=subprocess.PIPE)
+    if flag:
+        error.write("ERROR: Can't change filename")
+        sys.exit(1)
+    else:
+        flag = subprocess.call("mv outfile ml.out",shell=True,\
+                                       stdout=subprocess.PIPE)
+        if flag:
+            error.write("ERROR: Can't change filename")
+            sys.exit(1)
+
+    print "Running maximum parsimony tree algorithm"
+    start = time.time()
+    proc = subprocess.Popen(["dnapars"],\
+           stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc.communicate(input='y')[0]
+    end = time.time()
+    total = (end - start) / float(60)
+    print "MP trees computed in",total,"minutes"
+    flag = subprocess.call("mv outtree mp.tree",shell=True,\
+                                       stdout=subprocess.PIPE)
+    if flag:
+        error.write("ERROR: Can't change filename")
+        sys.exit(1)
+    else:
+        flag = subprocess.call("mv outfile mp.out",shell=True,\
+                                       stdout=subprocess.PIPE)
+        if flag:
+            error.write("ERROR: Can't change filename")
+            sys.exit(1)
 

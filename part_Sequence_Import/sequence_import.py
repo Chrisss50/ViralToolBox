@@ -138,6 +138,11 @@ def inputFromFile(filePath,err):
 
 #####################################################################
 
+# input: object of type '<class 'Bio.SeqRecord.SeqRecord'>'
+# output: string (sequence)
+def get_sequence_from_SeqRecord(seq_record):
+    return seq_record.seq
+
 # CHECK SEQUENCE SIZE
 
 # check size of the sequence

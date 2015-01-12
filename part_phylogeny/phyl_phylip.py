@@ -14,6 +14,9 @@ def main():
     phyl_functions.checkphylip(err)
     print "Running phylip"
     phyl_functions.runphylogeny(err)
+    phyl_functions.mpconsense(err)
+    print "Preparing files for output"
+    phyl_functions.getconsensus(err)
 
 if __name__ == '__main__':
     main()

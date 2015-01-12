@@ -25,7 +25,7 @@ def checkargs(args,error):
 
 def checkphylip(error):
     DEVNULL = open(os.devnull,'wb')
-    programs = ["dnadist","dnaml","dnapars","neighbor"]
+    programs = ["dnadist","dnaml","dnapars","neighbor","consense"]
     for program in programs:
         flag = subprocess.call("which "+program, shell=True, stdout=DEVNULL)
         if flag:
@@ -77,7 +77,7 @@ def runphylogeny(error):
             error.write("ERROR: Can't change filename")
             sys.exit(1)
         else:
-            flag = subprocess.call("mv outtree neighbor.tree",shell=True,\
+            flag = subprocess.call("mv outtree nj.tree",shell=True,\
                                    stdout=subprocess.PIPE)
             if flag:
                 error.write("ERROR: Can't change filename")
@@ -118,14 +118,83 @@ def runphylogeny(error):
     total = (end - start) / float(60)
     print "MP trees computed in",total,"minutes"
     flag = subprocess.call("mv outtree mp.tree",shell=True,\
-                                       stdout=subprocess.PIPE)
+                           stdout=subprocess.PIPE)
     if flag:
         error.write("ERROR: Can't change filename")
         sys.exit(1)
     else:
         flag = subprocess.call("mv outfile mp.out",shell=True,\
-                                       stdout=subprocess.PIPE)
+                               stdout=subprocess.PIPE)
+        if flag:
+            error.write("ERROR: Can't change filename")
+            sys.exit(1)
+    
+def mpconsense(error):
+    print "Obtaining MP consensus tree"
+    flag = subprocess.call("mv mp.tree intree",shell=True,\
+                           stdout=subprocess.PIPE)
+    if flag:
+        error.write("ERROR: Can't change filename")
+        sys.exit(1)
+    
+    start = time.time()
+    proc = subprocess.Pipie(["consense"],\
+                            stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc.communicate(input='y')[0]
+    end = time.time()
+    total = end - start
+    print "MP consensus tree computed in",total,"seconds"
+    flag = subpreocess.call("rm intree outfile",shell=True,\
+                            stdout=subprocess.PIPE)
+    if flag:
+        error.write("ERROR: Can't delete files")
+        sys.exit(1)
+    else:
+        flag = subprocess.call("mv outtree mp.tree",shell=True,\
+                               stdout=subprocess.PIPE)
         if flag:
             error.write("ERROR: Can't change filename")
             sys.exit(1)
 
+def getconsensus(error):
+    print "Appending trees"
+    flag = subprocess.call("cat nj.tree ml.tree mp.tree > intree",shell=True,\
+                    stdout=subprocess.PIPE)
+    if flag:
+        error.write("ERROR: Can't change filename")
+        sys.exit(1)
+    else:
+        pass
+
+    print "Computing consensus tree"
+    start = time.time()
+    proc = subprocess.Popen(["consense"],\
+                            stdin=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc.communicate(input="y")[0]
+    end = time.time()
+    total = end - start
+    print "Consensus tree created"
+    flag = subprocess.call("mv outtree ftree.tree",shell=True,\
+                           stdout=subprocess.PIPE)
+    if flag:
+        error.write("Error: Can't change filename")
+    else:
+        flag = subprocess.call("rm intree outfile",shell=True,\
+                           stdout=subprocess.PIPE)
+        if flag:
+            error.write("Can't delete files")
+
+def drawtrees(error):
+    import ete2
+    import re
+    files = ["ml.tree","mp.tree","nj.tree","ftree.tree"]
+    filehs = []
+    for tfile in files:
+        try:
+            handl = open(tfile,'r')
+            tree = ete2.Tree(handl.read())
+            name = re.sub('.tree','',tfile)
+            tree.render(name+'.png')
+        except IOError:
+            error.write("File: "+tfile+" not found")
+            sys.exit(1)

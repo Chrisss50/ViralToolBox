@@ -128,6 +128,7 @@ def runphylogeny(error):
         if flag:
             error.write("ERROR: Can't change filename")
             sys.exit(1)
+    return None
     
 def mpconsense(error):
     print "Obtaining MP consensus tree"
@@ -155,6 +156,7 @@ def mpconsense(error):
         if flag:
             error.write("ERROR: Can't change filename")
             sys.exit(1)
+    return None
 
 def getconsensus(error):
     print "Appending trees"
@@ -183,10 +185,13 @@ def getconsensus(error):
                            stdout=subprocess.PIPE)
         if flag:
             error.write("Can't delete files")
+    return None
 
 def drawtrees(error):
+    print "Drawing trees"
     import ete2
     import re
+    start = time.time()
     files = ["ml.tree","mp.tree","nj.tree","ftree.tree"]
     filehs = []
     for tfile in files:
@@ -198,3 +203,7 @@ def drawtrees(error):
         except IOError:
             error.write("File: "+tfile+" not found")
             sys.exit(1)
+    end = time.time()
+    total = end - start
+    print "All trees drawn in",total,"seconds"
+    return None

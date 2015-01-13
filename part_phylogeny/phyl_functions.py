@@ -138,13 +138,13 @@ def mpconsense(error):
         sys.exit(1)
     
     start = time.time()
-    proc = subprocess.Pipie(["consense"],\
+    proc = subprocess.Popen(["consense"],\
                             stdin=subprocess.PIPE, stderr=subprocess.PIPE)
     proc.communicate(input='y')[0]
     end = time.time()
     total = end - start
     print "MP consensus tree computed in",total,"seconds"
-    flag = subpreocess.call("rm intree outfile",shell=True,\
+    flag = subprocess.call("rm intree outfile",shell=True,\
                             stdout=subprocess.PIPE)
     if flag:
         error.write("ERROR: Can't delete files")

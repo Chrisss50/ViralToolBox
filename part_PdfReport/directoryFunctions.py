@@ -82,6 +82,17 @@ def findNextLineByKeyword(path, keyword):
         return result
 
 
+# Read in a file
+def readInFile(path):
+    result = []
+    with open(path, 'r+') as f:
+        lines = f.readlines()
+        for i in range(0, len(lines)):
+            line = lines[i]
+            result.append(line[:-1])
+    return result
+
+
 # Check if directory exists
 def checkDirExists(path):
     return os.path.isdir(path)
@@ -104,5 +115,4 @@ def sumUpStringList(stringList):
 
 if __name__ == "__main__":
     pathdir = sys.argv[1]
-    print findFileByPattern(pathdir, "domain_graphic*")
-    StringList = map(str, [1, 2, 3])
+    print readInFile(pathdir)

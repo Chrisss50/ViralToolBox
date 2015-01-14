@@ -194,4 +194,5 @@ def writeReportAsPdf(resultpath, outputpath):
 if __name__ == "__main__":
     resultpath = sys.argv[1]
     outputpath = sys.argv[2]
+    outputpath = outputpath + "report.pdf"
     writeReportAsPdf(resultpath, outputpath)

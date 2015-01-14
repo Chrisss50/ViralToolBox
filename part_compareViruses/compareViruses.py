@@ -93,7 +93,10 @@ def compare(pdf1, pdf2, result_path, err):
     domainPositions2 = getPositions(proteins2)
     commonDomains = domains1 & domains2
     allDomains = domains1 | domains2
-    percentualSimilarity = (len(commonDomains) / len(allDomains)) * 100
+    if not commonDomains:
+        percentualSimilarity = 0
+    else:
+        percentualSimilarity = (len(commonDomains) / len(allDomains)) * 100
     # write results to file
     file_path = result_path + '/compare_results.txt'
     if not os.path.exists(file_path):
@@ -115,36 +118,38 @@ def compare(pdf1, pdf2, result_path, err):
             str(percentualSimilarity) + '%\n\n')
     # write a table for common domains, its identifier, posistions in the
     # viruses, lengths in the viruses
-    first_column = len('Common domains')
-    second_column = len('Position in ' + name1 + '  ')
-    third_column = len('Position in ' + name2 + '  ')
-    forth_column = len('Length in ' + name1 + ' ')
-    fifth_column = len('Length in ' + name2 + ' ')
-    f.write('Common domains|' +
-            'Position in ' + name1 + '  |' +
-            'Position in ' + name2 + '  |' +
-            'Length in ' + name1 + ' ' + '|' + 'Length in ' + name2 + ' ' +
-            '|\n')
-    f.write('-' * first_column + '|' + '-' * second_column + '|' +
-            '-' * third_column + '|' + '-' * forth_column + '|' +
-            '-' * fifth_column + '|\n')
-    domains = list(commonDomains)
-    for i in range(0, len(commonDomains)):
-        domain = domains[i]
-        first = first_column - len(domain)
-        positions1 = domainPositions1.get(domain)
-        position1 = ':'.join(positions1)
-        sec = second_column - len(position1)
-        positions2 = domainPositions2.get(domain)
-        position2 = ':'.join(positions2)
-        third = third_column - len(position2)
-        length1 = str(int(positions1[1]) - int(positions1[0]))
-        forth = forth_column - len(length1)
-        length2 = str(int(positions2[1]) - int(positions2[0]))
-        fifth = fifth_column - len(length2)
-        f.write(domain + ' ' * first + '|' +
-                position1 + ' ' * sec + '|' + position2 + ' ' * third + '|' +
-                length1 + ' ' * forth + '|' + length2 + ' ' * fifth + '|\n')
+    if commonDomains:
+        first_column = len('Common domains')
+        second_column = len('Position in ' + name1 + '  ')
+        third_column = len('Position in ' + name2 + '  ')
+        forth_column = len('Length in ' + name1 + ' ')
+        fifth_column = len('Length in ' + name2 + ' ')
+        f.write('Common domains|' +
+                'Position in ' + name1 + '  |' +
+                'Position in ' + name2 + '  |' +
+                'Length in ' + name1 + ' ' + '|' + 'Length in ' + name2 + ' ' +
+                '|\n')
+        f.write('-' * first_column + '|' + '-' * second_column + '|' +
+                '-' * third_column + '|' + '-' * forth_column + '|' +
+                '-' * fifth_column + '|\n')
+        domains = list(commonDomains)
+        for i in range(0, len(commonDomains)):
+            domain = domains[i]
+            first = first_column - len(domain)
+            positions1 = domainPositions1.get(domain)
+            position1 = ':'.join(positions1)
+            sec = second_column - len(position1)
+            positions2 = domainPositions2.get(domain)
+            position2 = ':'.join(positions2)
+            third = third_column - len(position2)
+            length1 = str(int(positions1[1]) - int(positions1[0]))
+            forth = forth_column - len(length1)
+            length2 = str(int(positions2[1]) - int(positions2[0]))
+            fifth = fifth_column - len(length2)
+            f.write(domain + ' ' * first + '|' +
+                    position1 + ' ' * sec + '|' + position2 + ' ' * third + '|'
+                    + length1 + ' ' * forth + '|' + length2 + ' ' * fifth +
+                    '|\n')
     f.close()
 
 

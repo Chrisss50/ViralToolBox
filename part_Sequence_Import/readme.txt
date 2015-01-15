@@ -3,8 +3,9 @@ Additional notes to the script "sequence_import.py"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ViralToolBox
-part_Sequence_Import
+project: ViralToolBox
+lecture: Bioinformatics 1, 2014/2015
+project part: part_Sequence_Import
 author: Edgar Olijar
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,11 +21,13 @@ Bio
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-There are 4 functions in the script:
+There are 5 functions in the script:
+
 1) inputFromDB(geneID,err,email)
 2) inputFromFile(filePath,err)
-3) get_sequence_from_SeqRecord(seq_record)
-4) checkSeqSize(seq,maxSeqSize,err)
+3) seqRecord2fasta(filePath,Seq_Record,err)
+4) get_sequence_from_SeqRecord(seq_record)
+5) checkSeqSize(seq,maxSeqSize,err)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,12 +50,21 @@ the function returns an object of class:
 <class 'Bio.SeqRecord.SeqRecord'>
 
 3)
+*** seqRecord2fasta : parameters
+- filePath      : file path to txt/fasta/fa file
+- Seq_Record    : object of class <class 'Bio.SeqRecord.SeqRecord'>
+- err           : error file
+*** output:
+- function has no output, but has a side effect:
+  if no errors occurred, then it produces a FASTA file
+
+4)
 *** get_sequence_from_SeqRecord : parameters
 - seq_record : object of class <class 'Bio.SeqRecord.SeqRecord'>
 *** output
 - string (sequence)
 
-4)
+5)
 *** checkSeqSize : parameters
 - seq         : sequence (string !)
 - maxSeqSize  : MAX allowed length of the sequence (specified by user)
@@ -77,6 +89,10 @@ This function needs as input a string, but functions
 sequence. Here we can use the function 'get_sequence_from_SeqRecord'
 which receives an object of class '<class 'Bio.SeqRecord.SeqRecord'>'
 and returns a string (sequence).
+
+IF you want to convert the object of class 
+   '<class 'Bio.SeqRecord.SeqRecord'>' to FASTA file (.fa/.fasta/.txt), then:
+   USE: seqRecord2fasta
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -1,3 +1,6 @@
 13.01.2015 : several changes in "readme.txt"
              - info about used packages added
              - fixed mistakes
+15.01.2015 : new function added
+             converter: class Seq_Record -> FatsA file
+             'seqRecord2fasta(filePath,Seq_Record,err)'

@@ -36,8 +36,8 @@ class RNA_molecule:
         self._name = name
         # the error pipe
         self._err = err
-        self._structure = None
-        self._database = None
+        self._structure = "not determined yet" 
+        self._database = "no database found yet"
         self._energy = 0
         print "Object RNA_molecule created."
         print self.print_rna_information()

@@ -8,6 +8,7 @@ import ntpath
 import datetime
 from Bio import SeqIO
 from Bio import Entrez
+import os
 
 #####################################################################
 
@@ -19,14 +20,14 @@ from Bio import Entrez
 # 'geneID' must contain only 1 gene ID 
 # input type: integer.
 # 'err' is an error file
-def inputFromDB(geneID,err,userEmail):
+def inputFromDB(geneID,err,email):
     # get current time:
     timeStamp = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     geneID = str(geneID)
-    Entrez.email = userEmail
+    Entrez.email = email
     # try to download the sequence from database
     try:
-        handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text")
+        handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text",email=email)
     except ValueError, e:
         tmp = timeStamp+". Error in function 'inputFromDB'. "+str(e)
         # write error message to error file
@@ -41,7 +42,7 @@ def inputFromDB(geneID,err,userEmail):
         err.write(tmp)
     handle.close()
     # close the error file
-    err.close()
+    # err.close()
     return SeqRecord
 
 #####################################################################
@@ -134,7 +135,7 @@ def inputFromFile(filePath,err):
         # write error message to error file
         err.write(tmp)
     # close the error file
-    err.close()
+    # err.close()
 
 #####################################################################
 
@@ -187,7 +188,7 @@ def seqRecord2fasta(filePath,Seq_Record,err):
     SeqIO.write(Seq_Record, output_handle, "fasta")
     output_handle.close()
     # close the error file
-    err.close()
+    # err.close()
 
 #####################################################################
 
@@ -225,4 +226,8 @@ def checkSeqSize(seq,maxSeqSize,err):
         # write error message to error file
         err.write(tmp)
     # close the error file
-    err.close()
+    # err.close()
+
+# r, err = os.pipe()
+# err = os.fdopen(err, "w")
+# inputFromDB("NC_007003.1", "/results", err)

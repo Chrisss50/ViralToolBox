@@ -112,7 +112,3 @@ def sumUpStringList(stringList):
     numlist = map(int, stringList)
     result = sum(numlist)
     return result
-
-if __name__ == "__main__":
-    pathdir = sys.argv[1]
-    print readInFile(pathdir)

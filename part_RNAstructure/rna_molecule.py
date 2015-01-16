@@ -144,8 +144,9 @@ class RNA_molecule:
         return True
 
 
-    def writeTXT(self):
-        handler = open("sec_struct" + ".txt", "w")
+    def writeTXT(self, path):
+	file = path + "sec_struct.txt"
+        handler = open(file, "w")
         n = "\n"
 	t = "\t"
         handler.write("NAME:" + n + self._name + n + "SEQUENCE:" + n + self._sequence + n + "STRUCTURE:" + n + self._structure + n + "ENERGY:" + n + str(self._energy))

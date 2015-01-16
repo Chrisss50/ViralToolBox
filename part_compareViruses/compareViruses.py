@@ -7,6 +7,10 @@ import os
 
 __author__ = 'Mirjam Figaschewski'
 
+def addTextToLabel(label, txt):
+    currentLabelText = label["text"]
+    currentLabelText += txt + '\n'
+    label.config(text = currentLabelText)
 
 #
 # get domains' identifiers from dictionary of proteins
@@ -44,7 +48,7 @@ def getPositions(proteins):
 # get their sequences, secondary structure in dot-bracket, domains from pdfs
 # calculae GC contents, common domains and the persentual similarity from that
 #
-def compare(pdf1, pdf2, result_path, err):
+def compare(pdf1, pdf2, result_path, err, label):
     paths = [pdf1, pdf2, result_path]
     # possible errors for paths: path is empty or does not exist
     for i in range(0, len(paths)):
@@ -58,35 +62,36 @@ def compare(pdf1, pdf2, result_path, err):
             err.write("________________")
             err.write("compareViruses:")
             err.write("\tPath to " + path + " is missing")
-            print("Stopped execution, look up the error in the error-log")
+            addTextToLabel(label, "Stopped execution, look up the error in the error-log")
             sys.exit()
         elif not os.path.exists(paths[i]) and (i == 0 or i == 1):
             err.write("________________")
             err.write("compareViruses:")
             err.write("\tPath to " + path + " for first virus does not exist")
-            print("Stopped execution, look up the error in the error-log")
+            addTextToLabel(label, "Stopped execution, look up the error in the error-log")
             sys.exit()
     if not os.path.exists(result_path):
-        print "Creating path to results: " + result_path
+        addTextToLabel(label, "Creating path to results: " + result_path)
         os.makedirs(result_path)
-    print 'Parsing ' + pdf1
+    
+    addTextToLabel(label, 'Parsing ' + pdf1)
     pdf1 = conv(pdf1)
-    print 'Parsing ' + pdf2
+    addTextToLabel(label, 'Parsing ' + pdf2)
     pdf2 = conv(pdf2)
     # get information from pdf files
-    print 'Get information from pdf1'
+    addTextToLabel(label, 'Get information from pdf1')
     name1, seq1, secstruct1, seq_energy1, numProteins1, proteins1 = \
         info.getInformation(pdf1)
-    print 'Get information from pdf2'
+    addTextToLabel(label, 'Get information from pdf2')
     name2, seq2, secstruct2, seq_energy2, numProteins2, proteins2 = \
         info.getInformation(pdf2)
     # calculate gc content of both sequences
-    print 'Calculating GC contents'
+    addTextToLabel(label, 'Calculating GC contents')
     gc1 = GC(seq1)
     gc2 = GC(seq2)
     # get common domains, their positions in sequence and percentual similarity
     # of the viruses
-    print 'Calculating percentual similarity'
+    addTextToLabel(label, 'Calculating percentual similarity')
     domains1 = set(getDomains(proteins1))
     domainPositions1 = getPositions(proteins1)
     domains2 = set(getDomains(proteins2))
@@ -100,10 +105,10 @@ def compare(pdf1, pdf2, result_path, err):
     # write results to file
     file_path = result_path + '/compare_results.txt'
     if not os.path.exists(file_path):
-        print 'Creating directory' + file_path
-        print 'Writing results to ' + file_path
+        addTextToLabel(label,  'Creating directory' + file_path)
+        addTextToLabel(label, 'Writing results to ' + file_path)
     else:
-        print 'Overwriting ' + file_path
+        addTextToLabel(label, 'Overwriting ' + file_path)
     f = open(file_path, 'w+')
     f.write('Sequences\n' + name1 + ': ' + seq1 + '\n' +
             name2 + ': ' + seq2 + '\n')
@@ -159,4 +164,4 @@ if __name__ == "__main__":
     pdf1 = sys.argv[1]
     pdf2 = sys.argv[2]
     result_path = sys.argv[3]
-    compare(pdf1, pdf2, result_path, err)
+    compare(pdf1, pdf2, result_path, err, label)

@@ -19,14 +19,14 @@ from Bio import Entrez
 # 'geneID' must contain only 1 gene ID 
 # input type: integer.
 # 'err' is an error file
-def inputFromDB(geneID,err,email):
+def inputFromDB(geneID,err,userEmail):
     # get current time:
     timeStamp = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     geneID = str(geneID)
-    Entrez.email = email
+    Entrez.email = userEmail
     # try to download the sequence from database
     try:
-        handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text",email)
+        handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text")
     except ValueError, e:
         tmp = timeStamp+". Error in function 'inputFromDB'. "+str(e)
         # write error message to error file

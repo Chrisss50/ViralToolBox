@@ -23,7 +23,7 @@ Bio
 
 There are 5 functions in the script:
 
-1) inputFromDB(geneID,err,email)
+1) inputFromDB(geneID,err,userEmail)
 2) inputFromFile(filePath,err)
 3) seqRecord2fasta(filePath,Seq_Record,err)
 4) get_sequence_from_SeqRecord(seq_record)
@@ -34,9 +34,9 @@ There are 5 functions in the script:
 
 1) 
 *** inputFromDB : parameters
-- geneID : gene ID, can be string or integer
-- err    : error file
-- email  : user email (string)
+- geneID     : gene ID, can be string or integer
+- err        : error file
+- userEmail  : user email (string)
 *** output
 the function returns an object of class:
 <class 'Bio.SeqRecord.SeqRecord'>

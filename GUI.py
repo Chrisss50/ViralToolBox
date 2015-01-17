@@ -24,36 +24,55 @@ class App:
   def __init__(self, master):
     frame = Frame(master)
     frame.pack()
-    self.getDirIn = Button(frame, 
-                         text="Get directory", fg="red",
-                         command=self.getDirectory)
-    self.getDirIn.pack(side=LEFT)
-    self.getDBDirIn = Button(frame, 
-                         text="Get DB directory", fg="red",
-                         command=self.getDBDirectory)
-    self.getDBDirIn.pack(side=LEFT)
-    self.label = Label(frame, 
+    frameLeft = Frame(frame)
+    frameLeft.pack(side=LEFT)
+    frameRight = Frame(frame)
+    frameRight.pack(side=RIGHT)
+
+    self.label = Label(frameRight, 
                        justify=LEFT,
                        anchor=SW,
                        fg="black",
                        bg="light grey",
-                       height=20,
+                       height=30,
                        width=100)
     self.label.pack(side = RIGHT)
-    self.labelInput = Label(frame, 
+
+    self.labelInput = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
                        fg="black",
                        height=1,
                        width=10)
     self.labelInput.pack()
+    self.getDirIn = Button(frameLeft, 
+                         text="Get directory", fg="red",
+                         command=self.getDirectory)
+    self.getDirIn.pack()
     self.labelInput.config(text = "Input Path:")
-    self.text1 = Text(frame,
+    self.text1 = Text(frameLeft,
                      bg="light blue",
                      height=1,
                      width=20)
     self.text1.pack()
-    self.labelGeneID = Label(frame, 
+    self.labelDBDir = Label(frameLeft, 
+                       justify=LEFT,
+                       anchor=SW,
+                       fg="black",
+                       height=1,
+                       width=13)
+    self.labelDBDir.pack()
+    self.getDBDirIn = Button(frameLeft, 
+                         text="Get DB directory", fg="red",
+                         command=self.getDBDirectory)
+    self.getDBDirIn.pack()
+    self.labelDBDir.config(text = "DB-directory:")
+    self.text4 = Text(frameLeft,
+                     bg="light green",
+                     height=1,
+                     width=20)
+    self.text4.pack()
+    self.labelGeneID = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
                        fg="black",
@@ -61,12 +80,12 @@ class App:
                        width=10)
     self.labelGeneID.pack()
     self.labelGeneID.config(text = "Gene ID:")
-    self.text2 = Text(frame,
+    self.text2 = Text(frameLeft,
                      bg="light green",
                      height=1,
                      width=15)
     self.text2.pack()
-    self.labelEMail = Label(frame, 
+    self.labelEMail = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
                        fg="black",
@@ -74,69 +93,69 @@ class App:
                        width=10)
     self.labelEMail.pack()
     self.labelEMail.config(text = "E-Mail:")
-    self.text3 = Text(frame,
+    self.text3 = Text(frameLeft,
                      bg="light green",
                      height=1,
                      width=20)
     self.text3.pack()
-    self.labelDBDir = Label(frame, 
+    self.button = Button(frameLeft, 
+                         text="QUIT", fg="red",
+                         command=frame.quit)
+    self.button.pack()
+    self.slogan = Button(frameLeft,
+                         text="Start",
+                         command=self.write_slogan)
+    self.slogan.pack()
+
+    self.labelSep = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
                        fg="black",
                        height=1,
-                       width=13)
-    self.labelDBDir.pack()
-    self.labelDBDir.config(text = "DB-directory:")
-    self.text4 = Text(frame,
-                     bg="light green",
-                     height=1,
-                     width=20)
-    self.text4.pack()
-    self.button = Button(frame, 
-                         text="QUIT", fg="red",
-                         command=frame.quit)
-    self.button.pack(side=LEFT)
-    self.slogan = Button(frame,
-                         text="Input Start",
-                         command=self.write_slogan)
-    self.slogan.pack(side=LEFT)
+                       width=20)
+    self.labelSep.pack()
+    self.labelSep.config(text = "____________________")
 
-    self.getDirInCompare = Button(frame, 
-                         text="Get input directory", fg="red",
+    self.getDirInCompare = Button(frameLeft, 
+                         text="Get first report", fg="red",
                          command=self.getInDirectoryCom)
     self.getDirInCompare.pack()
-    self.getOutDirCompare = Button(frame, 
-                         text="Get output directory", fg="red",
-                         command=self.getOutDirectoryCom)
-    self.getOutDirCompare.pack()
-    self.text5 = Text(frame,
+    self.text5 = Text(frameLeft,
                      bg="light blue",
                      height=1,
                      width=20)
     self.text5.pack()
-    self.text6 = Text(frame,
+    self.getOutDirCompare = Button(frameLeft, 
+                         text="Get second report", fg="red",
+                         command=self.getOutDirectoryCom)
+    self.getOutDirCompare.pack()
+    self.text6 = Text(frameLeft,
                      bg="light blue",
                      height=1,
                      width=20)
     self.text6.pack()
-    self.compareVi = Button(frame,
+    self.compareVi = Button(frameLeft,
                          text="Compare Viruses",
                          command=self.compareV)
-    self.compareVi.pack(side=LEFT)
+    self.compareVi.pack()
 
   def getInDirectoryCom(self):
-    self.fileDir = tkFileDialog.askdirectory()
+    self.text5.delete(1.0, END)
+    self.fileDir = tkFileDialog.askopenfilename()
     self.text5.insert(END, self.fileDir)
 
   def getOutDirectoryCom(self):
-    self.fileDir = tkFileDialog.askdirectory()
+    self.text6.delete(1.0, END)
+    self.fileDir = tkFileDialog.askopenfilename()
     self.text6.insert(END, self.fileDir)
 
   def getDirectory(self):
+    self.text1.delete(1.0, END)
     self.fileDir = tkFileDialog.askdirectory()
     self.text1.insert(END, self.fileDir)
 
   def getDBDirectory(self):
+    self.text4.delete(1.0, END)
     self.dbDir = tkFileDialog.askdirectory()
     self.text4.insert(END, self.dbDir)
 
@@ -149,7 +168,6 @@ class App:
     pathOut = self.text6.get(1.0, END)
     resultpath = pathRes[:-1]
     outputpath = pathOut[:-1]
-    outputpath += "report.pdf"
     compare(outputpath, outputpath, pathRes[:-1], err, self.label)
 
   def write_slogan(self):
@@ -189,7 +207,8 @@ class App:
 
     # write PDF
     # writeReportAsPdf(path[:-1] + '/', path[:-1] + '/', err, self.label)
-    writeCompareReportAsPdf(path[:-1] + '/', path[:-1] + '/', err, self.label)
+    print path[:-1]
+    writeReportAsPdf(path[:-1] + '/', path[:-1] + '/report.pdf', err, self.label)
 
 root = Tk()
 app = App(root)

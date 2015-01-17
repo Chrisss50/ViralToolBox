@@ -18,6 +18,7 @@ from compareViruses import *
 class App:
   txt = ""
   fileDir = " "
+  dbDir = " "
 
   def __init__(self, master):
     frame = Frame(master)
@@ -26,6 +27,10 @@ class App:
                          text="Get directory", fg="red",
                          command=self.getDirectory)
     self.getDirIn.pack(side=LEFT)
+    self.getDBDirIn = Button(frame, 
+                         text="Get DB directory", fg="red",
+                         command=self.getDBDirectory)
+    self.getDBDirIn.pack(side=LEFT)
     self.label = Label(frame, 
                        justify=LEFT,
                        anchor=SW,
@@ -73,6 +78,19 @@ class App:
                      height=1,
                      width=20)
     self.text3.pack()
+    self.labelDBDir = Label(frame, 
+                       justify=LEFT,
+                       anchor=SW,
+                       fg="black",
+                       height=1,
+                       width=10)
+    self.labelDBDir.pack()
+    self.labelDBDir.config(text = "DB-directory:")
+    self.text4 = Text(frame,
+                     bg="light green",
+                     height=1,
+                     width=20)
+    self.text4.pack()
     self.button = Button(frame, 
                          text="QUIT", fg="red",
                          command=frame.quit)
@@ -86,12 +104,17 @@ class App:
     self.fileDir = tkFileDialog.askdirectory()
     self.text1.insert(END, self.fileDir)
 
+  def getDBDirectory(self):
+    self.dbDir = tkFileDialog.askdirectory()
+    self.text4.insert(END, self.dbDir)
+
   def write_slogan(self):
     r, err = os.pipe()
     err = os.fdopen(err, 'w')
     path = self.text1.get(1.0, END)
     GeneID = self.text2.get(1.0, END)
     email = self.text3.get(1.0, END)
+    dbPath = self.text4.get(1.0, END)
     out = inputFromDB(GeneID, err, email)
     # out = inputFromFile(path[:-1], err)
     seqRecord2fasta(path[:-1] + "/test.fa", out, err)
@@ -106,17 +129,16 @@ class App:
         self.txt += orf["sequence"]
     self.label.config(text=self.txt)
     mol = RNA_molecule(seqs[0], "HI-V", "test")
-    mol.db_parsed("RNA_STRAND_data/")
+    mol.db_parsed(dbPath[:-1] + '/')
     mol.print_rna_information()
     struc_db = parse_struc_db(mol.get_database())
     mol.search_rna_struc(struc_db)
-    mol.print_rna_information()
     mol.writeTXT()
     resultpath = path[:-1]
     outputpath = path[:-1]
     outputpath += "report.pdf"
     writeReportAsPdf(resultpath, outputpath)
-    compare(outputpath, outputpath, "./results", err, self.label)
+    compare(outputpath, outputpath, path[:-1], err, self.label)
 
 root = Tk()
 app = App(root)

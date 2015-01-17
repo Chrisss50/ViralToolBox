@@ -3,7 +3,7 @@ NumberOfProteins
 
 Protein1
 NumberOfDomains
-0
+7
 pathToImage
 /Users/Chriz/Documents/ViralToolBox/GUI_Test_results/domain_graphic1.png
 aminoAcidSequence
@@ -12,4 +12,67 @@ startInDNASequence
 1
 endInDNASequence
 1337
+Domain1
+startInProteinSequence
+245
+endInProteinSequence
+318
+description
+Phosphoinositide-specific phospholipase C, efhand-like
+identifier
+EF-hand_like
+Domain2
+startInProteinSequence
+322
+endInProteinSequence
+465
+description
+Phosphatidylinositol-specific phospholipase C, X domain
+identifier
+PI-PLC-X
+Domain3
+startInProteinSequence
+550
+endInProteinSequence
+639
+description
+SH2 domain
+identifier
+SH2
+Domain4
+startInProteinSequence
+668
+endInProteinSequence
+741
+description
+SH2 domain
+identifier
+SH2
+Domain5
+startInProteinSequence
+797
+endInProteinSequence
+843
+description
+SH3 domain
+identifier
+SH3_1
+Domain6
+startInProteinSequence
+952
+endInProteinSequence
+1070
+description
+Phosphatidylinositol-specific phospholipase C, Y domain
+identifier
+PI-PLC-Y
+Domain7
+startInProteinSequence
+1090
+endInProteinSequence
+1177
+description
+C2 domain
+identifier
+C2
 

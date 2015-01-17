@@ -28,7 +28,7 @@ def getTimestamp():
     return str(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'))
 
 # Start writing the report
-def writeReportAsPdf(resultpath, outputpath, err, label):
+def writeCompareReportAsPdf(resultpath, outputpath, err, label):
     doc = SimpleDocTemplate(outputpath, pagesize=A4,
                             rightMargin=40, leftMargin=40,
                             topMargin=40, bottomMargin=18)

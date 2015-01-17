@@ -11,6 +11,7 @@ sys.path.append("part_RNAstructure/")
 from RnaSecStructPrediction import *
 from rna_molecule import *
 sys.path.append("part_PdfReport/")
+from write_comparePdf import *
 from writePdf import *
 sys.path.append("part_compareViruses/")
 from compareViruses import *
@@ -83,7 +84,7 @@ class App:
                        anchor=SW,
                        fg="black",
                        height=1,
-                       width=10)
+                       width=13)
     self.labelDBDir.pack()
     self.labelDBDir.config(text = "DB-directory:")
     self.text4 = Text(frame,
@@ -100,6 +101,37 @@ class App:
                          command=self.write_slogan)
     self.slogan.pack(side=LEFT)
 
+    self.getDirInCompare = Button(frame, 
+                         text="Get input directory", fg="red",
+                         command=self.getInDirectoryCom)
+    self.getDirInCompare.pack()
+    self.getOutDirCompare = Button(frame, 
+                         text="Get output directory", fg="red",
+                         command=self.getOutDirectoryCom)
+    self.getOutDirCompare.pack()
+    self.text5 = Text(frame,
+                     bg="light blue",
+                     height=1,
+                     width=20)
+    self.text5.pack()
+    self.text6 = Text(frame,
+                     bg="light blue",
+                     height=1,
+                     width=20)
+    self.text6.pack()
+    self.compareVi = Button(frame,
+                         text="Compare Viruses",
+                         command=self.compareV)
+    self.compareVi.pack(side=LEFT)
+
+  def getInDirectoryCom(self):
+    self.fileDir = tkFileDialog.askdirectory()
+    self.text5.insert(END, self.fileDir)
+
+  def getOutDirectoryCom(self):
+    self.fileDir = tkFileDialog.askdirectory()
+    self.text6.insert(END, self.fileDir)
+
   def getDirectory(self):
     self.fileDir = tkFileDialog.askdirectory()
     self.text1.insert(END, self.fileDir)
@@ -108,37 +140,56 @@ class App:
     self.dbDir = tkFileDialog.askdirectory()
     self.text4.insert(END, self.dbDir)
 
-  def write_slogan(self):
+  def compareV(self):
+    # pipe things
     r, err = os.pipe()
     err = os.fdopen(err, 'w')
+
+    pathRes = self.text5.get(1.0, END)
+    pathOut = self.text6.get(1.0, END)
+    resultpath = pathRes[:-1]
+    outputpath = pathOut[:-1]
+    outputpath += "report.pdf"
+    compare(outputpath, outputpath, pathRes[:-1], err, self.label)
+
+  def write_slogan(self):
+    # pipe things
+    r, err = os.pipe()
+    err = os.fdopen(err, 'w')
+
+    # getting user-input
     path = self.text1.get(1.0, END)
     GeneID = self.text2.get(1.0, END)
     email = self.text3.get(1.0, END)
     dbPath = self.text4.get(1.0, END)
+
+    # reading the input, getting sequence
     out = inputFromDB(GeneID, err, email)
     # out = inputFromFile(path[:-1], err)
     seqRecord2fasta(path[:-1] + "/test.fa", out, err)
     headers, seqs = readFasta(path[:-1] + "/test.fa", err)
     seq = seqs[0]
-    orfs = predictORFS(seq, err)
-    proteins = translateToProtein(orfs, err)
-    seq = {"sequence": getExampleProteinSequence(),
-           "start": 1, "end": 1337}
-    print findDomains([seq], path[:-1], err)
-    for orf in orfs:
-        self.txt += orf["sequence"]
-    self.label.config(text=self.txt)
-    mol = RNA_molecule(seqs[0], "HI-V", "test")
-    mol.db_parsed(dbPath[:-1] + '/')
-    mol.print_rna_information()
-    struc_db = parse_struc_db(mol.get_database())
-    mol.search_rna_struc(struc_db)
-    mol.writeTXT()
-    resultpath = path[:-1]
-    outputpath = path[:-1]
-    outputpath += "report.pdf"
-    writeReportAsPdf(resultpath, outputpath)
-    compare(outputpath, outputpath, path[:-1], err, self.label)
+
+    # predicting ORFs and translating to protein
+    # orfs = predictORFS(seq, err)
+    # proteins = translateToProtein(orfs, err)
+    # seq = {"sequence": getExampleProteinSequence(),
+    #        "start": 1, "end": 1337}
+    # print findDomains([seq], path[:-1], err)
+    # for orf in orfs:
+    #     self.txt += orf["sequence"]
+    # self.label.config(text=self.txt)
+
+    # getting secondary structure
+    # mol = RNA_molecule(seqs[0], "HI-V", "test")
+    # mol.db_parsed(dbPath[:-1] + '/')
+    # struc_db = parse_struc_db(mol.get_database())
+    # mol.search_rna_struc(struc_db)
+    # mol.writeTXT(path[:-1] + '/')
+
+    # write PDF
+    # writeReportAsPdf(path[:-1] + '/', path[:-1] + '/', err, self.label)
+    writeCompareReportAsPdf(path[:-1] + '/', path[:-1] + '/', err, self.label)
 
 root = Tk()
 app = App(root)

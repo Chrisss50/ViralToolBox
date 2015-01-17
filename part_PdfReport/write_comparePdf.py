@@ -39,6 +39,7 @@ def writeCompareReportAsPdf(resultpath, outputpath, err, label):
     SubTitle = "(Comparisons)"
     Date = getTimestamp()
     CompareTxtPath = dF.findFileByName(resultpath, "compare_results.txt")[0]
+    print
     CompareTxt = dF.readInFile(CompareTxtPath)
 
 # Define some styles
@@ -80,3 +81,4 @@ if __name__ == "__main__":
     outputpath = sys.argv[2]
     outputpath = outputpath + "report_compared.pdf"
     writeReportAsPdf(resultpath, outputpath, err, label)
+    writeCompareReportAsPdf(resultpath, outputpath)

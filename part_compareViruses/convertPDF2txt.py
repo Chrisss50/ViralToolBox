@@ -5,6 +5,9 @@ from pdfminer.pdfpage import PDFPage
 from cStringIO import StringIO
 
 
+#
+# convert a pdf to txt, returns only text, no images
+#
 def convert_pdf_to_txt(path):
     rsrcmgr = PDFResourceManager()
     retstr = StringIO()

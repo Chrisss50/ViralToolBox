@@ -1,0 +1,39 @@
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#
+# ViralToolBox
+#
+#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Module <compareViruses>
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 			@author: Mirjam Figaschewski
+#
+###############################################################
+
+Required python files:
+	- compareViruses.py
+	- convertPDF2txt.py
+	- getInfo.py
+
+Required python packages:
+Biopython package 
+								Download ---> http://biopython.org/wiki/Download
+PDFMiner package 
+								Download ---> https://pypi.python.org/pypi/pdfminer/	
+
+			 
+Description of main function:
+
+### function: compare(pdf1, pdf2, result_path, err):
+-----------------------------------------------------
+compare two viruses:
+get viruses' sequences, 
+			secondary structures in dot-bracket and its energy				
+			number of proteins, 
+calculate 	GC contents, 
+			common domains with their lengths and thei positions in the viruses DNA/RNA sequence
+			and the percentual similarity  of the viruses
+
+input: 		two paths for two pdfs of viruses, 
+			a path, where the results shall be saved in,
+			the error-log
+output: 	a txt-file 'compare_results.txt' in path for saving results

@@ -68,7 +68,7 @@ class App:
     self.getDBDirIn.pack()
     self.labelDBDir.config(text = "DB-directory:")
     self.text4 = Text(frameLeft,
-                     bg="light green",
+                     bg="light blue",
                      height=1,
                      width=20)
     self.text4.pack()
@@ -98,10 +98,10 @@ class App:
                      height=1,
                      width=20)
     self.text3.pack()
-    self.button = Button(frameLeft, 
-                         text="QUIT", fg="red",
-                         command=frame.quit)
-    self.button.pack()
+    # self.button = Button(frameLeft, 
+    #                      text="QUIT", fg="red",
+    #                      command=frame.quit)
+    # self.button.pack()
     self.slogan = Button(frameLeft,
                          text="Start",
                          command=self.write_slogan)
@@ -164,11 +164,11 @@ class App:
     r, err = os.pipe()
     err = os.fdopen(err, 'w')
 
-    pathRes = self.text5.get(1.0, END)
-    pathOut = self.text6.get(1.0, END)
-    resultpath = pathRes[:-1]
-    outputpath = pathOut[:-1]
-    compare(outputpath, outputpath, pathRes[:-1], err, self.label)
+    pathout = self.text1.get(1.0, END)
+    path1 = self.text5.get(1.0, END)
+    path2 = self.text6.get(1.0, END)
+    compare(path1[:-1], path2[:-1], pathout[:-1] + '/compareReport', err, self.label)
+    writeCompareReportAsPdf(pathout[:-1] + '/compareReport/', pathout[:-1] + '/compareReport/report_compared.pdf', err, self.label)
 
   def write_slogan(self):
     # pipe things

@@ -63,13 +63,13 @@ def compare(pdf1, pdf2, result_path, err, label):
             err.write("compareViruses:")
             err.write("\tPath to " + path + " is missing")
             addTextToLabel(label, "Stopped execution, look up the error in the error-log")
-            sys.exit()
+            print "Path missing"
         elif not os.path.exists(paths[i]) and (i == 0 or i == 1):
             err.write("________________")
             err.write("compareViruses:")
             err.write("\tPath to " + path + " for first virus does not exist")
             addTextToLabel(label, "Stopped execution, look up the error in the error-log")
-            sys.exit()
+            print "Path missing"
     if not os.path.exists(result_path):
         addTextToLabel(label, "Creating path to results: " + result_path)
         os.makedirs(result_path)
@@ -81,10 +81,10 @@ def compare(pdf1, pdf2, result_path, err, label):
     # get information from pdf files
     addTextToLabel(label, 'Get information from pdf1')
     name1, seq1, secstruct1, seq_energy1, numProteins1, proteins1 = \
-        info.getInformation(pdf1)
+        info.getInformation(pdf1, label)
     addTextToLabel(label, 'Get information from pdf2')
     name2, seq2, secstruct2, seq_energy2, numProteins2, proteins2 = \
-        info.getInformation(pdf2)
+        info.getInformation(pdf2, label)
     # calculate gc content of both sequences
     addTextToLabel(label, 'Calculating GC contents')
     gc1 = GC(seq1)

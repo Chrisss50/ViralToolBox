@@ -67,7 +67,7 @@ def translateToProtein(orfs, label, w):
     for orf in orfs:
         # I think at least for HIV-1 it is correct
         orf["sequence"] = translate(dnaAsRNA(orf["sequence"]))
-    addTextToLabel(label, "Translated " + len(orfs) + " ORFs to proteins\n")
+    addTextToLabel(label, "Translated " + str(len(orfs)) + " ORFs to proteins\n")
     addTextToLabel(label, "End translating ORFs to proteins!\n")
     # The sequence of the orfs is now the protein sequence,
     # so we're done here!

@@ -185,18 +185,18 @@ class App:
     out = inputFromDB(GeneID, err, email)
     # out = inputFromFile(path[:-1], err)
     seqRecord2fasta(path[:-1] + "/test.fa", out, err)
-    headers, seqs = predictORFs.readFasta(path[:-1] + "/test.fa", err)
+    headers, seqs = readFasta(path[:-1] + "/test.fa")
     seq = seqs[0]
 
     # predicting ORFs and translating to protein
-    orfs = predictORFS(seq, err)
-    proteins = translateToProtein(orfs, err)
-    seq = {"sequence": getExampleProteinSequence(),
+    orfs = predictORFS(seq, self.label, err)
+    proteins = translateToProtein(orfs, self.label, err)
+    seq = {"sequence": seq,
            "start": 1, "end": 1337}
-    print findDomains([seq], path[:-1], err)
-    for orf in orfs:
-        self.txt += orf["sequence"]
-    self.label.config(text=self.txt)
+    print findDomains([seq], path[:-1], self.label, err)
+    # for orf in orfs:
+    #     self.txt += orf["sequence"]
+    # self.label.config(text=self.txt)
 
     # getting secondary structure
     mol = RNA_molecule(seqs[0], "HI-V", "test")

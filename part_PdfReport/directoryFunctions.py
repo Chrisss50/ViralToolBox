@@ -5,6 +5,8 @@ Created on Fri Dec 26 11:40:41 2014
 @author: Maximilian Hanussek
 """
 
+
+import sys
 import os
 import fnmatch
 
@@ -12,10 +14,7 @@ import fnmatch
 # Search by name for a file in a directory
 def findFileByName(path, name):
     error = []
-    if(checkDirExists(path) is False):
-        error.append("The file doesn't exist")
-        return error
-    elif(checkFileExists(path + name) is False):
+    if(checkDirExists(path) is False):  #'or checkFileExists(path) is False):
         error.append("The file doesn't exist")
         return error
     else:
@@ -29,7 +28,7 @@ def findFileByName(path, name):
 # Search by pattern for a file in a directory
 def findFileByPattern(path, pattern):
     error = []
-    if(checkDirExists(path) is False):
+    if(checkDirExists(path) is False):  #or checkFileExists(path) is False):
         error.append("The file doesn't exist")
         return error
     else:
@@ -44,8 +43,8 @@ def findFileByPattern(path, pattern):
 # Search by keyword for a line in an outputfile
 def findLineByKeyword(path, keyword):
     error = []
-    if(path == "The file doesn't exist"):
-        error.append(str(keyword) + " couldn't be found")
+    if(checkFileExists(path) is False):
+        error.append("The file doesn't exist")
         return error
     else:
         result = []
@@ -62,8 +61,8 @@ def findLineByKeyword(path, keyword):
 # Search by keyword for a line in an outputfile and get the next line
 def findNextLineByKeyword(path, keyword):
     error = []
-    if(path == "The file doesn't exist"):
-        error.append(str(keyword) + " couldn't be found")
+    if(checkFileExists(path) is False):
+        error.append("The file doesn't exist")
         return error
     else:
         result = []
@@ -80,22 +79,6 @@ def findNextLineByKeyword(path, keyword):
                 if keyword not in line:
                     continue
         f.close
-        return result
-
-
-# Read in a file
-def readInFile(path):
-    error = []
-    if(path == "The file doesn't exist"):
-        error.append("The file doesn't exist")
-        return error
-    else:
-        result = []
-        with open(path, 'r+') as f:
-            lines = f.readlines()
-            for i in range(0, len(lines)):
-                line = lines[i]
-                result.append(line[:-1])
         return result
 
 
@@ -118,3 +101,8 @@ def sumUpStringList(stringList):
     numlist = map(int, stringList)
     result = sum(numlist)
     return result
+
+if __name__ == "__main__":
+    pathdir = sys.argv[1]
+    print findFileByPattern(pathdir, "domain_graphic*")
+    StringList = map(str, [1, 2, 3])

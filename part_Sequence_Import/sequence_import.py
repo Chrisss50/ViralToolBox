@@ -8,7 +8,6 @@ import ntpath
 import datetime
 from Bio import SeqIO
 from Bio import Entrez
-import os
 
 #####################################################################
 
@@ -27,7 +26,7 @@ def inputFromDB(geneID,err,email):
     Entrez.email = email
     # try to download the sequence from database
     try:
-        handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text",email=email)
+        handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text",email)
     except ValueError, e:
         tmp = timeStamp+". Error in function 'inputFromDB'. "+str(e)
         # write error message to error file
@@ -42,7 +41,7 @@ def inputFromDB(geneID,err,email):
         err.write(tmp)
     handle.close()
     # close the error file
-    # err.close()
+    err.close()
     return SeqRecord
 
 #####################################################################
@@ -81,7 +80,7 @@ def inputFromFile(filePath,err):
         tmp += "Allowed file extensions are: '.txt', '.fa', '.fasta'."
         # write error message to error file
         err.write(tmp)
-    # check if input file is empty
+    # check if imput file is empty
     if(ntpath.getsize(filePath) == 0):
         tmp = timeStamp + ". "
         tmp += "Error in function 'inputFromFile'. Input file is empty."
@@ -135,60 +134,7 @@ def inputFromFile(filePath,err):
         # write error message to error file
         err.write(tmp)
     # close the error file
-    # err.close()
-
-#####################################################################
-
-# CONVERTER:
-# <class 'Bio.SeqRecord.SeqRecord'> TO FastA file
-
-# *** input: 
-# - fastaFilePath = path to fasta file
-# - Seq_Record    = object of class '<class 'Bio.SeqRecord.SeqRecord'>'
-# - err           = error file
-# *** output:
-# - fasta file
-# function returns nothing, but the side effect of the 
-# function is that it produces a FASTA file
-def seqRecord2fasta(filePath,Seq_Record,err):
-    # get current time
-    timeStamp = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
-    # Check if file was chosen
-    if(filePath == None):
-        tmp = timeStamp + ". "
-        tmp += "Error in function 'seqRecord2fasta'. Empty file path."
-        # write error message to error file
-        err.write(tmp)
-    # get file name and file extension. 
-    # I use here module 'ntpath' to get file name, 
-    # because it is more system independent than module 'os'.
-    fileName, fileExtension = ntpath.splitext(filePath)
-    if(fileName == ""):
-        tmp = timeStamp + ". "
-        tmp += "Error in function 'seqRecord2fasta'. No file was chosen."
-        # write error message to error file
-        err.write(tmp)
-    # check if 'fileName' has the correct extension.
-    # Allowed are: '.txt', '.fa', '.fasta'
-    fileExtensions = ['.txt', '.fa', '.fasta']
-    if(fileExtension not in fileExtensions):
-        tmp = timeStamp + ". "
-        tmp += "Error in function 'seqRecord2fasta'. Wrong file selected. "
-        tmp += "Allowed file extensions are: '.txt', '.fa', '.fasta'."
-        # write error message to error file
-        err.write(tmp)
-    # try to open the file
-    try:
-        output_handle = open(filePath, "w")
-    except ValueError, e:
-        tmp = timeStamp + ". "
-        tmp += "Error in function 'seqRecord2fasta'. " + str(e)
-        # write error message to error file
-        err.write(tmp)
-    SeqIO.write(Seq_Record, output_handle, "fasta")
-    output_handle.close()
-    # close the error file
-    # err.close()
+    err.close()
 
 #####################################################################
 
@@ -226,8 +172,4 @@ def checkSeqSize(seq,maxSeqSize,err):
         # write error message to error file
         err.write(tmp)
     # close the error file
-    # err.close()
-
-# r, err = os.pipe()
-# err = os.fdopen(err, "w")
-# inputFromDB("NC_007003.1", "/results", err)
+    err.close()

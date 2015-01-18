@@ -17,7 +17,6 @@ def main():
     phyl_functions.mpconsense(err)
     print "Preparing files for output"
     phyl_functions.getconsensus(err)
-    print phyl_functions.drawtrees(err)
 
 if __name__ == '__main__':
     main()

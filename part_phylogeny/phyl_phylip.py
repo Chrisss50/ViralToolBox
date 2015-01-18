@@ -3,21 +3,15 @@ import sys
 import phyl_functions
 import os
 
-args = sys.argv
 
-def main():
-    r, err = os.pipe()
-    err = os.fdopen(err, 'w')
-    print "Checking parameters"
-    phyl_functions.checkargs(args,err)
-    print "Checking phylip is installed"
-    phyl_functions.checkphylip(err)
-    print "Running phylip"
-    phyl_functions.runphylogeny(err)
-    phyl_functions.mpconsense(err)
-    print "Preparing files for output"
-    phyl_functions.getconsensus(err)
-    print phyl_functions.drawtrees(err)
 
 if __name__ == '__main__':
-    main()
+    r, err = os.pipe()
+    err = os.fdopen(err, 'w')
+    phyl_functions.checkargs(sys.argv,err,label)
+    phyl_functions.checkphylip(err,label)
+    phyl_functions.runphylogeny(err,label)
+    phyl_functions.mpconsense(err,label)
+    phyl_functions.getconsensus(err,label)
+    phyl_functions.drawtrees(err,label)
+

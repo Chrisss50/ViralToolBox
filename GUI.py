@@ -189,25 +189,24 @@ class App:
     seq = seqs[0]
 
     # predicting ORFs and translating to protein
-    # orfs = predictORFS(seq, err)
-    # proteins = translateToProtein(orfs, err)
-    # seq = {"sequence": getExampleProteinSequence(),
-    #        "start": 1, "end": 1337}
-    # print findDomains([seq], path[:-1], err)
-    # for orf in orfs:
-    #     self.txt += orf["sequence"]
-    # self.label.config(text=self.txt)
+    orfs = predictORFS(seq, err)
+    proteins = translateToProtein(orfs, err)
+    seq = {"sequence": getExampleProteinSequence(),
+           "start": 1, "end": 1337}
+    print findDomains([seq], path[:-1], err)
+    for orf in orfs:
+        self.txt += orf["sequence"]
+    self.label.config(text=self.txt)
 
     # getting secondary structure
-    # mol = RNA_molecule(seqs[0], "HI-V", "test")
-    # mol.db_parsed(dbPath[:-1] + '/')
-    # struc_db = parse_struc_db(mol.get_database())
-    # mol.search_rna_struc(struc_db)
-    # mol.writeTXT(path[:-1] + '/')
+    mol = RNA_molecule(seqs[0], "HI-V", "test")
+    mol.db_parsed(dbPath[:-1] + '/')
+    struc_db = parse_struc_db(mol.get_database())
+    mol.search_rna_struc(struc_db, path[:-1])
+    mol.writeTXT(path[:-1] + '/')
 
     # write PDF
     # writeReportAsPdf(path[:-1] + '/', path[:-1] + '/', err, self.label)
-    print path[:-1]
     writeReportAsPdf(path[:-1] + '/', path[:-1] + '/report.pdf', err, self.label)
 
 root = Tk()

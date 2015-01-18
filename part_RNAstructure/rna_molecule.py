@@ -81,7 +81,7 @@ class RNA_molecule:
            !! NOTE: the path has also to contain the ct-files, otherwise
            you cannot construct a <struc> database'''
 
-        if self._database is None:
+        if self._database == "no database found yet":
             try:
                 print "Searching for <struc> database..."
                 for file in os.listdir(path_db):

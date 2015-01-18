@@ -8,7 +8,7 @@ __author__ = 'Felix Bartusch'
 def addTextToLabel(label, txt):
     # get the current text of the label
     currentLabelText = label['text']
-    # Adding your current status of the tool. Don’t forget the newline!
+    # Adding your current status of the tool. Do not forget the newline!
     currentLabelText += txt + '\n'
     # Writing it on the label
     label.config(text=currentLabelText)

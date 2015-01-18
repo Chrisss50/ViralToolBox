@@ -43,7 +43,7 @@ def readFasta(path, w):
 def addTextToLabel(label, txt):
     # get the current text of the label
     currentLabelText = label['text']
-    # Adding your current status of the tool. Don’t forget the newline!
+    # Adding your current status of the tool. Do not forget the newline!
     currentLabelText += txt + '\n'
     # Writing it on the label
     label.config(text=currentLabelText)
@@ -106,26 +106,3 @@ def predictORFS(seq, label, w):
     addTextToLabel(label, "Found " + len(orfs) + " ORFs\n")
     addTextToLabel(label, txt)
     return orfs
-
-
-# Test!
-def main():
-    # Error log
-    #r, err = os.pipe()
-    #err = os.fdopen(err, 'w')
-    # path to the fasta input file
-    #path = sys.argv[1]
-    # Read the input file
-    #headers, seqs = readFasta(path, err)
-    # We have just one sequence
-    #seq = seqs[0]
-    # Predict the ORFs
-    #orfs = predictORFS(seq, err) # Cannot call method because I have no label
-    # Print the ORFs
-    #for orf in orfs:
-    #    print orf
-    #print "Predicted", len(orfs), "ORFs."
-
-
-if __name__ == "__main__":
-    main()

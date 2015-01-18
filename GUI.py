@@ -185,7 +185,7 @@ class App:
     out = inputFromDB(GeneID, err, email)
     # out = inputFromFile(path[:-1], err)
     seqRecord2fasta(path[:-1] + "/test.fa", out, err)
-    headers, seqs = readFasta(path[:-1] + "/test.fa", err)
+    headers, seqs = predictORFs.readFasta(path[:-1] + "/test.fa", err)
     seq = seqs[0]
 
     # predicting ORFs and translating to protein

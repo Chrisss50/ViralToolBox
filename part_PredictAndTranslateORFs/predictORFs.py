@@ -103,6 +103,6 @@ def predictORFS(seq, label, w):
         w.write("________________")
         w.write("PredictORFs:")
         w.write("\tNo ORFs found")
-    addTextToLabel(label, "Found " + len(orfs) + " ORFs\n")
-    addTextToLabel(label, txt)
+    addTextToLabel(label, "Found " + str(len(orfs)) + " ORFs\n")
+    # addTextToLabel(label, txt)
     return orfs

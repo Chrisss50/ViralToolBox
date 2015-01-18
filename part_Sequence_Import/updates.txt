@@ -1,0 +1,16 @@
+13.01.2015 : several changes in "readme.txt"
+             - info about used packages added
+             - fixed mistakes
+15.01.2015 : 1) new function added
+                converter: class Seq_Record -> FastA file
+                'seqRecord2fasta(filePath,Seq_Record,err)'
+             2) file added: 'example_fasta_file.txt' 
+                to test my functions
+16.01.2915 : Fixed:
+             File "/Users/Chriz/Documents/ViralToolBox/part_Sequence_Import/sequence_import.py", line 29
+             handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text",email)
+             SyntaxError: non-keyword arg after keyword arg
+			 changed:
+             handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text",email)
+			 to:
+			 handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text")

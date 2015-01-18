@@ -1,5 +1,7 @@
 Read me for Creating Pdf reports with the viral toolbox
 
+The reportlab library is recommended for the following functions. 
+
 The writePDF function creates a dynamic report:
 The necessary parameters are:
 

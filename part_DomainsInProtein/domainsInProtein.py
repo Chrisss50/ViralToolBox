@@ -18,27 +18,27 @@ __author__ = 'Felix Bartusch'
 # An example Protein sequence
 def getExampleProteinSequence():
     s = ("MAGAASPCANGCGPSAPSDAEVVHLCRSLEVGTVMTLFYSKKSQRPERKTFQVKLETRQI"
-        "TWSRGADKIEGAIDIREIKEIRPGKTSRDFDRYQEDPAFRPDQSHCFVILYGMEFRLKTL"
-        "SLQATSEDEVNMWIRGLTWLMEDTLQAATPLQIERWLRKQFYSVDRNREDRISAKDLKNM"
-        "LSQVNYRVPNMRFLRERLTDLEQRTSDITYGQFAQLYRSLMYSAQKTMDLPFLEASALRA"
-        "GERPELCRVSLPEFQQFLLEYQGELWAVDRLQVQEFMLSFLRDPLREIEEPYFFLDEFVT"
-        "FLFSKENSIWNSQLDEVCPDTMNNPLSHYWISSSHNTYLTGDQFSSESSLEAYARCLRMG"
-        "CRCIELDCWDGPDGMPVIYHGHTLTTKIKFSDVLHTIKEHAFVASEYPVILSIEDHCSIA"
-        "QQRNMAQYFKKVLGDTLLTKPVDIAADGLPSPNQLKRKILIKHKKLAEGSAYEEVPTSVM"
-        "YSENDISNSIKNGILYLEDPVNHEWYPHYFVLTSSKIYYSEETSSDQGNEDEEEPKEASG"
-        "STELHSNEKWFHGKLGAGRDGRHIAERLLTEYCIETGAPDGSFLVRESETFVGDYTLSFW"
-        "RNGKVQHCRIHSRQDAGTPKFFLTDNLVFDSLYDLITHYQQVPLRCNEFEMRLSEPVPQT"
-        "NAHESKEWYHASLTRAQAEHMLMRVPRDGAFLVRKRNEPNSYAISFRAEGKIKHCRVQQE"
-        "GQTVMLGNSEFDSLVDLISYYEKHPLYRKMKLRYPINEEALEKIGTAEPDYGALYEGRNP"
-        "GFYVEANPMPTFKCAVKALFDYKAQREDELTFTKSAIIQNVEKQEGGWWRGDYGGKKQLW"
-        "FPSNYVEEMVSPAALEPEREHLDENSPLGDLLRGVLDVPACQIAVRPEGKNNRLFVFSIS"
-        "MASVAHWSLDVAADSQEELQDWVKKIREVAQTADARLTEGKMMERRKKIALELSELVVYC"
-        "RPVPFDEEKIGTERACYRDMSSFPETKAEKYVNKAKGKKFLQYNRLQLSRIYPKGQRLDS"
-        "SNYDPLPMWICGSQLVALNFQTPDKPMQMNQALFLAGGHCGYVLQPSVMRDEAFDPFDKS"
-        "SLRGLEPCAICIEVLGARHLPKNGRGIVCPFVEIEVAGAEYDSIKQKTEFVVDNGLNPVW"
-        "PAKPFHFQISNPEFAFLRFVVYEEDMFSDQNFLAQATFPVKGLKTGYRAVPLKNNYSEGL"
-        "ELASLLVKIDVFPAKQENGDLSPFGGASLRERSCDASGPLFHGRAREGSFEARYQQPFED"
-        "FRISQEHLADHFDGRDRRTPRRTRVNGDNRL")
+         "TWSRGADKIEGAIDIREIKEIRPGKTSRDFDRYQEDPAFRPDQSHCFVILYGMEFRLKTL"
+         "SLQATSEDEVNMWIRGLTWLMEDTLQAATPLQIERWLRKQFYSVDRNREDRISAKDLKNM"
+         "LSQVNYRVPNMRFLRERLTDLEQRTSDITYGQFAQLYRSLMYSAQKTMDLPFLEASALRA"
+         "GERPELCRVSLPEFQQFLLEYQGELWAVDRLQVQEFMLSFLRDPLREIEEPYFFLDEFVT"
+         "FLFSKENSIWNSQLDEVCPDTMNNPLSHYWISSSHNTYLTGDQFSSESSLEAYARCLRMG"
+         "CRCIELDCWDGPDGMPVIYHGHTLTTKIKFSDVLHTIKEHAFVASEYPVILSIEDHCSIA"
+         "QQRNMAQYFKKVLGDTLLTKPVDIAADGLPSPNQLKRKILIKHKKLAEGSAYEEVPTSVM"
+         "YSENDISNSIKNGILYLEDPVNHEWYPHYFVLTSSKIYYSEETSSDQGNEDEEEPKEASG"
+         "STELHSNEKWFHGKLGAGRDGRHIAERLLTEYCIETGAPDGSFLVRESETFVGDYTLSFW"
+         "RNGKVQHCRIHSRQDAGTPKFFLTDNLVFDSLYDLITHYQQVPLRCNEFEMRLSEPVPQT"
+         "NAHESKEWYHASLTRAQAEHMLMRVPRDGAFLVRKRNEPNSYAISFRAEGKIKHCRVQQE"
+         "GQTVMLGNSEFDSLVDLISYYEKHPLYRKMKLRYPINEEALEKIGTAEPDYGALYEGRNP"
+         "GFYVEANPMPTFKCAVKALFDYKAQREDELTFTKSAIIQNVEKQEGGWWRGDYGGKKQLW"
+         "FPSNYVEEMVSPAALEPEREHLDENSPLGDLLRGVLDVPACQIAVRPEGKNNRLFVFSIS"
+         "MASVAHWSLDVAADSQEELQDWVKKIREVAQTADARLTEGKMMERRKKIALELSELVVYC"
+         "RPVPFDEEKIGTERACYRDMSSFPETKAEKYVNKAKGKKFLQYNRLQLSRIYPKGQRLDS"
+         "SNYDPLPMWICGSQLVALNFQTPDKPMQMNQALFLAGGHCGYVLQPSVMRDEAFDPFDKS"
+         "SLRGLEPCAICIEVLGARHLPKNGRGIVCPFVEIEVAGAEYDSIKQKTEFVVDNGLNPVW"
+         "PAKPFHFQISNPEFAFLRFVVYEEDMFSDQNFLAQATFPVKGLKTGYRAVPLKNNYSEGL"
+         "ELASLLVKIDVFPAKQENGDLSPFGGASLRERSCDASGPLFHGRAREGSFEARYQQPFED"
+         "FRISQEHLADHFDGRDRRTPRRTRVNGDNRL")
     return s
 
 
@@ -92,6 +92,15 @@ def getExampleJSONProteinDomainString():
     return s
 
 
+def addTextToLabel(label, txt):
+    # get the current text of the label
+    currentLabelText = label['text']
+    # Adding your current status of the tool. Don’t forget the newline!
+    currentLabelText += txt + '\n'
+    # Writing it on the label
+    label.config(text=currentLabelText)
+
+
 # Extract the result_url of a xml job description
 def extractResultURL(xml):
     # Split the xml string at the line breaks and remove whitespaces
@@ -122,7 +131,7 @@ def extractJobID(xml):
 
 # Query the pfam database for protein domains of the protein sequence.
 # Return the result_url from there the result can be obtained.
-def queryPfam(seq, err):
+def queryPfam(seq, label, err):
     result_url = None
     job_id = None
     while result_url is None or job_id is None:
@@ -141,9 +150,9 @@ def queryPfam(seq, err):
 
         # for testing
         # HTTP response code, e.g. 200.
-        print('Status: %d' % c.getinfo(c.RESPONSE_CODE))
+        #print('Status: %d' % c.getinfo(c.RESPONSE_CODE))
         # Elapsed time for the transfer.
-        print('Status: %f' % c.getinfo(c.TOTAL_TIME))
+        #print('Status: %f' % c.getinfo(c.TOTAL_TIME))
 
         # testing
         xml = b.getvalue()
@@ -177,7 +186,6 @@ def obtainQueryResult(protein, err):
         status = buffer.getvalue()
         if(status == "RUN"):
             time.sleep(1)
-            
     c.close()
     # testing
     domainsJSON = status
@@ -269,15 +277,15 @@ def saveResultsAsTextFile(domains, baseDir, err):
             f.write("description" + sep + metadata['description'] + '\n')
             f.write("identifier" + sep + metadata['identifier'] + '\n')
             j += 1
-    
-        # Next 
+
+        # Next
         f.write('\n')
         i += 1
 
 
 # Find domains in the protein. To achieve this, query the pfam database.
 # Save resulting pictures and json strings in the baseDir
-def findDomains(proteins, baseDir, err):
+def findDomains(proteins, baseDir, label, err):
     # Test internet connection
     if not networkAvailable():
         err.write("________________")
@@ -288,20 +296,20 @@ def findDomains(proteins, baseDir, err):
     # Ensure that the base directory is correct path
     if(baseDir[-1] != '/'):
         baseDir = baseDir + '/'
-            
+
     # Make shure that the base dicrectory exists
     if not os.path.exists(baseDir):
         os.makedirs(baseDir)
 
     # This is a new list with proteins and results
     proteinsWithResults = []
-    print "Start finding domains for", len(proteins), "proteins"
+    addTextToLabel(label, "Start finding domains for " + len(proteins) + " proteins\n")
     count = 0
     # Make a query for each protein
     for protein in proteins:
         count += 1
-        print "Query pfam for protein", count
-        protein["result_url"], protein["job_id"] = queryPfam(protein["sequence"], err)
+        addTextToLabel(label, "Query pfam for protein " + count + '\n')
+        protein["result_url"], protein["job_id"] = queryPfam(protein["sequence"], label, err)
         proteinsWithResults.append(protein)
 
     # Wait for 10 seconds
@@ -321,7 +329,7 @@ def findDomains(proteins, baseDir, err):
     domains = []
     for protein in proteinsWithResults:
         count += 1
-        print "Obtain protein domains from pfam for protein", count
+        addTextToLabel(label, "Obtain protein domains from pfam for protein " + count + '\n')
         # Get the json string describing the domains
         d = obtainQueryResult(protein, err)
         d = d[1:-1]
@@ -350,9 +358,9 @@ def findDomains(proteins, baseDir, err):
 
     # Write the results into a file
     saveResultsAsTextFile(domains, baseDir, err)
-    
+
     # End
-    print "End finding domains!"
+    addTextToLabel(label, "End finding domains!\n")
     return domains
 
 
@@ -365,12 +373,11 @@ def main():
     seq = {"sequence": getExampleProteinSequence(),
            "start": 1, "end": 1337}
     # Find domains in the protein
-    print findDomains([seq], ".", err)
-    
+    #print findDomains([seq], ".", err) #  Cannot call it without a label
+
     # Generate result files for max
     #domains = pickle.load(open("./CacaoSwollenShootVirus/domains_dump.txt", "rb"))
     #saveResultsAsTextFile(domains, "./CacaoSwollenShootVirus/", err)
-
 
 
 if __name__ == "__main__":

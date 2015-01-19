@@ -27,6 +27,7 @@ def addTextToLabel(label, txt):
 def getTimestamp():
     return str(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'))
 
+
 # Start writing the report
 def writeCompareReportAsPdf(resultpath, outputpath, err, label):
     doc = SimpleDocTemplate(outputpath, pagesize=A4,
@@ -80,5 +81,4 @@ if __name__ == "__main__":
     resultpath = sys.argv[1]
     outputpath = sys.argv[2]
     outputpath = outputpath + "report_compared.pdf"
-    writeReportAsPdf(resultpath, outputpath, err, label)
-    writeCompareReportAsPdf(resultpath, outputpath)
+    writeCompareReportAsPdf(resultpath, outputpath, err, label)

@@ -197,7 +197,7 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
             if(StartNucleotideInDNA[protein] == "startInDNASequence couldn't be found"):
                 err.write("________________")
                 err.write("Number of the proteins in the predicted ORFs aren't available")
-                ptext = '<font name=Helvetica size=12>%s</font>' % "Number of the proteins in the predicted ORFs aren't available"
+                ptext = '<font name=Helvetica size=12>%s</font>' % "Starting nucleotide position in the predicted ORFs aren't available"
                 Report.append(Paragraph(ptext, styles["Normal"]))
                 Report.append(Spacer(1, 12))
             else:
@@ -211,7 +211,7 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
             if(EndNucleotideInDNA[protein] == "endInDNASequence couldn't be found"):
                 err.write("________________")
                 err.write("Number of the proteins in the predicted ORFs aren't available")
-                ptext = '<font name=Helvetica size=12>%s</font>' % "Number of the proteins in the predicted ORFs aren't available"
+                ptext = '<font name=Helvetica size=12>%s</font>' % "Ending nucleotide position in the predicted ORFs aren't available"
                 Report.append(Paragraph(ptext, styles["Normal"]))
                 Report.append(Spacer(1, 12))
             else:

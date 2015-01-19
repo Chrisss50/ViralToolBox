@@ -23,7 +23,7 @@ PDFMiner package
 			 
 Description of main function:
 
-### function: compare(pdf1, pdf2, result_path, err):
+### function: compare(pdf1, pdf2, result_path, err, label):
 -----------------------------------------------------
 compare two viruses:
 get viruses' sequences, 
@@ -36,4 +36,5 @@ calculate 	GC contents,
 input: 		two paths for two pdfs of viruses, 
 			a path, where the results shall be saved in,
 			the error-log
+			label to show status in GUI
 output: 	a txt-file 'compare_results.txt' in path for saving results

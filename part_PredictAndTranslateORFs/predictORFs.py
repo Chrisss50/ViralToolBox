@@ -40,6 +40,15 @@ def readFasta(path, w):
         w.write("\tI/O error({0}): {1}".format(e.errno, e.strerror) + ": " + path)
 
 
+def addTextToLabel(label, txt):
+    # get the current text of the label
+    currentLabelText = label['text']
+    # Adding your current status of the tool. Do not forget the newline!
+    currentLabelText += txt + '\n'
+    # Writing it on the label
+    label.config(text=currentLabelText)
+
+
 # Test whether the given sequence is a DNA sequence.
 def isDNA(seq):
     # A DNA sequence just contain the four nucleotides A,G,T,C
@@ -77,7 +86,7 @@ def predictORFS_helper(seq):
 
 # Find potential ORFS and return them as list of dicts.
 # Each dict contains 'start', 'end' and 'sequence' as keys.
-def predictORFS(seq, w):
+def predictORFS(seq, label, w):
     # Test wheter we have a valid input sequence
     if(seq == None or len(seq) == 0):
         w.write("________________")
@@ -87,37 +96,13 @@ def predictORFS(seq, w):
         w.write("________________")
         w.write("PredictORFs:")
         w.write("\tInput sequence is no DNA sequence.")
-
-    print "Starting predicting ORFs ..."
+    addTextToLabel(label, "Starting predicting ORFs ...\n")
     # Search the sequence from both sides.
     orfs = predictORFS_helper(seq)# + predictORFS_helper(seq[::-1])
     if orfs is None or len(orfs) == 0:
         w.write("________________")
         w.write("PredictORFs:")
         w.write("\tNo ORFs found")
-    print "Found", len(orfs), "ORFs"
-    print "End predicting ORFs!"
+    addTextToLabel(label, "Found " + str(len(orfs)) + " ORFs\n")
+    # addTextToLabel(label, txt)
     return orfs
-
-
-# Test!
-def main():
-    # Error log
-    r, err = os.pipe()
-    err = os.fdopen(err, 'w')
-    # path to the fasta input file
-    path = sys.argv[1]
-    # Read the input file
-    headers, seqs = readFasta(path, err)
-    # We have just one sequence
-    seq = seqs[0]
-    # Predict the ORFs
-    orfs = predictORFS(seq, err)
-    # Print the ORFs
-    for orf in orfs:
-        print orf
-    print "Predicted", len(orfs), "ORFs."
-
-
-if __name__ == "__main__":
-    main()

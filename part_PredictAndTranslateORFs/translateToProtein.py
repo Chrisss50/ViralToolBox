@@ -5,6 +5,15 @@ import predictORFs as p
 __author__ = 'Felix Bartusch'
 
 
+def addTextToLabel(label, txt):
+    # get the current text of the label
+    currentLabelText = label['text']
+    # Adding your current status of the tool. Do not forget the newline!
+    currentLabelText += txt + '\n'
+    # Writing it on the label
+    label.config(text=currentLabelText)
+
+
 # Transcribe a given DNA sequence to the corresponding RNA sequence.
 def transcribe(seq):
     dna2rna = {"A": "U", "T": "A", "C": "G", "G": "C"}
@@ -48,19 +57,18 @@ def translate(seq):
 
 
 # Transcribe and Translate all ORFs to their amino acid sequence
-def translateToProtein(orfs, w):
+def translateToProtein(orfs, label, w):
     # Handling errors
     if orfs is None or len(orfs) == 0:
         w.write("________________")
         w.write("TranslateToProtein:")
         w.write("\tThere are no ORFs to translate!")
-    print "Start translating ORFs to proteins"
+    addTextToLabel(label, "Start translating ORFs to proteins\n")
     for orf in orfs:
-        # TODO is it correct to just replace "T" with "U"?
         # I think at least for HIV-1 it is correct
         orf["sequence"] = translate(dnaAsRNA(orf["sequence"]))
-    print "Translated", len(orfs), "ORFs to proteins"
-    print "End translating ORFs to proteins!"
+    addTextToLabel(label, "Translated " + str(len(orfs)) + " ORFs to proteins\n")
+    addTextToLabel(label, "End translating ORFs to proteins!\n")
     # The sequence of the orfs is now the protein sequence,
     # so we're done here!
     return orfs
@@ -80,11 +88,7 @@ def main():
     # Predict the ORFs
     orfs = p.predictORFS(seq, err)
     # Translate the ORFs into the protein sequence
-    proteins = translateToProtein(orfs, err)
-    # How Print the resulting list of proteins
-    for protein in proteins:
-        print protein
-    print "Translated", len(proteins), "proteins."
+    #proteins = translateToProtein(orfs, err) # Cannot call this methode, because no label available
 
 
 if __name__ == "__main__":

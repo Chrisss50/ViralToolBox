@@ -1,0 +1,23 @@
+msa_clustalo.py performs a multiple sequence alignment on a set of input
+sequences provided in a fasta file
+
+This script checks if clustalo is instaled, checks the script was run properly,
+checks the sequences are properly formated, and then proceeds to run the MSA.
+
+Usage:
+python msa_clustalo.py file.fasta err label
+
+The parameters are:
+
+file.fasta - Fasta file with the sequences to be aligned
+
+err - needed for the GUI
+
+label - needed for the GUI
+
+
+OUTPUT:
+
+If succesful, msa_clustalo.py will have created a file called "infile". This
+file is necessary for runnig a phylogenetic inference. 
+

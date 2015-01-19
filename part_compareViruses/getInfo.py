@@ -4,10 +4,11 @@ __author__ = 'Mirjam Figaschewski'
 def addTextToLabel(label, txt):
     currentLabelText = label["text"]
     currentLabelText += txt + '\n'
-    label.config(text = currentLabelText)
+    label.config(text=currentLabelText)
+
 
 #
-# get information 
+# get information
 #
 def getMetadata(substring, pdf, start=0, end=None):
     if end is None:

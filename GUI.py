@@ -4,7 +4,7 @@ sys.path.append("part_PredictAndTranslateORFs/")
 from predictORFs import *
 from translateToProtein import *
 sys.path.append("part_DomainsInProtein/")
-from domainsInProtein import *
+import domainsInProtein as d
 sys.path.append("part_Sequence_Import/")
 from sequence_import import *
 sys.path.append("part_RNAstructure/")
@@ -15,12 +15,15 @@ from write_comparePdf import *
 from writePdf import *
 sys.path.append("part_compareViruses/")
 from compareViruses import *
+# sys.path.append("part_msa/")
+# from msa_functions import *
 
 class App:
   txt = ""
   fileDir = " "
   dbDir = " "
 
+  # This builds the UI
   def __init__(self, master):
     frame = Frame(master)
     frame.pack()
@@ -102,10 +105,10 @@ class App:
     #                      text="QUIT", fg="red",
     #                      command=frame.quit)
     # self.button.pack()
-    self.slogan = Button(frameLeft,
+    self.pipStart = Button(frameLeft,
                          text="Start",
-                         command=self.write_slogan)
-    self.slogan.pack()
+                         command=self.startPipeline)
+    self.pipStart.pack()
 
     self.labelSep = Label(frameLeft, 
                        justify=LEFT,
@@ -139,6 +142,35 @@ class App:
                          command=self.compareV)
     self.compareVi.pack()
 
+    self.labelSep2 = Label(frameLeft, 
+                       justify=LEFT,
+                       anchor=SW,
+                       fg="black",
+                       height=1,
+                       width=20)
+    self.labelSep2.pack()
+    self.labelSep2.config(text = "____________________")
+
+    self.text7 = Text(frameLeft,
+                     bg="light blue",
+                     height=1,
+                     width=20)
+    self.text7.pack()
+    self.treeComp = Button(frameLeft,
+                         text="Compute Tree",
+                         command=self.compTree)
+    self.treeComp.pack()
+
+  # Theoretically tree building function (not tested)
+  def compTree(self):
+    pass
+    # r, err = os.pipe()
+    # err = os.fdopen(err, 'w')
+    # fastaFile = self.text7.get(1.0, END)
+    # checkfasta(fastaFile, err, self.label)
+    # mutltSeqAl = runclustal(fastaFile, err, self.label)
+
+  # Different functions to get the directorys
   def getInDirectoryCom(self):
     self.text5.delete(1.0, END)
     self.fileDir = tkFileDialog.askopenfilename()
@@ -159,6 +191,7 @@ class App:
     self.dbDir = tkFileDialog.askdirectory()
     self.text4.insert(END, self.dbDir)
 
+  # Function to start the comparison of two viruses
   def compareV(self):
     # pipe things
     r, err = os.pipe()
@@ -170,7 +203,7 @@ class App:
     compare(path1[:-1], path2[:-1], pathout[:-1] + '/compareReport', err, self.label)
     writeCompareReportAsPdf(pathout[:-1] + '/compareReport/', pathout[:-1] + '/compareReport/report_compared.pdf', err, self.label)
 
-  def write_slogan(self):
+  def startPipeline(self):
     # pipe things
     r, err = os.pipe()
     err = os.fdopen(err, 'w')
@@ -185,25 +218,25 @@ class App:
     out = inputFromDB(GeneID, err, email)
     # out = inputFromFile(path[:-1], err)
     seqRecord2fasta(path[:-1] + "/test.fa", out, err)
-    headers, seqs = readFasta(path[:-1] + "/test.fa")
+    headers, seqs = readFasta(path[:-1] + "/test.fa", err)
     seq = seqs[0]
 
     # predicting ORFs and translating to protein
     orfs = predictORFS(seq, self.label, err)
     proteins = translateToProtein(orfs, self.label, err)
-    seq = {"sequence": seq,
-           "start": 1, "end": 1337}
-    print findDomains([seq], path[:-1], self.label, err)
+    # seq = {"sequence": d.getExampleProteinSequence(),
+    #        "start": 1, "end": 1337}
+    d.findDomains(proteins, path[:-1], self.label, err)
     # for orf in orfs:
     #     self.txt += orf["sequence"]
     # self.label.config(text=self.txt)
 
     # getting secondary structure
-    mol = RNA_molecule(seqs[0], "HI-V", "test")
-    mol.db_parsed(dbPath[:-1] + '/')
-    struc_db = parse_struc_db(mol.get_database())
-    mol.search_rna_struc(struc_db, path[:-1])
-    mol.writeTXT(path[:-1] + '/')
+    # mol = RNA_molecule(seqs[0], "HI-V", "test")
+    # mol.db_parsed(dbPath[:-1] + '/')
+    # struc_db = parse_struc_db(mol.get_database())
+    # mol.search_rna_struc(struc_db, path[:-1])
+    # mol.writeTXT(path[:-1] + '/')
 
     # write PDF
     # writeReportAsPdf(path[:-1] + '/', path[:-1] + '/', err, self.label)

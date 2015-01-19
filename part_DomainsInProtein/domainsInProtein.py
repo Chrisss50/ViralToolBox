@@ -95,7 +95,7 @@ def getExampleJSONProteinDomainString():
 def addTextToLabel(label, txt):
     # get the current text of the label
     currentLabelText = label['text']
-    # Adding your current status of the tool. Don’t forget the newline!
+    # Adding your current status of the tool. Dont forget the newline!
     currentLabelText += txt + '\n'
     # Writing it on the label
     label.config(text=currentLabelText)
@@ -303,12 +303,12 @@ def findDomains(proteins, baseDir, label, err):
 
     # This is a new list with proteins and results
     proteinsWithResults = []
-    addTextToLabel(label, "Start finding domains for " + len(proteins) + " proteins\n")
+    addTextToLabel(label, "Start finding domains for " + str(len(proteins)) + " proteins\n")
     count = 0
     # Make a query for each protein
     for protein in proteins:
         count += 1
-        addTextToLabel(label, "Query pfam for protein " + count + '\n')
+        addTextToLabel(label, "Query pfam for protein " + str(count) + '\n')
         protein["result_url"], protein["job_id"] = queryPfam(protein["sequence"], label, err)
         proteinsWithResults.append(protein)
 
@@ -329,7 +329,7 @@ def findDomains(proteins, baseDir, label, err):
     domains = []
     for protein in proteinsWithResults:
         count += 1
-        addTextToLabel(label, "Obtain protein domains from pfam for protein " + count + '\n')
+        addTextToLabel(label, "Obtain protein domains from pfam for protein " + str(count) + '\n')
         # Get the json string describing the domains
         d = obtainQueryResult(protein, err)
         d = d[1:-1]

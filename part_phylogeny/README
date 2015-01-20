@@ -1,0 +1,56 @@
+msa_phylip.py computes phylogenetic inference  on a set of input
+sequences provided in a MSA file in phylip format
+
+This script checks if certain phylip tools are instaled, checks the script was
+run properly, and then proceeds to run the phylogenetic inference.
+
+To run this script the next programs myst be instaled:
+
+dnadist
+dnaml
+dnapars
+neighbor
+consense
+
+This tools are part of phylip and can be found here:
+http://evolution.genetics.washington.edu/phylip.html
+
+Additionally the following python module must be installed:
+
+ete2
+http://pythonhosted.org/ete2/
+
+
+Usage:
+python phyl_phyl.py infile  err label
+
+The parameters are:
+
+infile - Fasta file with the sequences to be aligned
+
+err - needed for the GUI
+
+label - needed for the GUI
+
+
+OUTPUT:
+
+phyl_phly.py will run several programs that rather than taking any parameters,
+assume there exists a file name infile. The script will manage file renaming in
+order for every program to run correctly. 
+
+The programs will run as follows:
+
+dnadist - infile will be the MSA file. After running, inflie will become msa.phy
+          and outfile will be renamed infile
+
+neighbor - computes neighbor joining tree with infile. infile will become distance_matrix.txt
+           outtree will become nj.tree, msa.phy will become infile
+
+dnaml - computes tree with maximum likelihood algorithm, outtree becomes ml.tree
+
+dnapars - computes tree with maximum parsimony algorithm, outtree becomes mp.tree
+
+consense - computes consensus tree, first with mp.tree and then with all other trees
+
+

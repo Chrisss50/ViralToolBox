@@ -5,8 +5,6 @@ Created on Fri Dec 26 11:40:41 2014
 @author: Maximilian Hanussek
 """
 
-
-import sys
 import os
 import fnmatch
 
@@ -14,7 +12,10 @@ import fnmatch
 # Search by name for a file in a directory
 def findFileByName(path, name):
     error = []
-    if(checkDirExists(path) is False):  #'or checkFileExists(path) is False):
+    if(checkDirExists(path) is False):
+        error.append("The file doesn't exist")
+        return error
+    elif(checkFileExists(path + name) is False):
         error.append("The file doesn't exist")
         return error
     else:
@@ -28,7 +29,7 @@ def findFileByName(path, name):
 # Search by pattern for a file in a directory
 def findFileByPattern(path, pattern):
     error = []
-    if(checkDirExists(path) is False):  #or checkFileExists(path) is False):
+    if(checkDirExists(path) is False):
         error.append("The file doesn't exist")
         return error
     else:
@@ -43,8 +44,8 @@ def findFileByPattern(path, pattern):
 # Search by keyword for a line in an outputfile
 def findLineByKeyword(path, keyword):
     error = []
-    if(checkFileExists(path) is False):
-        error.append("The file doesn't exist")
+    if(path == "The file doesn't exist"):
+        error.append(str(keyword) + " couldn't be found")
         return error
     else:
         result = []
@@ -61,8 +62,8 @@ def findLineByKeyword(path, keyword):
 # Search by keyword for a line in an outputfile and get the next line
 def findNextLineByKeyword(path, keyword):
     error = []
-    if(checkFileExists(path) is False):
-        error.append("The file doesn't exist")
+    if(path == "The file doesn't exist"):
+        error.append(str(keyword) + " couldn't be found")
         return error
     else:
         result = []
@@ -80,17 +81,48 @@ def findNextLineByKeyword(path, keyword):
                     continue
         f.close
         return result
+        
+def findNext2LinesByKeyword(path, keyword):
+    error = []
+    if(path == "The file doesn't exist"):
+        error.append(str(keyword) + " couldn't be found")
+        return error
+    else:
+        result = []
+        with open(path, 'r+') as f:
+            lines = f.readlines()
+            for i in range(0, len(lines)):
+                line = lines[i]
+                if keyword in line:
+                    if(i+2 < len(lines)):
+                        if(lines[i+1][-1:] == "\n"):
+                            result.append(lines[i+1][:-1])  # without "\n"
+                        else:
+                            result.append(lines[i+1])
+                        if(lines[i+2][-1:] == "\n"):
+                            result.append(lines[i+2][:-1])  # without "\n")
+                        else:
+                            result.append(lines[i+2])
+                if keyword not in line:
+                    continue
+        f.close
+        return result
 
 
 # Read in a file
 def readInFile(path):
-    result = []
-    with open(path, 'r+') as f:
-        lines = f.readlines()
-        for i in range(0, len(lines)):
-            line = lines[i]
-            result.append(line[:-1])
-    return result
+    error = []
+    if(path == "The file doesn't exist"):
+        error.append("The file doesn't exist")
+        return error
+    else:
+        result = []
+        with open(path, 'r+') as f:
+            lines = f.readlines()
+            for i in range(0, len(lines)):
+                line = lines[i]
+                result.append(line[:-1])
+        return result
 
 
 # Check if directory exists

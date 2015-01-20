@@ -3,20 +3,20 @@ import sys
 import msa_functions
 import os
 
-args = sys.argv
-
-def main():
-    r, err = os.pipe()
-    err = os.fdopen(err, 'w')
-    msa_functions.checkargs(args,err)
-    fastafile = args[1]
-    print "Infile is",fastafile,"\nOutfile is infile"
-    msa_functions.checkclustal(err)
-    msa_functions.checkfasta(fastafile,err)
-    print "Starting clustalo"
-    msa_functions.runclustal(fastafile,err)
-
-
 
 if __name__ == "__main__":
-    main()
+    # Error log
+    r, err = os.pipe()
+    err = os.fdopen(err, 'w')
+    # Check the script was ran correctly
+    msa_functions.checkargs(sys.argv,err,label)
+    fastafile = sys.argv[1]
+    # Check wether clustal is installed
+    msa_functions.checkclustal(err,label)
+    # Check input is correctly formated
+    msa_functions.checkfasta(fastafile,err,label) 
+    # Run clustal
+    msa_functions.runclustal(fastafile,err,label)
+
+
+

@@ -1,8 +1,14 @@
 __author__ = 'Mirjam Figaschewski'
 
 
+def addTextToLabel(label, txt):
+    currentLabelText = label["text"]
+    currentLabelText += txt + '\n'
+    label.config(text=currentLabelText)
+
+
 #
-# get information 
+# get information
 #
 def getMetadata(substring, pdf, start=0, end=None):
     if end is None:
@@ -110,12 +116,12 @@ def getProteinInfo(pdf):
 # name, sequence, secondary structure in dot-bracket and its energy,
 # number od proteins, its proteins and their domains
 #
-def getInformation(pdf):
+def getInformation(pdf, label):
     # get sequence, dot bracket notation for sequence and
     # energy of secondary structure
-    print 'Get sequences, secondary structure and its energy'
+    addTextToLabel(label, 'Get sequences, secondary structure and its energy')
     name, seq, secstruct, seq_energy = getSecStructInfo(pdf)
     # get proteins and their domains
-    print 'Get Proteins and their domains'
+    addTextToLabel(label, 'Get Proteins and their domains')
     numProteins, proteins = getProteinInfo(pdf)
     return name, seq, secstruct, seq_energy, numProteins, proteins

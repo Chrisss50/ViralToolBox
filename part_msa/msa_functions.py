@@ -4,28 +4,35 @@ import os
 import sys
 from Bio import SeqIO as seqio
 
-def checkargs(args,error):
-    print "Checking parameters"
-    if len(args) < 2:
-        error.write("ERROR: Incorrect usage, not enough parameters\nUsage:\
-                    python msa_clustalo.py <fasta input>")
-        sys.exit(1)
+def addtext(label, txt):
+    # Add status to label
+    currentLabelText = label['text']
+    currentLabelText += txt + '\n'
+    # Writing it on the label
+    label.config(text = currentLabelText)
 
+def checkargs(args,error,label):
+    # Check script was run correctly
+    addtext(label,"Checking parameters")
+    # usage: python msa_clustalo.py <fasta input> err label
+    if len(args) < 4:
+        error.write("ERROR: Incorrect usage, not enough parameters\nUsage:\
+                    python msa_clustalo.py <fasta input> err label")
+        sys.exit(1)
+    # Input must be a file
     if os.path.isfile(args[1]):
         pass
     else:
         error.write("ERROR:",args[1],"could not be found.")
         sys.exit(1)
-    #if os.path.isfile(args[2]):
-    #    error.write("ERROR",args[2],"already exists.")
-    #    sys.exit(1)
-    #else:
-    #    pass
     return None
 
-def checkclustal(error):
-    print "Checking clustalo is installed"
+def checkclustal(error,label):
+    # Check clostalo is installed and in PATH
+    addtext(label,"Checking clustalo is installed")
+    # Ignore output
     DEVNULL = open(os.devnull,'wb')
+    # 'which clustalo must exit with status = 0'
     flag = subprocess.call("which clustalo", shell=True, stdout=DEVNULL)
     if flag:
         error.write("ERROR: clustalo could not be found, be shure to have it\
@@ -35,18 +42,24 @@ def checkclustal(error):
     else:
         return None
 
-def checkfasta(fastafile,error):
-    print "Checking",fastafile,"is valid"
+def checkfasta(fastafile,error,label):
+    # Input file must be in fasta format
+    text = "Checking "+fastafile+" is valid"
+    addtext(label, text)
+    # PArse file with Bio.SeqIO.parse
     seqs = seqio.parse(fastafile,'fasta')
     flag = 0
+    # Loop over sequences
     for seq in seqs:
+        # No empty sequences allowed
         if len(seq.seq) <= 0:
             error.write("ERROR: Sequence",seq.id,"has 0 residues")
             sys.exit(1)
+        # Sequences must be DNA
         for nuc in str(seq.seq):
             if nuc not in ['A','C','G','T','a','g','c','t','N']:
-                print "ERROR: In sequence",seq.id,"nucleotide not " \
-                      "recognized got",nuc,"instead."
+                error.write("ERROR: In sequence "+str(seq.id)+" nucleotide"\
+                            " not recognized got "+nuc+" instead.")
                 sys.exit(1)
         flag += 1
     if not flag:
@@ -55,13 +68,20 @@ def checkfasta(fastafile,error):
     else:
         return None
 
-def runclustal(fastafile,error):
-    print "Running: clustalo -i",fastafile,"-o infile"
+def runclustal(fastafile,error,label):
+    # print input summary and run clustalo
+    text =  "Infile is "+fastafile+"\nOutfile is infile"+\
+            "\nRunning: clustalo -i "+fastafile+" -o infile"+\
+            "\nStarting clustalo"
+    addtext(label,text)
     start = time.time()
+    # Runs clustalo with sequences provided, output format is in phylip
     proc = subprocess.Popen(["clustalo","-i",fastafile,"-o","infile",
                              "--outfmt","phy","-v"])
     res =  proc.communicate()
     end = time.time()
     total = end - start
-    print res[0]
-    print "MSA computed in",total,"seconds"
+    # Print output of clustalo
+    addtext(label,res[0])
+    text = "MSA computed in "+total+" seconds"
+    addtext(label,text)

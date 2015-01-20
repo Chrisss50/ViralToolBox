@@ -9,6 +9,16 @@ import datetime
 from Bio import SeqIO
 from Bio import Entrez
 from urllib2 import HTTPError
+import os
+
+#####################################################################
+
+def addtext(label, txt):
+    # Add status to label
+    currentLabelText = label['text']
+    currentLabelText += txt + '\n'
+    # Writing it on the label
+    label.config(text = currentLabelText)
 
 #####################################################################
 
@@ -31,7 +41,7 @@ def inputFromDB(geneID,err,userEmail,label):
         tmp = "Error in function 'inputFromDB'. "
         tmp += "You entered wrong gene ID. gene ID must be a number."
         err.write(tmp)
-    label.write("Gene ID successfully checked!")
+    addtext(label, "Gene ID successfully checked!")
     Entrez.email = userEmail
     # try to download the sequence from database
     try:
@@ -45,9 +55,16 @@ def inputFromDB(geneID,err,userEmail,label):
         tmp = timeStamp+". Error in function 'inputFromDB'. "
         tmp += str(e)
         tmp += ". It seems that there is no data available under this gene ID."
+    Entrez.email = email
+    # try to download the sequence from database
+    try:
+        handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text",email=email)
+    except ValueError, e:
+        tmp = timeStamp+". Error in function 'inputFromDB'. "+str(e)
         # write error message to error file
         err.write(tmp)
-    label.write("Requesting data was successfully downloaded from NCBI server.")
+    txt = "Requesting data was successfully downloaded from NCBI server."
+    addtext(label, txt)
     # get sequence (class 'Bio.SeqRecord.SeqRecord')
     try:
         SeqRecord = SeqIO.read(handle, "genbank")
@@ -57,9 +74,10 @@ def inputFromDB(geneID,err,userEmail,label):
         handle.close()
         err.write(tmp)
     handle.close()
-    # close the error file and info file
+    # close the error file
     err.close()
-    label.close()
+    # close the error file
+    # err.close()
     return SeqRecord
 
 #####################################################################
@@ -141,17 +159,17 @@ def inputFromFile(filePath,err,label):
         err.write(tmp)
     # is it a DNA ?
     if(bool(re.match("^[ACGT]+$", sequence))):
-        label.write("All data was successfully extracted from input file.")
-        # close the error file and info file
+        txt = "All data was successfully extracted from input file."
+        addtext(label, txt)
+        # close the error file
         err.close()
-        label.close()
         return SeqRecord
     # is it a RNA ?
     if(bool(re.match("^[ACGU]+$", sequence))):
-        label.write("All data was successfully extracted from input file.")
-        # close the error file and info file
+        txt = "All data was successfully extracted from input file."
+        addtext(label, txt)
+        # close the error file
         err.close()
-        label.close()
         return SeqRecord
     else:
         tmp = timeStamp + ". "
@@ -159,6 +177,8 @@ def inputFromFile(filePath,err,label):
         tmp += "Sequence contains wrong characters."
         # write error message to error file
         err.write(tmp)
+    # close the error file
+    err.close()
 
 #####################################################################
 
@@ -210,10 +230,10 @@ def seqRecord2fasta(filePath,Seq_Record,err,label):
         err.write(tmp)
     SeqIO.write(Seq_Record, output_handle, "fasta")
     output_handle.close()
-    label.write("Fasta file was successfully created.")
-    # close the error file and info file
+    txt = "Fasta file was successfully created."
+    addtext(label, txt)
+    # close the error file
     err.close()
-    label.close()
 
 #####################################################################
 
@@ -250,7 +270,7 @@ def checkSeqSize(seq,maxSeqSize,err,label):
         tmp += "Max allowed sequence size is: "+str(maxSeqSize)+"."
         # write error message to error file
         err.write(tmp)
-    label.write("Sequence was successfully checked. All checks passed.")
-    # close the error file and info file
+    txt = "Sequence was successfully checked. All checks passed."
+    addtext(label, txt)
+    # close the error file
     err.close()
-    label.close()

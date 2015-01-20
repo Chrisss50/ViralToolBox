@@ -6,11 +6,34 @@
                 'seqRecord2fasta(filePath,Seq_Record,err)'
              2) file added: 'example_fasta_file.txt' 
                 to test my functions
-16.01.2915 : Fixed:
+16.01.2015 : Fixed:
              File "/Users/Chriz/Documents/ViralToolBox/part_Sequence_Import/sequence_import.py", line 29
              handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text",email)
              SyntaxError: non-keyword arg after keyword arg
-			 changed:
+             changed:
              handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text",email)
-			 to:
-			 handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text")
+             to:
+             handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text")
+20.01.2015 : 1) Fixed an error in function 'inputFromDB':
+             >>> inputFromDB("0","","")
+             Traceback (most recent call last):
+               File "<stdin>", line 1, in <module>
+               File "<stdin>", line 8, in inputFromDB
+               File "D:\01. Programme\Anaconda-Python\anaconda\lib\site-packages\biopython-1.
+             64-py2.7-win32.egg\Bio\Entrez\__init__.py", line 149, in efetch
+                 return _open(cgi, variables, post)
+               File "D:\01. Programme\Anaconda-Python\anaconda\lib\site-packages\biopython-1.
+             64-py2.7-win32.egg\Bio\Entrez\__init__.py", line 464, in _open
+                 raise exception
+             urllib2.HTTPError: HTTP Error 400: Bad Request
+             
+             *** fixed by changing the line in fucntion inputFromDB:
+                 try:
+                    handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text")
+             >>>  except ValueError,e:  <<<< fixed line
+                    tmp += "somme error message" + e
+                 TO:
+                  except HTTPError,e:
+                 by importing an urrlib2 module
+                
+                2) added "labels", parameter in 'label' in mostly all functions

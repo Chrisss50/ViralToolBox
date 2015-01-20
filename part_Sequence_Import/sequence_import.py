@@ -8,6 +8,7 @@ import ntpath
 import datetime
 from Bio import SeqIO
 from Bio import Entrez
+from urllib2 import HTTPError
 
 #####################################################################
 
@@ -16,21 +17,37 @@ from Bio import Entrez
 # Get sequence from NCBI's Entrez databases
 # Output of this function is of class:
 # <class 'Bio.SeqRecord.SeqRecord'>
-# 'geneID' must contain only 1 gene ID 
+# 'geneID' must contain only 1 gene ID. geneID is an integer
 # input type: integer.
 # 'err' is an error file
-def inputFromDB(geneID,err,userEmail):
+def inputFromDB(geneID,err,userEmail,label):
     # get current time:
     timeStamp = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+    # check gene ID:
     geneID = str(geneID)
+    b = bool(re.match("^\\d+$",geneID))
+    if(not b):
+        # wrong gene ID
+        tmp = "Error in function 'inputFromDB'. "
+        tmp += "You entered wrong gene ID. gene ID must be a number."
+        err.write(tmp)
+    label.write("Gene ID successfully checked!")
     Entrez.email = userEmail
     # try to download the sequence from database
     try:
+        # Entrez.efetch will return an XML file. you can use also instead
+        # of "retmode='text'" the parameter "retmode='fasta'"
         handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text")
-    except ValueError, e:
-        tmp = timeStamp+". Error in function 'inputFromDB'. "+str(e)
+        # more informations about functions and parameters:
+        # http://biopython.org/DIST/docs/api/Bio.Entrez-module.html
+        # http://www.ncbi.nlm.nih.gov/books/NBK25499/#chapter4.EFetch
+    except HTTPError, e:
+        tmp = timeStamp+". Error in function 'inputFromDB'. "
+        tmp += str(e)
+        tmp += ". It seems that there is no data available under this gene ID."
         # write error message to error file
         err.write(tmp)
+    label.write("Requesting data was successfully downloaded from NCBI server.")
     # get sequence (class 'Bio.SeqRecord.SeqRecord')
     try:
         SeqRecord = SeqIO.read(handle, "genbank")
@@ -40,8 +57,9 @@ def inputFromDB(geneID,err,userEmail):
         handle.close()
         err.write(tmp)
     handle.close()
-    # close the error file
+    # close the error file and info file
     err.close()
+    label.close()
     return SeqRecord
 
 #####################################################################
@@ -53,7 +71,7 @@ def inputFromDB(geneID,err,userEmail):
 # <class 'Bio.SeqRecord.SeqRecord'>
 # The input file must contain only 1 sequence.
 # 'err' is an error file
-def inputFromFile(filePath,err):
+def inputFromFile(filePath,err,label):
     # get current time
     timeStamp = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     # Check if file was chosen
@@ -123,9 +141,17 @@ def inputFromFile(filePath,err):
         err.write(tmp)
     # is it a DNA ?
     if(bool(re.match("^[ACGT]+$", sequence))):
+        label.write("All data was successfully extracted from input file.")
+        # close the error file and info file
+        err.close()
+        label.close()
         return SeqRecord
     # is it a RNA ?
     if(bool(re.match("^[ACGU]+$", sequence))):
+        label.write("All data was successfully extracted from input file.")
+        # close the error file and info file
+        err.close()
+        label.close()
         return SeqRecord
     else:
         tmp = timeStamp + ". "
@@ -133,8 +159,6 @@ def inputFromFile(filePath,err):
         tmp += "Sequence contains wrong characters."
         # write error message to error file
         err.write(tmp)
-    # close the error file
-    err.close()
 
 #####################################################################
 
@@ -142,14 +166,14 @@ def inputFromFile(filePath,err):
 # <class 'Bio.SeqRecord.SeqRecord'> TO FastA file
 
 # *** input: 
-# - fastaFilePath = path to fasta file
+# - filePath      = path to fasta file
 # - Seq_Record    = object of class '<class 'Bio.SeqRecord.SeqRecord'>'
 # - err           = error file
 # *** output:
 # - fasta file
 # function returns nothing, but the side effect of the 
 # function is that it produces a FASTA file
-def seqRecord2fasta(filePath,Seq_Record,err):
+def seqRecord2fasta(filePath,Seq_Record,err,label):
     # get current time
     timeStamp = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     # Check if file was chosen
@@ -186,8 +210,10 @@ def seqRecord2fasta(filePath,Seq_Record,err):
         err.write(tmp)
     SeqIO.write(Seq_Record, output_handle, "fasta")
     output_handle.close()
-    # close the error file
+    label.write("Fasta file was successfully created.")
+    # close the error file and info file
     err.close()
+    label.close()
 
 #####################################################################
 
@@ -200,7 +226,7 @@ def get_sequence_from_SeqRecord(seq_record):
 
 # check size of the sequence
 # maxSeqSize = max allowed size of the sequence
-def checkSeqSize(seq,maxSeqSize,err):
+def checkSeqSize(seq,maxSeqSize,err,label):
     # get current time:
     timeStamp = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     # sequence have to be of type string
@@ -224,5 +250,7 @@ def checkSeqSize(seq,maxSeqSize,err):
         tmp += "Max allowed sequence size is: "+str(maxSeqSize)+"."
         # write error message to error file
         err.write(tmp)
-    # close the error file
+    label.write("Sequence was successfully checked. All tests passed.")
+    # close the error file and info file
     err.close()
+    label.close()

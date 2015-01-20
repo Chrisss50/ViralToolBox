@@ -17,26 +17,28 @@ re
 ntpath
 datetime
 Bio
+urllib2
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 There are 5 functions in the script:
 
-1) inputFromDB(geneID,err,userEmail)
-2) inputFromFile(filePath,err)
-3) seqRecord2fasta(filePath,Seq_Record,err)
+1) inputFromDB(geneID,err,userEmail,label)
+2) inputFromFile(filePath,err,label)
+3) seqRecord2fasta(filePath,Seq_Record,err,label)
 4) get_sequence_from_SeqRecord(seq_record)
-5) checkSeqSize(seq,maxSeqSize,err)
+5) checkSeqSize(seq,maxSeqSize,err,label)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1) 
 *** inputFromDB : parameters
-- geneID     : gene ID, can be string or integer
+- geneID     : gene ID, can be string (which contains only numbers) or integer
 - err        : error file
 - userEmail  : user email (string)
+- label      : some informative messages for user (successful checks, etc...)
 *** output
 the function returns an object of class:
 <class 'Bio.SeqRecord.SeqRecord'>
@@ -45,6 +47,7 @@ the function returns an object of class:
 *** inputFromFile : parameters
 - filePath : path to txt/fasta/fa file
 - err      : error file
+- label      : some informative messages for user (successful checks, etc...)
 *** output
 the function returns an object of class:
 <class 'Bio.SeqRecord.SeqRecord'>
@@ -52,8 +55,13 @@ the function returns an object of class:
 3)
 *** seqRecord2fasta : parameters
 - filePath      : file path to txt/fasta/fa file
+  IMPORTANT: your file path has to contain also the file name
+  Example: ../../../this_is_my_new_little_fasta_file.fasta
+           or just 
+           ../../../tmp.fasta
 - Seq_Record    : object of class <class 'Bio.SeqRecord.SeqRecord'>
 - err           : error file
+- label      : some informative messages for user (successful checks, etc...)
 *** output:
 - function has no output, but has a side effect:
   if no errors occurred, then it produces a FASTA file
@@ -69,6 +77,7 @@ the function returns an object of class:
 - seq         : sequence (string !)
 - maxSeqSize  : MAX allowed length of the sequence (specified by user)
 - err         : error file
+- label      : some informative messages for user (successful checks, etc...)
 *** output
 there is no output, the function can only return some error messages
 

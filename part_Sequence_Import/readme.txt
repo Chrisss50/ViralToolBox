@@ -22,13 +22,14 @@ urllib2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-There are 5 functions in the script:
+There are 6 functions in the script:
 
 1) inputFromDB(geneID,err,userEmail,label)
 2) inputFromFile(filePath,err,label)
 3) seqRecord2fasta(filePath,Seq_Record,err,label)
 4) get_sequence_from_SeqRecord(seq_record)
 5) checkSeqSize(seq,maxSeqSize,err,label)
+6) addtext(label,txt)
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -80,6 +81,12 @@ the function returns an object of class:
 - label      : some informative messages for user (successful checks, etc...)
 *** output
 there is no output, the function can only return some error messages
+
+6)
+*** addtext : parameters
+- label
+- txt : string
+adds some text to label
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

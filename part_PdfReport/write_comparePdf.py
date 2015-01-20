@@ -40,8 +40,15 @@ def writeCompareReportAsPdf(resultpath, outputpath, err, label):
     SubTitle = "(Comparisons)"
     Date = getTimestamp()
     CompareTxtPath = dF.findFileByName(resultpath, "compare_results.txt")[0]
-    print
     CompareTxt = dF.readInFile(CompareTxtPath)
+    SequencePart = dF.findNext2LinesByKeyword(CompareTxtPath, "Sequences")
+    StructurePart = dF.findNext2LinesByKeyword(CompareTxtPath, "Secondary structure:")
+    GCPart = dF.findNext2LinesByKeyword(CompareTxtPath, "GC content")
+    NumberOfProteinsPart = dF.findNext2LinesByKeyword(CompareTxtPath, "Number of Proteins")
+
+    
+
+
 
 # Define some styles
     styles = getSampleStyleSheet()
@@ -68,9 +75,50 @@ def writeCompareReportAsPdf(resultpath, outputpath, err, label):
         addTextToLabel(label, "Create Pdf file without statistics")
         ptext = '<font name=Helvetica-Bold size=16>%s</font>' % "The comparison file doesn't exist !"
         Report.append(Paragraph(ptext, styles["MyTitle"]))
-    else:
+    else:        
         addTextToLabel(label, "Create Pdf file with comparison statistics")
-        for i in range(0, len(CompareTxt)):
+        
+        ptext = '<font name=Helvetica size=10>%s</font>' % "Sequnences:"
+        Report.append(Paragraph(ptext, styles['Justify']))
+        
+        ptext = '<font name=Helvetica size=7>%s</font>' % SequencePart[0]
+        Report.append(Paragraph(ptext, styles['Justify']))
+        
+        ptext = '<font name=Helvetica size=7>%s</font>' % SequencePart[1]
+        Report.append(Paragraph(ptext, styles['Justify']))
+        Report.append(Spacer(1, 12))
+
+        ptext = '<font name=Helvetica size=10>%s</font>' % "Secondary Structure:"
+        Report.append(Paragraph(ptext, styles['Justify']))
+        
+        ptext = '<font name=Helvetica size=7>%s</font>' % StructurePart[0]
+        Report.append(Paragraph(ptext, styles['Justify']))
+        
+        ptext = '<font name=Helvetica size=7>%s</font>' % StructurePart[1]
+        Report.append(Paragraph(ptext, styles['Justify']))
+        Report.append(Spacer(1, 12))
+        
+        ptext = '<font name=Helvetica size=10>%s</font>' % "GC content:"
+        Report.append(Paragraph(ptext, styles['Justify']))
+        
+        ptext = '<font name=Helvetica size=7>%s</font>' % GCPart[0]
+        Report.append(Paragraph(ptext, styles['Justify']))
+        
+        ptext = '<font name=Helvetica size=7>%s</font>' % GCPart[1]
+        Report.append(Paragraph(ptext, styles['Justify']))
+        Report.append(Spacer(1, 12))
+        
+        ptext = '<font name=Helvetica size=10>%s</font>' % "Number of Proteins:"
+        Report.append(Paragraph(ptext, styles['Justify']))
+        
+        ptext = '<font name=Helvetica size=7>%s</font>' % NumberOfProteinsPart[0]
+        Report.append(Paragraph(ptext, styles['Justify']))
+        
+        ptext = '<font name=Helvetica size=7>%s</font>' % NumberOfProteinsPart[1]
+        Report.append(Paragraph(ptext, styles['Justify']))
+        Report.append(Spacer(1, 12))
+        
+        for i in range(14, len(CompareTxt)):
             ptext = CompareTxt[i]
             Report.append(Preformatted(ptext, styles['Code']))
 

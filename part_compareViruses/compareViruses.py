@@ -100,14 +100,14 @@ def GCcontent(seq1, seq2, name1, name2, err):
 #
 def domainsInfo(proteins1, proteins2, name1, name2, err):
     domains1 = set(getDomains(proteins1))
-    domainPositions1 = getPositions(proteins1)
+    domainPositions1 = getPositions(proteins1, err, name1)
     if domainPositions1 == \
             "Starting nucleotide position in the predicted ORFs aren't available":
         err.write("________________")
         err.write("compareViruses:")
         err.write(domainPositions1 + " for " + name1)
     domains2 = set(getDomains(proteins2))
-    domainPositions2 = getPositions(proteins2)
+    domainPositions2 = getPositions(proteins2, err, name2)
     if domainPositions2 == \
             "Starting nucleotide position in the predicted ORFs aren't available":
         err.write("________________")
@@ -154,7 +154,8 @@ def compare(pdf1, pdf2, result_path, err, label):
         domainsInfo(proteins1, proteins2, name1, name2, err)
     # write results to file
     file_path = result_path + '/compare_results.txt'
-    if not os.path.exists(file_path):
+    if not os.path.exists(result_path):
+        os.makedirs(result_path)
         addTextToLabel(label,  'Creating directory' + file_path)
         addTextToLabel(label, 'Writing results to ' + file_path)
     else:

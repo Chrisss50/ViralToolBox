@@ -250,7 +250,7 @@ def checkSeqSize(seq,maxSeqSize,err,label):
         tmp += "Max allowed sequence size is: "+str(maxSeqSize)+"."
         # write error message to error file
         err.write(tmp)
-    label.write("Sequence was successfully checked. All tests passed.")
+    label.write("Sequence was successfully checked. All checks passed.")
     # close the error file and info file
     err.close()
     label.close()

@@ -170,12 +170,12 @@ def compare(pdf1, pdf2, result_path, err, label):
             name2 + ': ' + seq2 + '\n')
     f.write('Secondary structure:\n' + name1 + ' ' + secstruct1 + ' Energy: ' +
             seq_energy1 + '\n' + name2 + ' ' + secstruct2 +
-            ' Energy: ' + seq_energy1 + '\n\n')
+            ' Energy: ' + seq_energy2 + '\n\n')
     f.write('GC content\n' + name1 + ': ' + str(gc1) + '\n' +
             name2 + ': ' + str(gc2) + '\n\n')
     f.write('Number of Proteins\n' + name1 + ': ' + str(numProteins1) + '\n' +
             name2 + ': ' + str(numProteins2) + '\n\n')
-    f.write('Percentual similarity od domains: ' +
+    f.write('Percentual similarity of domains: ' +
             str(percentualSimilarity) + '%\n\n')
     # write a table for common domains, its identifier, posistions in the
     # viruses, lengths in the viruses

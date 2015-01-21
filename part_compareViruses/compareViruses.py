@@ -3,6 +3,7 @@ import getInfo as info
 from Bio.SeqUtils import GC
 import sys
 import os
+import re
 
 
 __author__ = 'Mirjam Figaschewski'
@@ -149,11 +150,15 @@ def compare(pdf1, pdf2, result_path, err, label):
     addTextToLabel(label, 'Get information from pdf1')
     name1, seq1, secstruct1, seq_energy1, numProteins1, proteins1 = \
         info.getInformation(pdf1, label)
+    seq1 = re.sub("\n", "", seq1)
+    secstruct1 = re.sub("\n", "", secstruct1)
     if name1 == "Name of the virus isn't available":
         name1 = "Virus 1"
     addTextToLabel(label, 'Get information from pdf2')
     name2, seq2, secstruct2, seq_energy2, numProteins2, proteins2 = \
         info.getInformation(pdf2, label)
+    seq2 = re.sub("\n", "", seq2)
+    secstruct2 = re.sub("\n", "", secstruct2)
     if name2 == "Name of the virus isn't available":
         name2 = "Virus 2"
     # calculate gc content of both sequences

@@ -6,6 +6,7 @@ Created on Fri Dec 26 11:40:41 2014
 """
 
 import os
+import sys
 import fnmatch
 
 
@@ -52,7 +53,7 @@ def findLineByKeyword(path, keyword):
         f = open(path, 'r')
         for line in f.xreadlines():
             if keyword in line:
-                result.append(line[:-1])  # without "\n"
+                result.append(line)  # without "\n"
             if keyword not in line:
                 continue
         f.close()

@@ -40,7 +40,7 @@ class App:
                        anchor=SW,
                        fg="black",
                        bg="light grey",
-                       height=30,
+                       height=34,
                        width=100)
     self.label.pack(side = BOTTOM)
     self.labelLogo = Label(frameRight,
@@ -239,6 +239,12 @@ class App:
     err = open("errorLog.txt", 'w')
 
     fastaFile = self.text7.get(1.0, END)
+
+    if fastaFile == "\n":
+      self.label.config(text="Please select a FastA-File!")
+      return
+
+    checkclustal(err, self.label)
     # checkfasta(fastaFile, err, self.label)
     mutltSeqAl = runclustal(fastaFile, err, self.label)
 

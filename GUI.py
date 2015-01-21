@@ -48,6 +48,19 @@ class App:
                        image = self.logo)
     self.labelLogo.pack()
 
+    self.labelVName = Label(frameLeft, 
+                       justify=LEFT,
+                       anchor=SW,
+                       fg="black",
+                       height=1,
+                       width=10)
+    self.labelVName.pack()
+    self.labelVName.config(text = "Virus-Name:")
+    self.textVName = Text(frameLeft,
+                     bg="light blue",
+                     height=1,
+                     width=20)
+    self.textVName.pack()
     self.labelInput = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
@@ -247,6 +260,7 @@ class App:
     GeneID = self.text2.get(1.0, END)
     email = self.text3.get(1.0, END)
     dbPath = self.text4.get(1.0, END)
+    vName = self.textVName.get(1.0, END)
 
     # Tests for incompleteness
     if path == "\n":
@@ -264,22 +278,20 @@ class App:
     # reading the input, getting sequence
     out = inputFromDB(GeneID, err, email, self.label)
     # out = inputFromFile(path[:-1], err)
-    seqRecord2fasta(path[:-1] + "/test.fa", out, err)
+    seqRecord2fasta(path[:-1] + "/test.fa", out, err, self.label)
     headers, seqs = readFasta(path[:-1] + "/test.fa", err)
     seq = seqs[0]
 
     # predicting ORFs and translating to protein
-    # orfs = predictORFS(seq, self.label, err)
-    # proteins = translateToProtein(orfs, self.label, err)
-    # seq = {"sequence": d.getExampleProteinSequence(),
-    #        "start": 1, "end": 1337}
-    # d.findDomains(proteins, path[:-1], self.label, err)
+    orfs = predictORFS(seq, self.label, err)
+    proteins = translateToProtein(orfs, self.label, err)
+    d.findDomains(proteins, path[:-1], self.label, err)
     # for orf in orfs:
     #     self.txt += orf["sequence"]
     # self.label.config(text=self.txt)
 
     # getting secondary structure
-    # mol = RNA_molecule(seqs[0], "HI-V", "test")
+    # mol = RNA_molecule(seqs[0], vName, "test")
     # mol.db_parsed(dbPath[:-1] + '/')
     # struc_db = parse_struc_db(mol.get_database())
     # mol.search_rna_struc(struc_db, path[:-1])

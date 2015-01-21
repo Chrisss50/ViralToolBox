@@ -81,6 +81,32 @@ def findNextLineByKeyword(path, keyword):
                     continue
         f.close
         return result
+        
+def findNext2LinesByKeyword(path, keyword):
+    error = []
+    if(path == "The file doesn't exist"):
+        error.append(str(keyword) + " couldn't be found")
+        return error
+    else:
+        result = []
+        with open(path, 'r+') as f:
+            lines = f.readlines()
+            for i in range(0, len(lines)):
+                line = lines[i]
+                if keyword in line:
+                    if(i+2 < len(lines)):
+                        if(lines[i+1][-1:] == "\n"):
+                            result.append(lines[i+1][:-1])  # without "\n"
+                        else:
+                            result.append(lines[i+1])
+                        if(lines[i+2][-1:] == "\n"):
+                            result.append(lines[i+2][:-1])  # without "\n")
+                        else:
+                            result.append(lines[i+2])
+                if keyword not in line:
+                    continue
+        f.close
+        return result
 
 
 # Read in a file

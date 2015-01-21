@@ -22,6 +22,7 @@ class App:
   txt = ""
   fileDir = " "
   dbDir = " "
+  logo = ""
 
   # This builds the UI
   def __init__(self, master):
@@ -31,7 +32,9 @@ class App:
     frameLeft.pack(side=LEFT)
     frameRight = Frame(frame)
     frameRight.pack(side=RIGHT)
+    self.logo = PhotoImage(file="Logo.gif")
 
+    
     self.label = Label(frameRight, 
                        justify=LEFT,
                        anchor=SW,
@@ -39,7 +42,11 @@ class App:
                        bg="light grey",
                        height=30,
                        width=100)
-    self.label.pack(side = RIGHT)
+    self.label.pack(side = BOTTOM)
+    self.labelLogo = Label(frameRight,
+                       bg="light grey",
+                       image = self.logo)
+    self.labelLogo.pack()
 
     self.labelInput = Label(frameLeft, 
                        justify=LEFT,
@@ -48,11 +55,11 @@ class App:
                        height=1,
                        width=10)
     self.labelInput.pack()
+    self.labelInput.config(text = "Input Path:")
     self.getDirIn = Button(frameLeft, 
                          text="Get directory", fg="red",
                          command=self.getDirectory)
     self.getDirIn.pack()
-    self.labelInput.config(text = "Input Path:")
     self.text1 = Text(frameLeft,
                      bg="light blue",
                      height=1,
@@ -65,11 +72,11 @@ class App:
                        height=1,
                        width=13)
     self.labelDBDir.pack()
+    self.labelDBDir.config(text = "DB-directory:")
     self.getDBDirIn = Button(frameLeft, 
                          text="Get DB directory", fg="red",
                          command=self.getDBDirectory)
     self.getDBDirIn.pack()
-    self.labelDBDir.config(text = "DB-directory:")
     self.text4 = Text(frameLeft,
                      bg="light blue",
                      height=1,
@@ -80,7 +87,7 @@ class App:
                        anchor=SW,
                        fg="black",
                        height=1,
-                       width=10)
+                       width=8)
     self.labelGeneID.pack()
     self.labelGeneID.config(text = "Gene ID:")
     self.text2 = Text(frameLeft,
@@ -93,7 +100,7 @@ class App:
                        anchor=SW,
                        fg="black",
                        height=1,
-                       width=10)
+                       width=6)
     self.labelEMail.pack()
     self.labelEMail.config(text = "E-Mail:")
     self.text3 = Text(frameLeft,
@@ -119,6 +126,15 @@ class App:
     self.labelSep.pack()
     self.labelSep.config(text = "____________________")
 
+
+    self.labelFirstR = Label(frameLeft, 
+                       justify=LEFT,
+                       anchor=SW,
+                       fg="black",
+                       height=1,
+                       width=10)
+    self.labelFirstR.pack()
+    self.labelFirstR.config(text = "First report:")
     self.getDirInCompare = Button(frameLeft, 
                          text="Get first report", fg="red",
                          command=self.getInDirectoryCom)
@@ -128,6 +144,14 @@ class App:
                      height=1,
                      width=20)
     self.text5.pack()
+    self.labelSecondR = Label(frameLeft, 
+                       justify=LEFT,
+                       anchor=SW,
+                       fg="black",
+                       height=1,
+                       width=12)
+    self.labelSecondR.pack()
+    self.labelSecondR.config(text = "Second report:")
     self.getOutDirCompare = Button(frameLeft, 
                          text="Get second report", fg="red",
                          command=self.getOutDirectoryCom)
@@ -173,12 +197,12 @@ class App:
   # Different functions to get the directorys
   def getInDirectoryCom(self):
     self.text5.delete(1.0, END)
-    self.fileDir = tkFileDialog.askopenfilename()
+    self.fileDir = tkFileDialog.askopenfilename(filetypes = [("PDF files", "*.pdf")])
     self.text5.insert(END, self.fileDir)
 
   def getOutDirectoryCom(self):
     self.text6.delete(1.0, END)
-    self.fileDir = tkFileDialog.askopenfilename()
+    self.fileDir = tkFileDialog.askopenfilename(filetypes = [("PDF files", "*.pdf")])
     self.text6.insert(END, self.fileDir)
 
   def getDirectory(self):
@@ -200,6 +224,16 @@ class App:
     pathout = self.text1.get(1.0, END)
     path1 = self.text5.get(1.0, END)
     path2 = self.text6.get(1.0, END)
+
+    # Tests for incompleteness
+    if pathout == "\n":
+      self.label.config(text="Please select an input-path!")
+      return
+
+    if path1 == "\n" or path2 == "\n":
+      self.label.config(text="Please select both reports!")
+      return
+
     compare(path1[:-1], path2[:-1], pathout[:-1] + '/compareReport', err, self.label)
     writeCompareReportAsPdf(pathout[:-1] + '/compareReport/', pathout[:-1] + '/compareReport/report_compared.pdf', err, self.label)
 
@@ -214,19 +248,32 @@ class App:
     email = self.text3.get(1.0, END)
     dbPath = self.text4.get(1.0, END)
 
+    # Tests for incompleteness
+    if path == "\n":
+      self.label.config(text="Please select a path!")
+      return
+
+    if GeneID == "\n":
+      self.label.config(text="Please enter a GeneID!")
+      return
+
+    if dbPath == "\n":
+      self.label.config(text="Please select a secondary structure prediction DB!")
+      return
+
     # reading the input, getting sequence
-    out = inputFromDB(GeneID, err, email)
+    out = inputFromDB(GeneID, err, email, self.label)
     # out = inputFromFile(path[:-1], err)
     seqRecord2fasta(path[:-1] + "/test.fa", out, err)
     headers, seqs = readFasta(path[:-1] + "/test.fa", err)
     seq = seqs[0]
 
     # predicting ORFs and translating to protein
-    orfs = predictORFS(seq, self.label, err)
-    proteins = translateToProtein(orfs, self.label, err)
+    # orfs = predictORFS(seq, self.label, err)
+    # proteins = translateToProtein(orfs, self.label, err)
     # seq = {"sequence": d.getExampleProteinSequence(),
     #        "start": 1, "end": 1337}
-    d.findDomains(proteins, path[:-1], self.label, err)
+    # d.findDomains(proteins, path[:-1], self.label, err)
     # for orf in orfs:
     #     self.txt += orf["sequence"]
     # self.label.config(text=self.txt)

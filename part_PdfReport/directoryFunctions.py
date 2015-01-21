@@ -6,6 +6,7 @@ Created on Fri Dec 26 11:40:41 2014
 """
 
 import os
+import sys
 import fnmatch
 
 
@@ -52,7 +53,7 @@ def findLineByKeyword(path, keyword):
         f = open(path, 'r')
         for line in f.xreadlines():
             if keyword in line:
-                result.append(line[:-1])  # without "\n"
+                result.append(line)  # without "\n"
             if keyword not in line:
                 continue
         f.close()
@@ -103,6 +104,41 @@ def findNext2LinesByKeyword(path, keyword):
                             result.append(lines[i+2][:-1])  # without "\n")
                         else:
                             result.append(lines[i+2])
+                if keyword not in line:
+                    continue
+        f.close
+        return result
+
+
+def findNext4LinesByKeyword(path, keyword):
+    error = []
+    if(path == "The file doesn't exist"):
+        error.append(str(keyword) + " couldn't be found")
+        return error
+    else:
+        result = []
+        with open(path, 'r+') as f:
+            lines = f.readlines()
+            for i in range(0, len(lines)):
+                line = lines[i]
+                if keyword in line:
+                    if(i+4 < len(lines)):
+                        if(lines[i+1][-1:] == "\n"):
+                            result.append(lines[i+1][:-1])  # without "\n"
+                        else:
+                            result.append(lines[i+1])
+                        if(lines[i+2][-1:] == "\n"):
+                            result.append(lines[i+2][:-1])  # without "\n")
+                        else:
+                            result.append(lines[i+3])
+                        if(lines[i+2][-1:] == "\n"):
+                            result.append(lines[i+3][:-1])  # without "\n")
+                        else:
+                            result.append(lines[i+4])
+                        if(lines[i+2][-1:] == "\n"):
+                            result.append(lines[i+4][:-1])  # without "\n")
+                        else:
+                            result.append(lines[i+4])
                 if keyword not in line:
                     continue
         f.close

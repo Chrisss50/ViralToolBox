@@ -55,10 +55,10 @@ def inputFromDB(geneID,err,userEmail,label):
         tmp = timeStamp+". Error in function 'inputFromDB'. "
         tmp += str(e)
         tmp += ". It seems that there is no data available under this gene ID."
-    Entrez.email = email
+    Entrez.email = userEmail
     # try to download the sequence from database
     try:
-        handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text",email=email)
+        handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text",email=userEmail)
     except ValueError, e:
         tmp = timeStamp+". Error in function 'inputFromDB'. "+str(e)
         # write error message to error file
@@ -74,6 +74,12 @@ def inputFromDB(geneID,err,userEmail,label):
         handle.close()
         err.write(tmp)
     handle.close()
+<<<<<<< HEAD
+=======
+    # close the error file
+    # close the error file
+    # err.close()
+>>>>>>> origin/master
     return SeqRecord
 
 #####################################################################
@@ -157,11 +163,19 @@ def inputFromFile(filePath,err,label):
     if(bool(re.match("^[ACGT]+$", sequence))):
         txt = "All data was successfully extracted from input file."
         addtext(label, txt)
+<<<<<<< HEAD
+=======
+        # close the error file
+>>>>>>> origin/master
         return SeqRecord
     # is it a RNA ?
     if(bool(re.match("^[ACGU]+$", sequence))):
         txt = "All data was successfully extracted from input file."
         addtext(label, txt)
+<<<<<<< HEAD
+=======
+        # close the error file
+>>>>>>> origin/master
         return SeqRecord
     else:
         tmp = timeStamp + ". "
@@ -222,6 +236,10 @@ def seqRecord2fasta(filePath,Seq_Record,err,label):
     output_handle.close()
     txt = "Fasta file was successfully created."
     addtext(label, txt)
+<<<<<<< HEAD
+=======
+    # close the error file
+>>>>>>> origin/master
 
 #####################################################################
 
@@ -260,3 +278,7 @@ def checkSeqSize(seq,maxSeqSize,err,label):
         err.write(tmp)
     txt = "Sequence was successfully checked. All checks passed."
     addtext(label, txt)
+<<<<<<< HEAD
+=======
+    # close the error file
+>>>>>>> origin/master

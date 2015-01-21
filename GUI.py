@@ -15,8 +15,8 @@ from write_comparePdf import *
 from writePdf import *
 sys.path.append("part_compareViruses/")
 from compareViruses import *
-# sys.path.append("part_msa/")
-# from msa_functions import *
+sys.path.append("part_msa/")
+from msa_functions import *
 
 class App:
   txt = ""
@@ -40,7 +40,7 @@ class App:
                        anchor=SW,
                        fg="black",
                        bg="light grey",
-                       height=30,
+                       height=34,
                        width=100)
     self.label.pack(side = BOTTOM)
     self.labelLogo = Label(frameRight,
@@ -48,6 +48,27 @@ class App:
                        image = self.logo)
     self.labelLogo.pack()
 
+    self.labelpipeStart = Label(frameLeft, 
+                       justify=LEFT,
+                       anchor=SW,
+                       fg="black",
+                       height=1,
+                       width=7)
+    self.labelpipeStart.pack()
+    self.labelpipeStart.config(text = "Pipeline:", font="Verdana 15 bold")
+    self.labelVName = Label(frameLeft, 
+                       justify=LEFT,
+                       anchor=SW,
+                       fg="black",
+                       height=1,
+                       width=10)
+    self.labelVName.pack()
+    self.labelVName.config(text = "Virus-Name:")
+    self.textVName = Text(frameLeft,
+                     bg="light blue",
+                     height=1,
+                     width=20)
+    self.textVName.pack()
     self.labelInput = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
@@ -55,7 +76,7 @@ class App:
                        height=1,
                        width=10)
     self.labelInput.pack()
-    self.labelInput.config(text = "Input Path:")
+    self.labelInput.config(text = "Result Path:")
     self.getDirIn = Button(frameLeft, 
                          text="Get directory", fg="red",
                          command=self.getDirectory)
@@ -126,7 +147,14 @@ class App:
     self.labelSep.pack()
     self.labelSep.config(text = "____________________")
 
-
+    self.labelpipeStart = Label(frameLeft, 
+                       justify=LEFT,
+                       anchor=SW,
+                       fg="black",
+                       height=1,
+                       width=10)
+    self.labelpipeStart.pack()
+    self.labelpipeStart.config(text = "Comparison:", font="Verdana 15 bold")
     self.labelFirstR = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
@@ -175,6 +203,26 @@ class App:
     self.labelSep2.pack()
     self.labelSep2.config(text = "____________________")
 
+    self.labelpipeStart = Label(frameLeft, 
+                       justify=LEFT,
+                       anchor=SW,
+                       fg="black",
+                       height=1,
+                       width=7)
+    self.labelpipeStart.pack()
+    self.labelpipeStart.config(text = "Phyl.tree:", font="Verdana 15 bold")
+    self.labelTree = Label(frameLeft, 
+                       justify=LEFT,
+                       anchor=SW,
+                       fg="black",
+                       height=1,
+                       width=15)
+    self.labelTree.pack()
+    self.labelTree.config(text = "Get FastA-File:")
+    self.getDirInTree = Button(frameLeft, 
+                         text="Get FastA-File", fg="red",
+                         command=self.getInDirectoryTree)
+    self.getDirInTree.pack()
     self.text7 = Text(frameLeft,
                      bg="light blue",
                      height=1,
@@ -187,14 +235,25 @@ class App:
 
   # Theoretically tree building function (not tested)
   def compTree(self):
-    pass
     # r, err = os.pipe()
-    # err = os.fdopen(err, 'w')
-    # fastaFile = self.text7.get(1.0, END)
+    err = open("errorLog.txt", 'w')
+
+    fastaFile = self.text7.get(1.0, END)
+
+    if fastaFile == "\n":
+      self.label.config(text="Please select a FastA-File!")
+      return
+
+    checkclustal(err, self.label)
     # checkfasta(fastaFile, err, self.label)
-    # mutltSeqAl = runclustal(fastaFile, err, self.label)
+    mutltSeqAl = runclustal(fastaFile, err, self.label)
 
   # Different functions to get the directorys
+  def getInDirectoryTree(self):
+    self.text7.delete(1.0, END)
+    self.fileDir = tkFileDialog.askopenfilename(filetypes = [("FastA files", "*.fasta"), ("FastA files", "*.fa")])
+    self.text7.insert(END, self.fileDir)
+
   def getInDirectoryCom(self):
     self.text5.delete(1.0, END)
     self.fileDir = tkFileDialog.askopenfilename(filetypes = [("PDF files", "*.pdf")])
@@ -227,7 +286,7 @@ class App:
 
     # Tests for incompleteness
     if pathout == "\n":
-      self.label.config(text="Please select an input-path!")
+      self.label.config(text="Please select an result-path!")
       return
 
     if path1 == "\n" or path2 == "\n":
@@ -247,14 +306,15 @@ class App:
     GeneID = self.text2.get(1.0, END)
     email = self.text3.get(1.0, END)
     dbPath = self.text4.get(1.0, END)
+    vName = self.textVName.get(1.0, END)
 
     # Tests for incompleteness
     if path == "\n":
-      self.label.config(text="Please select a path!")
+      self.label.config(text="Please select a result-path!")
       return
 
     if GeneID == "\n":
-      self.label.config(text="Please enter a GeneID!")
+      self.label.config(text="Please enter a valid GeneID!")
       return
 
     if dbPath == "\n":
@@ -262,28 +322,26 @@ class App:
       return
 
     # reading the input, getting sequence
-    out = inputFromDB(GeneID, err, email)
+    out = inputFromDB(GeneID, err, email, self.label)
     # out = inputFromFile(path[:-1], err)
-    seqRecord2fasta(path[:-1] + "/test.fa", out, err)
+    seqRecord2fasta(path[:-1] + "/test.fa", out, err, self.label)
     headers, seqs = readFasta(path[:-1] + "/test.fa", err)
     seq = seqs[0]
 
     # predicting ORFs and translating to protein
-    # orfs = predictORFS(seq, self.label, err)
-    # proteins = translateToProtein(orfs, self.label, err)
-    # seq = {"sequence": d.getExampleProteinSequence(),
-    #        "start": 1, "end": 1337}
-    # d.findDomains(proteins, path[:-1], self.label, err)
+    orfs = predictORFS(seq, self.label, err)
+    proteins = translateToProtein(orfs, self.label, err)
+    d.findDomains(proteins, path[:-1], self.label, err)
     # for orf in orfs:
     #     self.txt += orf["sequence"]
     # self.label.config(text=self.txt)
 
     # getting secondary structure
-    # mol = RNA_molecule(seqs[0], "HI-V", "test")
-    # mol.db_parsed(dbPath[:-1] + '/')
-    # struc_db = parse_struc_db(mol.get_database())
-    # mol.search_rna_struc(struc_db, path[:-1])
-    # mol.writeTXT(path[:-1] + '/')
+    mol = RNA_molecule(seqs[0], vName, "test")
+    mol.db_parsed(dbPath[:-1] + '/')
+    struc_db = parse_struc_db(mol.get_database())
+    mol.search_rna_struc(struc_db, path[:-1])
+    mol.writeTXT(path[:-1] + '/')
 
     # write PDF
     # writeReportAsPdf(path[:-1] + '/', path[:-1] + '/', err, self.label)

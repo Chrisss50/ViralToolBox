@@ -177,6 +177,8 @@ def inputFromFile(filePath,err,label):
         tmp += "Sequence contains wrong characters."
         # write error message to error file
         err.write(tmp)
+    # close the error file
+    err.close()
 
 #####################################################################
 

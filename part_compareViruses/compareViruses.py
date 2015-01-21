@@ -171,11 +171,12 @@ def compare(pdf1, pdf2, result_path, err, label):
         domainsInfo(proteins1, proteins2, name1, name2, err)
     # write results to file
     addTextToLabel(label, 'Writing results to ' + file_path)
-    f.write('Sequences\n' + name1 + ': ' + seq1 + '\n' +
-            name2 + ': ' + seq2 + '\n')
-    f.write('Secondary structure:\n' + name1 + ' ' + secstruct1 + ' Energy: ' +
-            seq_energy1 + '\n' + name2 + ' ' + secstruct2 +
-            ' Energy: ' + seq_energy2 + '\n\n')
+    f.write('Sequences\n' + name1 + ':\n' + seq1 + '\n' +
+            name2 + ':\n' + seq2 + '\n')
+    f.write('Secondary structure:\n' + name1 + ':\n' + secstruct1 + '\n' +
+            name2 + ':\n' + secstruct2 + '\n\n')
+    f.write('Energies of secondary structure:\n' + name1 + ': ' + seq_energy1 +
+            '\n' + name2 + ': ' + seq_energy2 + '\n\n')
     f.write('GC content\n' + name1 + ': ' + str(gc1) + '\n' +
             name2 + ': ' + str(gc2) + '\n\n')
     f.write('Number of Proteins\n' + name1 + ': ' + str(numProteins1) + '\n' +

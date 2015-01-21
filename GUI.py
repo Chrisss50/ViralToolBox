@@ -262,7 +262,7 @@ class App:
       return
 
     # reading the input, getting sequence
-    out = inputFromDB(GeneID, err, email)
+    out = inputFromDB(GeneID, err, email, self.label)
     # out = inputFromFile(path[:-1], err)
     seqRecord2fasta(path[:-1] + "/test.fa", out, err)
     headers, seqs = readFasta(path[:-1] + "/test.fa", err)

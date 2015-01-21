@@ -75,7 +75,6 @@ def inputFromDB(geneID,err,userEmail,label):
         err.write(tmp)
     handle.close()
     # close the error file
-    err.close()
     # close the error file
     # err.close()
     return SeqRecord
@@ -162,14 +161,12 @@ def inputFromFile(filePath,err,label):
         txt = "All data was successfully extracted from input file."
         addtext(label, txt)
         # close the error file
-        err.close()
         return SeqRecord
     # is it a RNA ?
     if(bool(re.match("^[ACGU]+$", sequence))):
         txt = "All data was successfully extracted from input file."
         addtext(label, txt)
         # close the error file
-        err.close()
         return SeqRecord
     else:
         tmp = timeStamp + ". "
@@ -231,7 +228,6 @@ def seqRecord2fasta(filePath,Seq_Record,err,label):
     txt = "Fasta file was successfully created."
     addtext(label, txt)
     # close the error file
-    err.close()
 
 #####################################################################
 
@@ -271,4 +267,3 @@ def checkSeqSize(seq,maxSeqSize,err,label):
     txt = "Sequence was successfully checked. All checks passed."
     addtext(label, txt)
     # close the error file
-    err.close()

@@ -18,29 +18,30 @@ def checkargs(args,error,label):
     if len(args) < 4:
         error.write("ERROR: Incorrect usage, not enough parameters\nUsage:\
                     python msa_clustalo.py <fasta input> err label")
-        
+        sys.exit(1)
     # Input must be a file
     if os.path.isfile(args[1]):
         pass
     else:
         error.write("ERROR:",args[1],"could not be found.")
-        
+        sys.exit(1)
     return None
 
 def checkclustal(error,label):
     # Check clostalo is installed and in PATH
     addtext(label,"Checking clustalo is installed")
-    # Ignore output
-    DEVNULL = open(os.devnull,'wb')
     # 'which clustalo must exit with status = 0'
-    flag = subprocess.call("which clustalo", shell=True, stdout=DEVNULL)
-    if flag:
+    proc = subprocess.Popen("which clustalo", shell=True,
+                           stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    res = proc.communicate()
+    if res[1] == '':
+        pass
+    else:
         error.write("ERROR: clustalo could not be found, be shure to have it\
                     installed http://www.clustal.org/omega/\nor that it is\
                     included in your PATH")
-        
-    else:
-        return None
+        return error
+    return None
 
 def checkfasta(fastafile,error,label):
     # Input file must be in fasta format
@@ -54,34 +55,49 @@ def checkfasta(fastafile,error,label):
         # No empty sequences allowed
         if len(seq.seq) <= 0:
             error.write("ERROR: Sequence",seq.id,"has 0 residues")
-            
+            sys.exit(1)
         # Sequences must be DNA
         for nuc in str(seq.seq):
             if nuc not in ['A','C','G','T','a','g','c','t','N']:
                 error.write("ERROR: In sequence "+str(seq.id)+" nucleotide"\
                             " not recognized got "+nuc+" instead.")
-                
+                sys.exit(1)
         flag += 1
     if not flag:
         error.write("ERROR: File",fastafile,"is not a fasta file")
-        
+        sys.exit(1)
     else:
         return None
 
-def runclustal(fastafile,error,label):
+def runclustal(fastafile,outpath,error,label):
+    # Check if path to write output exists
+    pathflag = os.path.exists(outpath)
+    if pathflag:
+        pass
+    else:
+        error.write("Error: Path " + outpath + "does not exist")
+        sys.exit(1)
+    writeout = outpath + "infile"
     # print input summary and run clustalo
     text =  "Infile is "+fastafile+"\nOutfile is infile"+\
-            "\nRunning: clustalo -i "+fastafile+" -o infile"+\
+            "\nRunning: clustalo -i "+fastafile+" -o",writeout,\
             "\nStarting clustalo"
     addtext(label,text)
     start = time.time()
     # Runs clustalo with sequences provided, output format is in phylip
-    proc = subprocess.Popen(["clustalo","-i",fastafile,"-o","infile",
-                             "--outfmt","phy","-v"])
+    proc = subprocess.Popen("clustalo "+"-i "+fastafile+" -o "+writeout+
+                            " --outfmt "+"phy "+"-v",shell=True,
+                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     res =  proc.communicate()
+    if res[1] == '':
+        addtext(label,res[0])
+    else:
+        error.write(res[1])
+        return error
     end = time.time()
     total = end - start
     # Print output of clustalo
     addtext(label,res[0])
-    text = "MSA computed in "+total+" seconds"
+    text = "MSA computed in "+str(total)+" seconds"
     addtext(label,text)
+    return writeout

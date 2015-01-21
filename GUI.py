@@ -68,7 +68,7 @@ class App:
                        height=1,
                        width=10)
     self.labelInput.pack()
-    self.labelInput.config(text = "Input Path:")
+    self.labelInput.config(text = "Result Path:")
     self.getDirIn = Button(frameLeft, 
                          text="Get directory", fg="red",
                          command=self.getDirectory)
@@ -240,7 +240,7 @@ class App:
 
     # Tests for incompleteness
     if pathout == "\n":
-      self.label.config(text="Please select an input-path!")
+      self.label.config(text="Please select an result-path!")
       return
 
     if path1 == "\n" or path2 == "\n":
@@ -264,11 +264,11 @@ class App:
 
     # Tests for incompleteness
     if path == "\n":
-      self.label.config(text="Please select a path!")
+      self.label.config(text="Please select a result-path!")
       return
 
     if GeneID == "\n":
-      self.label.config(text="Please enter a GeneID!")
+      self.label.config(text="Please enter a valid GeneID!")
       return
 
     if dbPath == "\n":
@@ -291,11 +291,11 @@ class App:
     # self.label.config(text=self.txt)
 
     # getting secondary structure
-    # mol = RNA_molecule(seqs[0], vName, "test")
-    # mol.db_parsed(dbPath[:-1] + '/')
-    # struc_db = parse_struc_db(mol.get_database())
-    # mol.search_rna_struc(struc_db, path[:-1])
-    # mol.writeTXT(path[:-1] + '/')
+    mol = RNA_molecule(seqs[0], vName, "test")
+    mol.db_parsed(dbPath[:-1] + '/')
+    struc_db = parse_struc_db(mol.get_database())
+    mol.search_rna_struc(struc_db, path[:-1])
+    mol.writeTXT(path[:-1] + '/')
 
     # write PDF
     # writeReportAsPdf(path[:-1] + '/', path[:-1] + '/', err, self.label)

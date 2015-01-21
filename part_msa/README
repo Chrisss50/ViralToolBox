@@ -5,19 +5,27 @@ This script checks if clustalo is instaled, checks the script was run properly,
 checks the sequences are properly formated, and then proceeds to run the MSA.
 
 Usage:
-python msa_clustalo.py file.fasta err label
+python msa_clustalo.py file.fasta outpath err label
 
 The parameters are:
 
 file.fasta - Fasta file with the sequences to be aligned
 
+outpath - path where output should be written
+
 err - needed for the GUI
 
 label - needed for the GUI
 
+This module needs clustalo instaled:
+http://www.clustal.org/omega/
+
 
 OUTPUT:
 
-If succesful, msa_clustalo.py will have created a file called "infile". This
-file is necessary for runnig a phylogenetic inference. 
+If succesful, msa_clustalo.py will have created a file called "infile" in the
+output path. This file is necessary for runnig a phylogenetic inference.
+The last function of this script runclustal() will return tha full path where
+"infile" is located. This path is where the phylogeny inference scripts must be
+ran.
 

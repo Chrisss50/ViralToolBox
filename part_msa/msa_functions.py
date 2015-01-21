@@ -18,13 +18,13 @@ def checkargs(args,error,label):
     if len(args) < 4:
         error.write("ERROR: Incorrect usage, not enough parameters\nUsage:\
                     python msa_clustalo.py <fasta input> err label")
-        sys.exit(1)
+        return error
     # Input must be a file
     if os.path.isfile(args[1]):
         pass
     else:
         error.write("ERROR:",args[1],"could not be found.")
-        sys.exit(1)
+        return error
     return None
 
 def checkclustal(error,label):
@@ -61,11 +61,11 @@ def checkfasta(fastafile,error,label):
             if nuc not in ['A','C','G','T','a','g','c','t','N']:
                 error.write("ERROR: In sequence "+str(seq.id)+" nucleotide"\
                             " not recognized got "+nuc+" instead.")
-                sys.exit(1)
+                return error
         flag += 1
     if not flag:
         error.write("ERROR: File",fastafile,"is not a fasta file")
-        sys.exit(1)
+        return error
     else:
         return None
 

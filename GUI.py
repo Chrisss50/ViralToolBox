@@ -48,6 +48,14 @@ class App:
                        image = self.logo)
     self.labelLogo.pack()
 
+    self.labelpipeStart = Label(frameLeft, 
+                       justify=LEFT,
+                       anchor=SW,
+                       fg="black",
+                       height=1,
+                       width=7)
+    self.labelpipeStart.pack()
+    self.labelpipeStart.config(text = "Pipeline:", font="Verdana 15 bold")
     self.labelVName = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,

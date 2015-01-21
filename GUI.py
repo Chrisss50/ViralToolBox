@@ -15,8 +15,8 @@ from write_comparePdf import *
 from writePdf import *
 sys.path.append("part_compareViruses/")
 from compareViruses import *
-# sys.path.append("part_msa/")
-# from msa_functions import *
+sys.path.append("part_msa/")
+from msa_functions import *
 
 class App:
   txt = ""
@@ -147,7 +147,14 @@ class App:
     self.labelSep.pack()
     self.labelSep.config(text = "____________________")
 
-
+    self.labelpipeStart = Label(frameLeft, 
+                       justify=LEFT,
+                       anchor=SW,
+                       fg="black",
+                       height=1,
+                       width=10)
+    self.labelpipeStart.pack()
+    self.labelpipeStart.config(text = "Comparison:", font="Verdana 15 bold")
     self.labelFirstR = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
@@ -196,6 +203,26 @@ class App:
     self.labelSep2.pack()
     self.labelSep2.config(text = "____________________")
 
+    self.labelpipeStart = Label(frameLeft, 
+                       justify=LEFT,
+                       anchor=SW,
+                       fg="black",
+                       height=1,
+                       width=7)
+    self.labelpipeStart.pack()
+    self.labelpipeStart.config(text = "Phyl.tree:", font="Verdana 15 bold")
+    self.labelTree = Label(frameLeft, 
+                       justify=LEFT,
+                       anchor=SW,
+                       fg="black",
+                       height=1,
+                       width=15)
+    self.labelTree.pack()
+    self.labelTree.config(text = "Get FastA-File:")
+    self.getDirInTree = Button(frameLeft, 
+                         text="Get FastA-File", fg="red",
+                         command=self.getInDirectoryTree)
+    self.getDirInTree.pack()
     self.text7 = Text(frameLeft,
                      bg="light blue",
                      height=1,
@@ -208,14 +235,19 @@ class App:
 
   # Theoretically tree building function (not tested)
   def compTree(self):
-    pass
     # r, err = os.pipe()
-    # err = os.fdopen(err, 'w')
-    # fastaFile = self.text7.get(1.0, END)
+    err = open("errorLog.txt", 'w')
+
+    fastaFile = self.text7.get(1.0, END)
     # checkfasta(fastaFile, err, self.label)
-    # mutltSeqAl = runclustal(fastaFile, err, self.label)
+    mutltSeqAl = runclustal(fastaFile, err, self.label)
 
   # Different functions to get the directorys
+  def getInDirectoryTree(self):
+    self.text7.delete(1.0, END)
+    self.fileDir = tkFileDialog.askopenfilename(filetypes = [("FastA files", "*.fasta"), ("FastA files", "*.fa")])
+    self.text7.insert(END, self.fileDir)
+
   def getInDirectoryCom(self):
     self.text5.delete(1.0, END)
     self.fileDir = tkFileDialog.askopenfilename(filetypes = [("PDF files", "*.pdf")])

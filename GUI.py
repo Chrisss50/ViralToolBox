@@ -297,8 +297,7 @@ class App:
 
   def startPipeline(self):
     # pipe things
-    r, err = os.pipe()
-    err = os.fdopen(err, 'w')
+    err = open("errorLog.txt", 'w')
 
     # getting user-input
     path = self.text1.get(1.0, END)
@@ -322,24 +321,27 @@ class App:
 
     # reading the input, getting sequence
     out = inputFromDB(GeneID, err, email, self.label)
+    if out == -1:
+      self.label.config(text="Wrong GeneID! Please enter a valid one!")
+      return
     # out = inputFromFile(path[:-1], err)
     seqRecord2fasta(path[:-1] + "/test.fa", out, err, self.label)
     headers, seqs = readFasta(path[:-1] + "/test.fa", err)
     seq = seqs[0]
 
     # predicting ORFs and translating to protein
-    orfs = predictORFS(seq, self.label, err)
-    proteins = translateToProtein(orfs, self.label, err)
-    d.findDomains(proteins, path[:-1], self.label, err)
+    # orfs = predictORFS(seq, self.label, err)
+    # proteins = translateToProtein(orfs, self.label, err)
+    # d.findDomains(proteins, path[:-1], self.label, err)
     # for orf in orfs:
     #     self.txt += orf["sequence"]
     # self.label.config(text=self.txt)
 
     # getting secondary structure
-    mol = RNA_molecule(seqs[0], vName, "test")
-    mol.db_parsed(dbPath[:-1] + '/')
+    mol = RNA_molecule(seqs[0], vName, "test", self.label)
+    mol.db_parsed(dbPath[:-1] + '/', self.label)
     struc_db = parse_struc_db(mol.get_database())
-    mol.search_rna_struc(struc_db, path[:-1])
+    mol.search_rna_struc(struc_db, path[:-1], self.label)
     mol.writeTXT(path[:-1] + '/')
 
     # write PDF

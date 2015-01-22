@@ -40,7 +40,7 @@ class RNA_molecule:
         self._database = "no database found yet"
         self._energy = 0
         addTextToLabel(label, "Object RNA_molecule created.")
-        self.print_rna_information("label")
+        self.print_rna_information(label)
 
     def get_sequence(self):
         return self._sequence
@@ -74,7 +74,7 @@ class RNA_molecule:
         msg += "--------end information\n"
         addTextToLabel(label, msg)
 
-    def db_parsed(self, path_db):
+    def db_parsed(self, path_db, label):
         '''This function searches in the given path (has to be a directory)
            for an <struc> database.
            If one is there, assign it to the RNA_molecule, if not, create
@@ -111,7 +111,7 @@ class RNA_molecule:
         else:
             return True
 
-    def search_rna_struc(self, dict_db, path):
+    def search_rna_struc(self, dict_db, path, label):
         '''Given a directory with hash values of sequences
            as <keys> and DB_entry objects as <values>,
            this function searches the given sequence of the
@@ -154,13 +154,9 @@ class RNA_molecule:
 
 
 def addTextToLabel(label, txt):
-        # get the current text of the label
-        currentLabelText = label['text']
-        # Adding your current status of the tool. Don't forget the newline!
-        currentLabelText += txt + "\n"
-        # Writing it on the label
-        label.config(text=currentLabelText)
-        #print label + txt
+    currentLabelText = label["text"]
+    currentLabelText += txt + '\n'
+    label.config(text=currentLabelText)
 
 def parse_struc_db(path_db):
     '''Creates a dictionary out of a <struc> database

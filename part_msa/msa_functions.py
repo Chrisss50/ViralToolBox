@@ -71,6 +71,7 @@ def checkfasta(fastafile,error,label):
 
 def runclustal(fastafile,outpath,error,label):
     # Check if path to write output exists
+    fastafile = fastafile.rstrip()
     pathflag = os.path.exists(outpath)
     if pathflag:
         pass

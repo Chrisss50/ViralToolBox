@@ -18,20 +18,18 @@ def checkargs(args,error,label):
     if len(args) < 4:
         error.write("ERROR: Incorrect usage, not enough parameters\nUsage:\
                     python msa_phylip.py infile  err label")
-        sys.exit(1)
+        return error
     # Input file  must exist and be in the running directory'
     if os.path.isfile(args[1]):
         # input file must be named 'infile'
         if args[1] != 'infile':
             error.write("ERROR: Input file must be named \"infile\"")
-            error.close()
-            sys.exit(1)
+            return error
         else:
             pass
     else:
         error.write("ERROR: Input file \"infile\" could not be detected")
-        error.close()
-        sys.exit(1)
+        return error
     return None
 
 def checkphylip(error,label):
@@ -45,7 +43,7 @@ def checkphylip(error,label):
             error.write("ERROR: "+program+" could not be found, be shure to"\
                         "have it installed http://evolution.genetics.washington.edu"\
                         "phylip.html\nor that it is included in your PATH")
-            sys.exit(1)
+            return error
     else:
         return None
 
@@ -66,13 +64,13 @@ def runphylogeny(error,label):
     flag = subprocess.call("mv infile msa.fasta",shell=True,stdout=subprocess.PIPE)
     if flag:
         error.write("ERROR: Can't change filename")
-        sys.exit(1)
+        return error
     else:
         # CHange name of distance matrix to infile for neighbor joining
         flag = subprocess.call("mv outfile infile",shell=True,stdout=subprocess.PIPE)
         if flag:
             error.write("ERROR: Can't change filename")
-            sys.exit(1)
+            return error
         else:
             pass
     
@@ -91,28 +89,28 @@ def runphylogeny(error,label):
                            stdout=subprocess.PIPE)
     if flag:
         error.write("ERROR: Can't change filename")
-        sys.exit(1)
+        return error
     else:
         # Change name of outfile 
         flag = subprocess.call("mv outfile neighbor.out",shell=True,\
                                stdout=subprocess.PIPE)
         if flag:
             error.write("ERROR: Can't change filename")
-            sys.exit(1)
+            return error
         else:
             # Change name of output tree
             flag = subprocess.call("mv outtree nj.tree",shell=True,\
                                    stdout=subprocess.PIPE)
             if flag:
                 error.write("ERROR: Can't change filename")
-                sys.exit(1)
+                return error
             else:
                 # Rename the MSA file to infile for further analysis
                 flag = subprocess.call("mv msa.fasta infile",shell=True,\
                                        stdout=subprocess.PIPE)
                 if flag:
                     error.write("ERROR: Can't change filename")
-                    sys.exit(1)
+                    return error
 
     addtext(label,"Running maximum likelyhood algorithm")
     start = time.time()
@@ -129,13 +127,13 @@ def runphylogeny(error,label):
                                        stdout=subprocess.PIPE)
     if flag:
         error.write("ERROR: Can't change filename")
-        sys.exit(1)
+        return error
     else:
         flag = subprocess.call("mv outfile ml.out",shell=True,\
                                        stdout=subprocess.PIPE)
         if flag:
             error.write("ERROR: Can't change filename")
-            sys.exit(1)
+            return error
 
     addtext(label,"Running maximum parsimony tree algorithm")
     start = time.time()
@@ -152,13 +150,13 @@ def runphylogeny(error,label):
                            stdout=subprocess.PIPE)
     if flag:
         error.write("ERROR: Can't change filename")
-        sys.exit(1)
+        return error
     else:
         flag = subprocess.call("mv outfile mp.out",shell=True,\
                                stdout=subprocess.PIPE)
         if flag:
             error.write("ERROR: Can't change filename")
-            sys.exit(1)
+            return error
     return None
     
 def mpconsense(error,label):
@@ -169,7 +167,7 @@ def mpconsense(error,label):
                            stdout=subprocess.PIPE)
     if flag:
         error.write("ERROR: Can't change filename")
-        sys.exit(1)
+        return error
     
     start = time.time()
     # Obtain consensus of tree
@@ -185,13 +183,13 @@ def mpconsense(error,label):
                             stdout=subprocess.PIPE)
     if flag:
         error.write("ERROR: Can't delete files")
-        sys.exit(1)
+        return error
     else:
         flag = subprocess.call("mv outtree mp.tree",shell=True,\
                                stdout=subprocess.PIPE)
         if flag:
             error.write("ERROR: Can't change filename")
-            sys.exit(1)
+            return error
     return None
 
 def getconsensus(error,label):
@@ -202,7 +200,7 @@ def getconsensus(error,label):
                     stdout=subprocess.PIPE)
     if flag:
         error.write("ERROR: Can't change filename")
-        sys.exit(1)
+        return error
     else:
         pass
 
@@ -247,7 +245,7 @@ def drawtrees(error,label):
             tree.render(name+'.png')
         except IOError:
             error.write("File: "+tfile+" not found")
-            sys.exit(1)
+            return error
     end = time.time()
     total = end - start
     text = "All trees drawn in "+str(total)+" seconds"

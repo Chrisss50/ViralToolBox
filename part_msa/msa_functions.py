@@ -80,7 +80,7 @@ def runclustal(fastafile,outpath,error,label):
     writeout = outpath + "infile"
     # print input summary and run clustalo
     text =  "Infile is "+fastafile+"\nOutfile is infile"+\
-            "\nRunning: clustalo -i "+fastafile+" -o",writeout,\
+            "\nRunning: clustalo -i "+fastafile+" -o "+writeout+\
             "\nStarting clustalo"
     addtext(label,text)
     start = time.time()

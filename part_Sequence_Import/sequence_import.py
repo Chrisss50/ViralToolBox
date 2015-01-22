@@ -55,12 +55,6 @@ def inputFromDB(geneID,err,userEmail,label):
         tmp = timeStamp+". Error in function 'inputFromDB'. "
         tmp += str(e)
         tmp += ". It seems that there is no data available under this gene ID."
-    Entrez.email = userEmail
-    # try to download the sequence from database
-    try:
-        handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text",email=userEmail)
-    except ValueError, e:
-        tmp = timeStamp+". Error in function 'inputFromDB'. "+str(e)
         # write error message to error file
         err.write(tmp)
     txt = "Requesting data was successfully downloaded from NCBI server."

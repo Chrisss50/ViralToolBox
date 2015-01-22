@@ -241,6 +241,8 @@ def parse_database(path_db):
 
 
 if __name__ == "__main__":
+    # This will not work anymore as the addTextToLabel will expect
+    # an object from the GUI
     label = ""
     """ You can test the functions here."""
     # create a RNA_molecule object

@@ -57,7 +57,7 @@ def inputFromDB(geneID,err,userEmail,label):
         tmp += ". It seems that there is no data available under this gene ID."
         # write error message to error file
         err.write(tmp)
-    txt = "Requesting data was successfully downloaded from NCBI server."
+    txt = "Requested data was successfully downloaded from NCBI server."
     addtext(label, txt)
     # get sequence (class 'Bio.SeqRecord.SeqRecord')
     try:

@@ -1,0 +1,2 @@
+ERROR: clustalo could not be found, be shure to have it                    installed http://www.clustal.org/omega/
+or that it is                    included in your PATH

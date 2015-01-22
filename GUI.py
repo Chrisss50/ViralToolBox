@@ -235,7 +235,6 @@ class App:
 
   # Theoretically tree building function (not tested)
   def compTree(self):
-    # r, err = os.pipe()
     err = open("errorLog.txt", 'w')
 
     fastaFile = self.text7.get(1.0, END)

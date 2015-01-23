@@ -47,7 +47,7 @@ def inputFromDB(geneID,err,userEmail,label):
         tmp += "Multiple gene ID's detected. "
         tmp += "Multiple gene ID's are separated by comma."
         err.write(tmp)
-    ### addtext(label, "Gene ID successfully checked!")
+    addtext(label, "Gene ID successfully checked!")
     Entrez.email = userEmail
     # try to download the sequence from database
     try:
@@ -65,7 +65,7 @@ def inputFromDB(geneID,err,userEmail,label):
         err.write(tmp)
         return -1
     txt = "Requested data was successfully downloaded from NCBI server."
-    ### addtext(label, txt)
+    addtext(label, txt)
     # get sequence (class 'Bio.SeqRecord.SeqRecord')
     try:
         SeqRecord = SeqIO.read(handle, "genbank")

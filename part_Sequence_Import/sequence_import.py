@@ -27,26 +27,32 @@ def addtext(label, txt):
 # Get sequence from NCBI's Entrez databases
 # Output of this function is of class:
 # <class 'Bio.SeqRecord.SeqRecord'>
-# 'geneID' must contain only 1 gene ID. geneID is an integer
+# 'geneID' must contain only 1 gene ID
 # input type: integer.
 # 'err' is an error file
 def inputFromDB(geneID,err,userEmail,label):
     # get current time:
     timeStamp = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
-    # check gene ID:
     geneID = str(geneID)
-    b = bool(re.match("^\\d+$",geneID))
-    if(not b):
-        # wrong gene ID
-        tmp = "Error in function 'inputFromDB'. "
-        tmp += "You entered wrong gene ID. gene ID must be a number."
+    # check if gene ID is empty:
+    if(geneID == ""):
+        tmp = "Error in function 'inputFromDB'. No gene ID found."
         err.write(tmp)
-    addtext(label, "Gene ID successfully checked!")
+    # check if there are multiple gene ID's
+    # if yes, then they would be delimited 
+    # by comma. multiple ID's are not allowed
+    gene_ids_arr = str.split(geneID, ",")
+    if(len(gene_ids_arr) > 1):
+        tmp = "Error in function 'inputFromDB'. "
+        tmp += "Multiple gene ID's detected. "
+        tmp += "Multiple gene ID's are separated by comma."
+        err.write(tmp)
+    ### addtext(label, "Gene ID successfully checked!")
     Entrez.email = userEmail
     # try to download the sequence from database
     try:
-        # Entrez.efetch will return an XML file. you can use also instead
-        # of "retmode='text'" the parameter "retmode='fasta'"
+        # Entrez.efetch will return an XML file. you can also use
+        # instead of "retmode='text'" the parameter "retmode='fasta'"
         handle = Entrez.efetch(db="nuccore",id=geneID,rettype="gb",retmode="text")
         # more informations about functions and parameters:
         # http://biopython.org/DIST/docs/api/Bio.Entrez-module.html
@@ -59,7 +65,7 @@ def inputFromDB(geneID,err,userEmail,label):
         err.write(tmp)
         return -1
     txt = "Requested data was successfully downloaded from NCBI server."
-    addtext(label, txt)
+    ### addtext(label, txt)
     # get sequence (class 'Bio.SeqRecord.SeqRecord')
     try:
         SeqRecord = SeqIO.read(handle, "genbank")

@@ -36,18 +36,19 @@ def inputFromDB(geneID,err,userEmail,label):
     geneID = str(geneID)
     # check if gene ID is empty:
     if(geneID == ""):
-        tmp = "Error in function 'inputFromDB'. No gene ID found."
+        tmp = timeStamp
+        tmp += ". Error in function 'inputFromDB'. No gene ID found."
         err.write(tmp)
     # check if there are multiple gene ID's
     # if yes, then they would be delimited 
     # by comma. multiple ID's are not allowed
     gene_ids_arr = str.split(geneID, ",")
     if(len(gene_ids_arr) > 1):
-        tmp = "Error in function 'inputFromDB'. "
+        tmp = timeStamp+". Error in function 'inputFromDB'. "
         tmp += "Multiple gene ID's detected. "
         tmp += "Multiple gene ID's are separated by comma."
         err.write(tmp)
-    addtext(label, "Gene ID successfully checked!")
+    addtext(label,"Gene ID successfully checked!")
     Entrez.email = userEmail
     # try to download the sequence from database
     try:
@@ -91,8 +92,8 @@ def inputFromFile(filePath,err,label):
     timeStamp = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     # Check if file was chosen
     if(filePath == None):
-        tmp = timeStamp + ". "
-        tmp += "Error in function 'inputFromFile'. Empty file path."
+        tmp = timeStamp
+        tmp += ". Error in function 'inputFromFile'. Empty file path."
         # write error message to error file
         err.write(tmp)
     # get file name and file extension. 
@@ -100,23 +101,23 @@ def inputFromFile(filePath,err,label):
     # because it is more system independent than module 'os'.
     fileName, fileExtension = ntpath.splitext(filePath)
     if(fileName == ""):
-        tmp = timeStamp + ". "
-        tmp += "Error in function 'inputFromFile'. No file was chosen."
+        tmp = timeStamp
+        tmp += ". Error in function 'inputFromFile'. No file was chosen."
         # write error message to error file
         err.write(tmp)
     # check if 'fileName' has the correct extension.
     # Allowed are: '.txt', '.fa', '.fasta'
     fileExtensions = ['.txt', '.fa', '.fasta']
     if(fileExtension not in fileExtensions):
-        tmp = timeStamp + ". "
-        tmp += "Error in function 'inputFromFile'. Wrong file selected. "
+        tmp = timeStamp
+        tmp += ". Error in function 'inputFromFile'. Wrong file selected. "
         tmp += "Allowed file extensions are: '.txt', '.fa', '.fasta'."
         # write error message to error file
         err.write(tmp)
     # check if input file is empty
     if(ntpath.getsize(filePath) == 0):
-        tmp = timeStamp + ". "
-        tmp += "Error in function 'inputFromFile'. Input file is empty."
+        tmp = timeStamp
+        tmp += ". Error in function 'inputFromFile'. Input file is empty."
         # write error message to error file
         err.write(tmp)
     # try to open the file

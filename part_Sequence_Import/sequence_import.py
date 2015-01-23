@@ -106,6 +106,11 @@ def inputFromFile(filePath,err,label):
         # write error message to error file
         err.write(tmp)
     # check if 'fileName' has the correct extension.
+    if(fileExtension == ""):
+        tmp = timeStamp + ". "
+        tmp += "Error in function 'inputFromFile'. File extension is missing."
+        # write error message to error file
+        err.write(tmp)
     # Allowed are: '.txt', '.fa', '.fasta'
     fileExtensions = ['.txt', '.fa', '.fasta']
     if(fileExtension not in fileExtensions):
@@ -204,6 +209,11 @@ def seqRecord2fasta(filePath,Seq_Record,err,label):
         # write error message to error file
         err.write(tmp)
     # check if 'fileName' has the correct extension.
+    if(fileExtension == ""):
+        tmp = timeStamp + ". "
+        tmp += "Error in function 'seqRecord2fasta'. File extension is missing."
+        # write error message to error file
+        err.write(tmp)
     # Allowed are: '.txt', '.fa', '.fasta'
     fileExtensions = ['.txt', '.fa', '.fasta']
     if(fileExtension not in fileExtensions):

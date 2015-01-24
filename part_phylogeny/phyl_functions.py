@@ -53,9 +53,14 @@ def runphylogeny(error,label):
     addtext(label,"Running dnadist")
     start = time.time()
     # Compute a distance matrix from the MSA
-    proc = subprocess.Popen(["dnadist"],\
-           stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-    proc.communicate(input='y')[0]
+    proc = subprocess.Popen(["dnadist"],shell=True,\
+          stdin=subprocess.PIPE, stderr=subprocess.PIPE,stdout=subprocess.PIPE)
+    res = proc.communicate(input='y')
+    if res[1] == '':
+        addtext(label,res[0])
+    else:
+        error.write("Can't compute distance matrix")
+        return error
     end = time.time()
     total = end - start
     text = "distance matrix computed in "+str(total)+" seconds"
@@ -77,9 +82,14 @@ def runphylogeny(error,label):
     addtext(label,"Running neighbor joining algorithm")
     start = time.time()
     # Compute tree with neighbor joining algorithm
-    proc = subprocess.Popen(["neighbor"],\
-           stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-    proc.communicate(input='y')[0]
+    proc = subprocess.Popen(["neighbor"],shell=True,\
+          stdin=subprocess.PIPE, stderr=subprocess.PIPE,stdout=subprocess.PIPE)
+    res = proc.communicate(input='y')
+    if res[1] == '':
+        addtext(label,res[0])
+    else:
+        error.write("Can't neighbor joining tree")
+        return error
     end = time.time()
     total = end - start
     text = "Neighbor joining tree computed in "+str(total)+" seconds"
@@ -115,9 +125,15 @@ def runphylogeny(error,label):
     addtext(label,"Running maximum likelyhood algorithm")
     start = time.time()
     # Compute maximum likelyhood tree
-    proc = subprocess.Popen(["dnaml"],\
-           stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-    proc.communicate(input='y')[0]
+    proc = subprocess.Popen(["dnaml"],shell=True,\
+          stdin=subprocess.PIPE, stderr=subprocess.PIPE,stdout=subprocess.PIPE)
+    res = proc.communicate(input='y')
+    if res[1] == '':
+        addtext(label,res[0])
+    else:
+        error.write("Can't compute ML tree")
+        return error
+
     end = time.time()
     total = end - start
     text = "ML tree computed in "+str(total)+" seconds"
@@ -138,9 +154,15 @@ def runphylogeny(error,label):
     addtext(label,"Running maximum parsimony tree algorithm")
     start = time.time()
     # Compute maximum parsimony tree
-    proc = subprocess.Popen(["dnapars"],\
-           stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-    proc.communicate(input='y')[0]
+    proc = subprocess.Popen(["dnapars"],shell=True,\
+          stdin=subprocess.PIPE, stderr=subprocess.PIPE,stdout=subprocess.PIPE)
+    res = proc.communicate(input='y')
+    if res[1] == '':
+        addtext(label,res[0])
+    else:
+        error.write("Can't compute MP tree")
+        return error
+
     end = time.time()
     total = (end - start) / float(60)
     text = "MP trees computed in "+str(total)+" minutes"
@@ -171,9 +193,15 @@ def mpconsense(error,label):
     
     start = time.time()
     # Obtain consensus of tree
-    proc = subprocess.Popen(["consense"],\
-                            stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-    proc.communicate(input='y')[0]
+    proc = subprocess.Popen(["consense"],shell=True,stdin=subprocess.PIPE,\
+                                stderr=subprocess.PIPE,stdout=subprocess.PIPE)
+    res = proc.communicate(input='y')
+    if res[1] == '':
+        addtext(label,res[0])
+    else:
+        error.write("Can't compute consensus tree")
+        return error
+
     end = time.time()
     total = end - start
     text = "MP consensus tree computed in "+str(total)+" seconds"
@@ -207,12 +235,18 @@ def getconsensus(error,label):
     addtext(label,"Computing consensus tree")
     start = time.time()
     # Obtain consensus
-    proc = subprocess.Popen(["consense"],\
-                            stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-    proc.communicate(input="y")[0]
+    proc = subprocess.Popen(["consense"],shell=True,\
+         stdin=subprocess.PIPE, stderr=subprocess.PIPE,stdout=subprocess.PIPE)
+    res = proc.communicate(input='y')
+    if res[1] == '':
+        addtext(label,res[0])
+    else:
+        error.write("Can't compute consensus tree")
+        return error
+
     end = time.time()
     total = end - start
-    text = "Consensus tree created in "+str(total)+"seconds")
+    text = "Consensus tree created in "+str(total)+"seconds"
     addtext(label,text)
     # Rename output to informative name
     flag = subprocess.call("mv outtree ftree.tree",shell=True,\
@@ -228,7 +262,7 @@ def getconsensus(error,label):
 
 def drawtrees(error,label):
     # Generate graphical representation of all trees.
-    addtext(label,"Drawing trees")i
+    addtext(label,"Drawing trees")
     # Import tree drawing modules
     import ete2
     import re
@@ -240,7 +274,10 @@ def drawtrees(error,label):
     for tfile in files:
         try:
             handl = open(tfile,'r')
-            tree = ete2.Tree(handl.read())
+            try:
+                tree = ete2.Tree(handl.read())
+            except:
+                error.write(tfile+"corrupted")
             name = re.sub('.tree','',tfile)
             tree.render(name+'.png')
         except IOError:
@@ -249,5 +286,5 @@ def drawtrees(error,label):
     end = time.time()
     total = end - start
     text = "All trees drawn in "+str(total)+" seconds"
-    addtext(text)
+    addtext(label,text)
     return None

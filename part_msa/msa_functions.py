@@ -29,9 +29,9 @@ def checkargs(args,error,label):
 
 def checkclustal(error,label):
     # Check clostalo is installed and in PATH
-    addtext(label,"Checking clustalo is installed")
+    addtext(label,"Checking if clustalo is installed")
     # 'which clustalo must exit with status = 0'
-    proc = subprocess.Popen("which clustalo", shell=True,
+    proc = subprocess.Popen("clustalo --version", shell=True,
                            stdout=subprocess.PIPE,stderr=subprocess.PIPE)
     res = proc.communicate()
     if res[1] == '':
@@ -69,16 +69,16 @@ def checkfasta(fastafile,error,label):
     else:
         return None
 
-def runclustal(fastafile,outpath,error,label):
+def runclustal(fastafile,error,label):
     # Check if path to write output exists
     fastafile = fastafile.rstrip()
-    pathflag = os.path.exists(outpath)
-    if pathflag:
-        pass
-    else:
-        error.write("Error: Path " + outpath + "does not exist")
-        sys.exit(1)
-    writeout = outpath + "infile"
+    #pathflag = os.path.exists(outpath)
+    #if pathflag:
+    #    pass
+    #else:
+    #   error.write("Error: Path " + outpath + "does not exist")
+    #    sys.exit(1)
+    writeout = "infile"
     # print input summary and run clustalo
     text =  "Infile is "+fastafile+"\nOutfile is infile"+\
             "\nRunning: clustalo -i "+fastafile+" -o "+writeout+\
@@ -86,8 +86,8 @@ def runclustal(fastafile,outpath,error,label):
     addtext(label,text)
     start = time.time()
     # Runs clustalo with sequences provided, output format is in phylip
-    proc = subprocess.Popen("clustalo "+"-i "+fastafile+" -o "+writeout+
-                            " --outfmt "+"phy "+"-v",shell=True,
+    proc = subprocess.Popen("clustalo --force -i "+fastafile+" -o infile\
+                             --outfmt phy -v",shell=True,\
                             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     res =  proc.communicate()
     if res[1] == '':

@@ -17,6 +17,8 @@ sys.path.append("part_compareViruses/")
 from compareViruses import *
 sys.path.append("part_msa/")
 from msa_functions import *
+sys.path.append("part_phylogeny/")
+from phyl_functions import *
 
 class App:
   txt = ""
@@ -246,6 +248,10 @@ class App:
     checkclustal(err, self.label)
     # checkfasta(fastaFile, err, self.label)
     mutltSeqAl = runclustal(fastaFile, err, self.label)
+    runphylogeny(err,self.label)
+    mpconsense(err,self.label) 
+    getconsensus(err,self.label) 
+    drawtrees(err,self.label)
 
   # Different functions to get the directorys
   def getInDirectoryTree(self):

@@ -1,1 +1,1 @@
-Error in function 'inputFromDB'. You entered wrong gene ID. gene ID must be a number.
+________________PredictORFs:	Input sequence is no DNA sequence.

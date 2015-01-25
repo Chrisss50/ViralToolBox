@@ -46,7 +46,7 @@ class App:
                        width=100)
     self.label.pack(side = BOTTOM)
     self.labelLogo = Label(frameRight,
-                       bg="light grey",
+                       bg="white",
                        image = self.logo)
     self.labelLogo.pack()
 
@@ -218,7 +218,7 @@ class App:
                        anchor=SW,
                        fg="black",
                        height=1,
-                       width=15)
+                       width=12)
     self.labelTree.pack()
     self.labelTree.config(text = "Get FastA-File:")
     self.getDirInTree = Button(frameLeft, 
@@ -301,6 +301,8 @@ class App:
     compare(path1[:-1], path2[:-1], pathout[:-1] + '/compareReport', err, self.label)
     writeCompareReportAsPdf(pathout[:-1] + '/compareReport/', pathout[:-1] + '/compareReport/report_compared.pdf', err, self.label)
 
+  # The actual pipeline.
+  # Get Sequence, predict ORFs, predict sec.struct and create a report
   def startPipeline(self):
     # pipe things
     err = open("errorLog.txt", 'w')
@@ -316,11 +318,9 @@ class App:
     if path == "\n":
       self.label.config(text="Please select a result-path!")
       return
-
     if GeneID == "\n":
       self.label.config(text="Please enter a valid GeneID!")
       return
-
     if dbPath == "\n":
       self.label.config(text="Please select a secondary structure prediction DB!")
       return
@@ -336,12 +336,9 @@ class App:
     seq = seqs[0]
 
     # predicting ORFs and translating to protein
-    # orfs = predictORFS(seq, self.label, err)
-    # proteins = translateToProtein(orfs, self.label, err)
-    # d.findDomains(proteins, path[:-1], self.label, err)
-    # for orf in orfs:
-    #     self.txt += orf["sequence"]
-    # self.label.config(text=self.txt)
+    orfs = predictORFS(seq, self.label, err)
+    proteins = translateToProtein(orfs, self.label, err)
+    d.findDomains(proteins, path[:-1], self.label, err)
 
     # getting secondary structure
     mol = RNA_molecule(seqs[0], vName, "test", self.label)

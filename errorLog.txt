@@ -1,0 +1,1 @@
+________________PredictORFs:	Input sequence is no DNA sequence.________________Virus name isn't available________________Virus sequence isn't available________________Virus structure isn't available________________Energy of the secondary structure isn't available

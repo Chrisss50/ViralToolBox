@@ -348,11 +348,11 @@ class App:
       return
 
     # getting secondary structure
-    # mol = RNA_molecule(seqs[0], vName, "test", self.label)
-    # mol.db_parsed(dbPath[:-1] + '/', self.label)
-    # struc_db = parse_struc_db(mol.get_database())
-    # mol.search_rna_struc(struc_db, path[:-1], self.label)
-    # mol.writeTXT(path[:-1] + '/')
+    mol = RNA_molecule(seqs[0], vName, "test", self.label)
+    mol.db_parsed(dbPath[:-1] + '/', self.label)
+    struc_db = parse_struc_db(mol.get_database())
+    mol.search_rna_struc(struc_db, path[:-1], self.label)
+    mol.writeTXT(path[:-1] + '/')
 
     # write PDF
     # writeReportAsPdf(path[:-1] + '/', path[:-1] + '/', err, self.label)

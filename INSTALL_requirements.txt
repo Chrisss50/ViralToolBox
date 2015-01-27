@@ -2,6 +2,7 @@ biopython
 pdfminer
 pycurl
 urllib3
+ete2
 selenium
 pyvirtualdisplay
 Pillow

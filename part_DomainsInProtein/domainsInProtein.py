@@ -136,31 +136,38 @@ def queryPfam(seq, label, err):
     job_id = None
     while result_url is None or job_id is None:
         # Try it with pycurl
-        b = StringIO()
-        c = pycurl.Curl()
-        c.setopt(c.URL, 'http://pfam.xfam.org/search/sequence')
-        c.setopt(c.WRITEDATA, b)
-
-        # The form data
-        formData = {'seq': seq, 'output': 'xml'}
-        postfields = urllib.urlencode(formData)
-        c.setopt(c.POSTFIELDS, postfields)
-        c.setopt(c.FOLLOWLOCATION, True)
-        c.perform()
-
-        # for testing
-        # HTTP response code, e.g. 200.
-        #print('Status: %d' % c.getinfo(c.RESPONSE_CODE))
-        # Elapsed time for the transfer.
-        #print('Status: %f' % c.getinfo(c.TOTAL_TIME))
-
-        # testing
-        xml = b.getvalue()
-
-        result_url = extractResultURL(xml)
-        job_id = extractJobID(xml)
-        b.close()
-        c.close()
+        try:
+            b = StringIO()
+            c = pycurl.Curl()
+            c.setopt(c.URL, 'http://pfam.xfam.org/search/sequence')
+            c.setopt(c.WRITEDATA, b)
+    
+            # The form data
+            formData = {'seq': seq, 'output': 'xml'}
+            postfields = urllib.urlencode(formData)
+            c.setopt(c.POSTFIELDS, postfields)
+            c.setopt(c.FOLLOWLOCATION, True)
+            c.perform()
+    
+            # for testing
+            # HTTP response code, e.g. 200.
+            #print('Status: %d' % c.getinfo(c.RESPONSE_CODE))
+            # Elapsed time for the transfer.
+            #print('Status: %f' % c.getinfo(c.TOTAL_TIME))
+    
+            # testing
+            xml = b.getvalue()
+    
+            result_url = extractResultURL(xml)
+            job_id = extractJobID(xml)
+            b.close()
+            c.close()
+        except BaseException as e:
+            err.write("________________")
+            err.write("DomainsInProtein:")
+            err.write("\tError quering pfam")
+            err.write(e.strerror)
+            return None, None
     return result_url, job_id
 
 
@@ -310,6 +317,9 @@ def findDomains(proteins, baseDir, label, err):
         count += 1
         addTextToLabel(label, "Query pfam for protein " + str(count) + '\n')
         protein["result_url"], protein["job_id"] = queryPfam(protein["sequence"], label, err)
+        # If we weren't able to query pfam, we cannot predict proteins
+        if not protein["result_url"]:
+            return None
         proteinsWithResults.append(protein)
 
     # Wait for 10 seconds
@@ -323,6 +333,7 @@ def findDomains(proteins, baseDir, label, err):
         err.write("DomainsInProtein:")
         err.write("\tError opening new file for domains:")
         err.write("\tI/O error({0}): {1}".format(e.errno, e.strerror) + ": " + path)
+        return None
 
     # Try to obtain the results
     count = 0
@@ -347,6 +358,7 @@ def findDomains(proteins, baseDir, label, err):
             err.write("DomainsInProtein:")
             err.write("\tError saving domain graphics:")
             err.write("\tI/O error({0}): {1}".format(e.errno, e.strerror) + ": " + path)
+            return None
         # Append the json string to file
         try:
             f.write(d + '\n')
@@ -355,7 +367,7 @@ def findDomains(proteins, baseDir, label, err):
             err.write("DomainsInProtein:")
             err.write("\tError writing domains to file:")
             err.write("\tI/O error({0}): {1}".format(e.errno, e.strerror) + ": " + path)
-
+            return None
     # Write the results into a file
     saveResultsAsTextFile(domains, baseDir, err)
 

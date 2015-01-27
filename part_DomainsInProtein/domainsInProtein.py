@@ -9,7 +9,8 @@ import pickle
 from StringIO import StringIO
 from selenium import webdriver
 from pyvirtualdisplay import Display
-from PIL import Image
+import PIL.Image
+from Tkinter import *
 
 
 __author__ = 'Felix Bartusch'
@@ -135,12 +136,12 @@ def queryPfam(seq, label, err):
     result_url = None
     job_id = None
     while result_url is None or job_id is None:
-        # Try it with pycurl
         try:
+            # Try it with pycurl
             b = StringIO()
             c = pycurl.Curl()
             c.setopt(c.URL, 'http://pfam.xfam.org/search/sequence')
-            c.setopt(c.WRITEDATA, b)
+            c.setopt(c.WRITEFUNCTION, b.write)
     
             # The form data
             formData = {'seq': seq, 'output': 'xml'}
@@ -163,6 +164,7 @@ def queryPfam(seq, label, err):
             b.close()
             c.close()
         except BaseException as e:
+            print "Error occured queriing pfam"
             err.write("________________")
             err.write("DomainsInProtein:")
             err.write("\tError quering pfam")
@@ -187,7 +189,7 @@ def obtainQueryResult(protein, err):
     while(status == "RUN" or status == "PEND"):
         # obtain status
         buffer = StringIO()
-        c.setopt(c.WRITEDATA, buffer)
+        c.setopt(c.WRITEFUNCTION, buffer.write)
         c.perform()
         status = buffer.getvalue()
         if(status == "RUN"):
@@ -227,7 +229,8 @@ def getPictureOfDomain(json, baseDir):
     # Get WebElement dimension
     size = canvas.size
     # Crop WebElement image from page screenshot
-    im = Image.open(baseDir + 'screenshot.png')
+    fp = open(baseDir + 'screenshot.png', 'r')
+    im = PIL.Image.open(fp)
     box = (pos['x'], pos['y'],
            pos['x'] + size['width'], pos['y'] + size['height'])
     im = im.crop(box)
@@ -383,8 +386,20 @@ def main():
     # The example protein sequence
     seq = {"sequence": getExampleProteinSequence(),
            "start": 1, "end": 1337}
+           
+    # Starting UI
+    root = Tk()
+    frame = Frame(root)
+    frame.pack()
+    label = Label(frame,
+                  width = 100,
+                  height = 10)
+    label.pack()
+    #root.mainloop()
     # Find domains in the protein
-    #print findDomains([seq], ".", err) #  Cannot call it without a label
+    findDomains([seq], ".", label, err)
+    
+    root.mainloop()
 
     # Generate result files for max
     #domains = pickle.load(open("./CacaoSwollenShootVirus/domains_dump.txt", "rb"))

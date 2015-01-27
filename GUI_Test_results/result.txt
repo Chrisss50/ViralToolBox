@@ -47,6 +47,15 @@ endInDNASequence
 7378
 Domain1
 startInProteinSequence
+1349
+endInProteinSequence
+1509
+description
+Reverse transcriptase (RNA-dependent DNA polymerase)
+identifier
+RVT_1
+Domain2
+startInProteinSequence
 125
 endInProteinSequence
 246
@@ -54,15 +63,6 @@ description
 Viral movement protein (MP)
 identifier
 MP
-Domain2
-startInProteinSequence
-763
-endInProteinSequence
-780
-description
-Zinc knuckle
-identifier
-zf-CCHC
 Domain3
 startInProteinSequence
 1090
@@ -74,11 +74,11 @@ identifier
 RVP
 Domain4
 startInProteinSequence
-1349
+763
 endInProteinSequence
-1509
+780
 description
-Reverse transcriptase (RNA-dependent DNA polymerase)
+Zinc knuckle
 identifier
-RVT_1
+zf-CCHC
 

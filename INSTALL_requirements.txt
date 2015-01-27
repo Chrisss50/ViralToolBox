@@ -1,0 +1,8 @@
+biopython
+pdfminer
+pycurl
+urllib3
+selenium
+pyvirtualdisplay
+Pillow
+reportlab

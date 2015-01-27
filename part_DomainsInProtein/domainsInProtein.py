@@ -166,7 +166,6 @@ def queryPfam(seq, label, err):
             err.write("________________")
             err.write("DomainsInProtein:")
             err.write("\tError quering pfam")
-            err.write(e.strerror)
             return None, None
     return result_url, job_id
 

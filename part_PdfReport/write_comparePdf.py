@@ -84,7 +84,7 @@ def writeCompareReportAsPdf(resultpath, outputpath, err, label):
             Report.append(Paragraph(ptext, styles['MyTitle']))
             
         else:
-            ptext = '<font name=Helvetica size=10>%s</font>' % "Sequnences:"
+            ptext = '<font name=Helvetica size=10>%s</font>' % "Sequences:"
             Report.append(Paragraph(ptext, styles['Justify']))
             
             ptext = '<font name=Helvetica size=7>%s</font>' % SequencePart[0]

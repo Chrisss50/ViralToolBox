@@ -65,12 +65,13 @@ class App:
                        height=1,
                        width=10)
     self.labelVName.pack()
-    self.labelVName.config(text = "Virus-Name:")
+    self.labelVName.config(text = "Identifier:")
     self.textVName = Text(frameLeft,
                      bg="light blue",
                      height=1,
                      width=20)
     self.textVName.pack()
+    self.textVName.insert(END, "Banana Virus")
     self.labelInput = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
@@ -88,6 +89,7 @@ class App:
                      height=1,
                      width=20)
     self.text1.pack()
+    self.text1.insert(END, "GUI_Test_results")
     self.labelDBDir = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
@@ -105,19 +107,21 @@ class App:
                      height=1,
                      width=20)
     self.text4.pack()
+    self.text4.insert(END, "part_RNAstructure/RNA_STRAND_data")
     self.labelGeneID = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
                        fg="black",
                        height=1,
-                       width=8)
+                       width=10)
     self.labelGeneID.pack()
-    self.labelGeneID.config(text = "Gene ID:")
+    self.labelGeneID.config(text = "Ref.-Seq ID:")
     self.text2 = Text(frameLeft,
                      bg="light green",
                      height=1,
                      width=15)
     self.text2.pack()
+    self.text2.insert(END, "NC_007003.1")
     self.labelEMail = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
@@ -353,6 +357,13 @@ class App:
     # write PDF
     # writeReportAsPdf(path[:-1] + '/', path[:-1] + '/', err, self.label)
     writeReportAsPdf(path[:-1] + '/', path[:-1] + '/report.pdf', err, self.label)
+
+    if sys.platform.startswith('darwin'):
+      os.system(path[:-1] + '/report.pdf')
+    elif sys.platform.startswith('linux'):
+      os.system(path[:-1] + '/report.pdf')
+    elif sys.platform.startswith('win32'):
+      os.startfile(path[:-1] + '/report.pdf')
 
 root = Tk()
 app = App(root)

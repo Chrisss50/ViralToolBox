@@ -8,8 +8,7 @@ Created on Fri Dec 26 11:40:41 2014
 import os
 import sys
 import fnmatch
-from scipy.misc import imread,imsave
-from numpy import zeros
+from scipy.misc import imsave
 import numpy as np
 
 
@@ -32,17 +31,22 @@ def findFileByName(path, name):
 
 # Search by pattern for a file in a directory
 def findFileByPattern(path, pattern):
-    error = []
+    errorDir = []
+    errorPattern = []
     if(checkDirExists(path) is False):
-        error.append("The file doesn't exist")
-        return error
+        errorDir.append("The file doesn't exist")
+        return errorDir
     else:
         result = []
         for root, dirs, files in os.walk(path):
             for name in files:
                 if fnmatch.fnmatch(name, pattern):
                     result.append(os.path.join(root, name))
-        return result
+        if not result:
+            errorPattern.append("The file doesn't exist")
+            return errorPattern
+        else:
+            return result
 
 
 # Search by keyword for a line in an outputfile

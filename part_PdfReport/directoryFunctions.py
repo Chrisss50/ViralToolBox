@@ -188,16 +188,17 @@ def sumUpStringList(stringList):
 
 
 # Generate a dummy picture
-def generateDummyPic():
+def generateDummyPic(resultpath):
     img = np.zeros([100, 100, 3], dtype=np.uint8)
     img.fill(255)
-#    imsave("/Users/maximilianhanussek/Desktop/dummy.jpg", img)
-    return img
+    imsave(resultpath + "dummy.jpg", img)
+    return (resultpath + "dummy.jpg")
 
 
 # Check wether an Image exists
-def checkImg(path):
+def checkImg(path, resultpath):
     if(path == "The file doesn't exist"):
-        return generateDummyPic()
+        generateDummyPic(resultpath)
+        return
     else:
         return path

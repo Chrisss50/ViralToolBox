@@ -223,9 +223,14 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
                 ptext = '<font name=Helvetica size=12>%s</font>' % EndNucleotideInDNA[protein]
                 Report.append(Paragraph(ptext, styles["Normal"]))
                 Report.append(Spacer(1, 12))
-    
-            Report.append(Image((IMGsProteinDomainsPath[protein]), 7*inch, 0.5*inch))
-            Report.append(Spacer(1, 12))
+            
+            if(IMGsProteinDomainsPath[protein] == "The file doesn't exist"):
+                ptext = '<font name=Helvetica size=12>%s</font>' % "Image of the domain isn't available"
+                Report.append(Paragraph(ptext, styles["Normal"]))
+                Report.append(Spacer(1, 12))
+            else:
+                Report.append(Image((IMGsProteinDomainsPath[protein]), 7*inch, 0.5*inch))
+                Report.append(Spacer(1, 12))
             
             if(NoOfDomains[protein] == "NumberOfDomains couldn't be found"):
                 err.write("________________")

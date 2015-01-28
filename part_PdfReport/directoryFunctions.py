@@ -201,6 +201,3 @@ def checkImg(path):
         return generateDummyPic()
     else:
         return path
-
-if __name__ == "__main__":
-    print checkImg("The file doesn't exist")

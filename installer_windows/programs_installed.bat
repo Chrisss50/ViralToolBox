@@ -54,5 +54,5 @@ if %ERRORLEVEL% NEQ 0 (
 :END
 	if exist pyversion.out del pyversion.out
 	if exist ffpath.out del ffpath.out
-	:: echo No errors occured. python, easy_install and firefox are installed
-	echo ok
+	REM echo No errors occured. python, easy_install and firefox are installed
+	echo TRUE

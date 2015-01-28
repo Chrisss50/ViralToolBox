@@ -1,10 +1,10 @@
 @echo off
 
 :: check if python, easy_install and firefox are installed:
-:: batch script 'programs_installed.bat' should return "ok",
+:: batch script 'programs_installed.bat' should return "TRUE",
 :: if everything is installed
 for /f %%a in ('programs_installed.bat') do (set "programs_installed=%%a")
-if "%programs_installed%" == "ok"(
+if "%programs_installed%" == "TRUE"(
 	:: check internet connection
 	ping www.google.de -n 1 -w 1000
 	if %ERRORLEVEL% NEQ 0 (

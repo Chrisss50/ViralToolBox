@@ -6,5 +6,5 @@ if %ERRORLEVEL% NEQ 0 (
 	echo Error: not able to find mozilla firefox in registry. 
 	echo mozilla firefox is not installed.
 ) else (
-	echo ok
+	echo TRUE
 )

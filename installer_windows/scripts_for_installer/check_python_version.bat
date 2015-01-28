@@ -10,5 +10,5 @@ if %ERRORLEVEL% NEQ 0 (
 	python --version
 ) else (
 	if exist pyversion.out del pyversion.out
-	echo ok
+	echo TRUE
 )

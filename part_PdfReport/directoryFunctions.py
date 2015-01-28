@@ -191,8 +191,8 @@ def sumUpStringList(stringList):
 def generateDummyPic(resultpath):
     img = np.zeros([100, 100, 3], dtype=np.uint8)
     img.fill(255)
-    imsave(resultpath + "dummy.jpg", img)
-    return (resultpath + "dummy.jpg")
+    imsave(resultpath + "dummy.png", img)
+    return (resultpath + "dummy.png")
 
 
 # Check wether an Image exists

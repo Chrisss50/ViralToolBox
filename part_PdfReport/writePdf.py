@@ -224,7 +224,7 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
                 Report.append(Paragraph(ptext, styles["Normal"]))
                 Report.append(Spacer(1, 12))
             
-            if(IMGsProteinDomainsPath[protein] == "The file doesn't exist"):
+            if(IMGsProteinDomainsPath[0] == "The file doesn't exist"):
                 ptext = '<font name=Helvetica size=12>%s</font>' % "Image of the domain isn't available"
                 Report.append(Paragraph(ptext, styles["Normal"]))
                 Report.append(Spacer(1, 12))

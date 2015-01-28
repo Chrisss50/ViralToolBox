@@ -97,7 +97,7 @@ def addTextToLabel(label, txt):
     # get the current text of the label
     currentLabelText = label['text']
     # Adding your current status of the tool. Dont forget the newline!
-    currentLabelText += txt + '\n'
+    currentLabelText += txt
     # Writing it on the label
     label.config(text=currentLabelText)
 
@@ -135,40 +135,46 @@ def extractJobID(xml):
 def queryPfam(seq, label, err):
     result_url = None
     job_id = None
-    while result_url is None or job_id is None:
-        try:
-            # Try it with pycurl
-            b = StringIO()
-            c = pycurl.Curl()
-            c.setopt(c.URL, 'http://pfam.xfam.org/search/sequence')
-            c.setopt(c.WRITEFUNCTION, b.write)
-    
-            # The form data
-            formData = {'seq': seq, 'output': 'xml'}
-            postfields = urllib.urlencode(formData)
-            c.setopt(c.POSTFIELDS, postfields)
-            c.setopt(c.FOLLOWLOCATION, True)
-            c.perform()
-    
-            # for testing
-            # HTTP response code, e.g. 200.
-            #print('Status: %d' % c.getinfo(c.RESPONSE_CODE))
-            # Elapsed time for the transfer.
-            #print('Status: %f' % c.getinfo(c.TOTAL_TIME))
-    
-            # testing
-            xml = b.getvalue()
-    
-            result_url = extractResultURL(xml)
-            job_id = extractJobID(xml)
-            b.close()
-            c.close()
-        except BaseException as e:
+    try:
+        # Try it with pycurl
+        b = StringIO()
+        c = pycurl.Curl()
+        c.setopt(c.URL, 'http://pfam.xfam.org/search/sequence')
+        c.setopt(c.WRITEFUNCTION, b.write)
+
+        # The form data
+        formData = {'seq': seq, 'output': 'xml'}
+        postfields = urllib.urlencode(formData)
+        c.setopt(c.POSTFIELDS, postfields)
+        c.setopt(c.FOLLOWLOCATION, True)
+        c.perform()
+
+        # for testing
+        # HTTP response code, e.g. 200.
+        #print('Status: %d' % c.getinfo(c.RESPONSE_CODE))
+        # Elapsed time for the transfer.
+        #print('Status: %f' % c.getinfo(c.TOTAL_TIME))
+
+        # testing
+        xml = b.getvalue()
+        b.getvalue()
+
+        result_url = extractResultURL(xml)
+        job_id = extractJobID(xml)
+        b.close()
+        c.close()
+        print result_url, job_id
+        if not result_url:
             print "Error occured queriing pfam"
             err.write("________________")
             err.write("DomainsInProtein:")
             err.write("\tError quering pfam")
-            return None, None
+    except BaseException as e:
+        print "Error occured queriing pfam"
+        err.write("________________")
+        err.write("DomainsInProtein:")
+        err.write("\tError quering pfam")
+        return None, None
     return result_url, job_id
 
 
@@ -201,16 +207,7 @@ def obtainQueryResult(protein, err):
 
 
 # Get the picture of domains
-def getPictureOfDomain(json, baseDir):
-    # use firefox to get page with javascript generated content
-    url = "http://pfam.xfam.org/help/domain_graphics_example.html"
-    # Use a virtual display
-    display = Display(visible=0, size=(1600, 800))
-    display.start()
-    # Start the browser
-    browser = webdriver.Firefox()
-    # Load the site
-    browser.get(url)
+def getPictureOfDomain(browser, json, baseDir):
     # Set the json string
     browser.find_element_by_id("seq").clear()
     browser.find_element_by_id("seq").send_keys(json)
@@ -236,9 +233,6 @@ def getPictureOfDomain(json, baseDir):
     im = im.crop(box)
     # Delete the screenshot
     os.remove(baseDir + 'screenshot.png')
-    # exit browser and display
-    browser.quit()
-    display.stop()
     return im
 
 
@@ -309,7 +303,6 @@ def findDomains(proteins, baseDir, label, err):
     # Make shure that the base dicrectory exists
     if not os.path.exists(baseDir):
         os.makedirs(baseDir)
-
     # This is a new list with proteins and results
     proteinsWithResults = []
     addTextToLabel(label, "Start finding domains for " + str(len(proteins)) + " proteins\n")
@@ -323,7 +316,6 @@ def findDomains(proteins, baseDir, label, err):
         if not protein["result_url"]:
             return None
         proteinsWithResults.append(protein)
-
     # Wait for 10 seconds
     time.sleep(20)
     # Try to open the result file
@@ -340,6 +332,21 @@ def findDomains(proteins, baseDir, label, err):
     # Try to obtain the results
     count = 0
     domains = []
+    # To get a picture of the domains start a virtual display that displays
+    # a browser and create a image representing the predicted domains
+    # use firefox to get page with javascript generated content
+    #try:
+    url = "http://pfam.xfam.org/help/domain_graphics_example.html"
+    display = Display(visible=0, size=(1000, 800))
+    display.start()
+    browser = webdriver.Firefox()
+    browser.get(url)
+    #except Exception as e:
+    #    err.write("________________")
+     #   err.write("DomainsInProtein:")
+      #  err.write("\tError while trying to start firefox")
+       # return None
+    # For each protein, obtain the results from pfam
     for protein in proteinsWithResults:
         count += 1
         addTextToLabel(label, "Obtain protein domains from pfam for protein " + str(count) + '\n')
@@ -348,8 +355,14 @@ def findDomains(proteins, baseDir, label, err):
         d = d[1:-1]
         protein["domains"] = d
         domains.append(protein)
-        # Get a picture of the domains
-        im = getPictureOfDomain(d, baseDir)
+
+        try:
+            im = getPictureOfDomain(browser, d, baseDir)
+        except Exception as e:
+            err.write("________________")
+            err.write("DomainsInProtein:")
+            err.write("\tError getting picture of domain")
+            return None
         # Save the picture and domains
         path = baseDir + 'domain_graphic' + str(count) + ".png"
         protein["domain_graphic_path"] = path
@@ -372,7 +385,11 @@ def findDomains(proteins, baseDir, label, err):
             return None
     # Write the results into a file
     saveResultsAsTextFile(domains, baseDir, err)
-
+    # Close the browser and the display
+    # exit browser and display
+    browser.quit()
+    display.stop()
+    
     # End
     addTextToLabel(label, "End finding domains!\n")
     return domains
@@ -395,9 +412,9 @@ def main():
                   width = 100,
                   height = 10)
     label.pack()
-    #root.mainloop()
+    # root.mainloop()
     # Find domains in the protein
-    findDomains([seq], ".", label, err)
+    print findDomains([seq], ".", label, err)
     
     root.mainloop()
 

@@ -45,8 +45,6 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
     VirusStructure = dF.findNextLineByKeyword(VirusSecondaryStructureTxtPath, "STRUCTURE:")[0]
     VirusEnergy = dF.findNextLineByKeyword(VirusSecondaryStructureTxtPath, "ENERGY:")[0]
     IMGSecondaryStructurePath = dF.findFileByName(resultpath, "sec_struct.ps")[0]
-    RealIMGSecondaryStructurePath = dF.checkImg(IMGSecondaryStructurePath, resultpath)
-    IMGSecondaryStructure = Image((RealIMGSecondaryStructurePath), 3.5*inch, 3.5*inch)
     VirusDomainsTxtPath = dF.findFileByName(resultpath, "result.txt")[0]
     NoOfProteins = dF.findNextLineByKeyword(VirusDomainsTxtPath, "NumberOfProteins")[0]
     NoOfDomains = dF.findNextLineByKeyword(VirusDomainsTxtPath, "NumberOfDomains")
@@ -138,8 +136,14 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
     ptext = '<font name=Helvetica size=12>%s</font>' % "RNA-Structure:"
     Report.append(Paragraph(ptext, styles["Normal"]))
     Report.append(Spacer(1, 12))
-    Report.append(IMGSecondaryStructure)
-    Report.append(Spacer(1, 12))
+    if(IMGSecondaryStructurePath == "The file doesn't exist"):
+        ptext = '<font name=Helvetica-Bold size=14>%s</font>' % "Image of the structure couldn't be produced"
+        Report.append(Paragraph(ptext, styles["Normal"]))
+        Report.append(Spacer(1, 12))
+    else:
+        IMGSecondaryStructure = Image((IMGSecondaryStructurePath), 3.5*inch, 3.5*inch)
+        Report.append(IMGSecondaryStructure)
+        Report.append(Spacer(1, 12))
 
     ptext = '<font name=Helvetica-Bold size=14>%s</font>' % "Virus Domain(s)"
     Report.append(Paragraph(ptext, styles["Normal"]))

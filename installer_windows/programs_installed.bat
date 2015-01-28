@@ -1,6 +1,6 @@
 @echo off
 
-:: check if python is in the path
+:: check if python is in the system path
 where python >NUL 2>&1
 if %ERRORLEVEL% NEQ 0 (
 	echo Error: python was not found in path.
@@ -12,6 +12,8 @@ if exist pyversion.out del pyversion.out
 python --version 2>&1 | findstr /I "Python 2.7" > pyversion.out
 if %ERRORLEVEL% NEQ 0 (
 	echo Error: python must have the version 2.7
+	echo Current python version is: 
+	python --version
 	goto error
 )
 

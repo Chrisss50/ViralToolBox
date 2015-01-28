@@ -45,7 +45,7 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
     VirusStructure = dF.findNextLineByKeyword(VirusSecondaryStructureTxtPath, "STRUCTURE:")[0]
     VirusEnergy = dF.findNextLineByKeyword(VirusSecondaryStructureTxtPath, "ENERGY:")[0]
     IMGSecondaryStructurePath = dF.findFileByName(resultpath, "sec_struct.ps")[0]
-    IMGSecondaryStructure = Image(IMGSecondaryStructurePath, 3.5*inch, 3.5*inch)
+    IMGSecondaryStructure = Image(dF.checkImg(IMGSecondaryStructurePath), 3.5*inch, 3.5*inch)
     VirusDomainsTxtPath = dF.findFileByName(resultpath, "result.txt")[0]
     NoOfProteins = dF.findNextLineByKeyword(VirusDomainsTxtPath, "NumberOfProteins")[0]
     NoOfDomains = dF.findNextLineByKeyword(VirusDomainsTxtPath, "NumberOfDomains")
@@ -219,7 +219,7 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
                 Report.append(Paragraph(ptext, styles["Normal"]))
                 Report.append(Spacer(1, 12))
     
-            Report.append(Image(IMGsProteinDomainsPath[protein], 7*inch, 0.5*inch))
+            Report.append(Image(dF.checkImg(IMGsProteinDomainsPath[protein]), 7*inch, 0.5*inch))
             Report.append(Spacer(1, 12))
             
             if(NoOfDomains[protein] == "NumberOfDomains couldn't be found"):

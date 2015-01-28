@@ -8,6 +8,9 @@ Created on Fri Dec 26 11:40:41 2014
 import os
 import sys
 import fnmatch
+from scipy.misc import imread,imsave
+from numpy import zeros
+import numpy as np
 
 
 # Search by name for a file in a directory
@@ -82,7 +85,8 @@ def findNextLineByKeyword(path, keyword):
                     continue
         f.close
         return result
-        
+
+
 def findNext2LinesByKeyword(path, keyword):
     error = []
     if(path == "The file doesn't exist"):
@@ -176,7 +180,27 @@ def checkEmptyFile(path):
     return os.path.getsize(path) > 0
 
 
+# Caculate the sum of numbers given as strings
 def sumUpStringList(stringList):
     numlist = map(int, stringList)
     result = sum(numlist)
     return result
+
+
+# Generate a dummy picture
+def generateDummyPic():
+    img = np.zeros([100, 100, 3], dtype=np.uint8)
+    img.fill(255)
+#    imsave("/Users/maximilianhanussek/Desktop/dummy.jpg", img)
+    return img
+
+
+# Check wether an Image exists
+def checkImg(path):
+    if(path == "The file doesn't exist"):
+        return generateDummyPic()
+    else:
+        return path
+
+if __name__ == "__main__":
+    print checkImg("The file doesn't exist")

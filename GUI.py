@@ -42,7 +42,7 @@ class App:
                        anchor=SW,
                        fg="black",
                        bg="light grey",
-                       height=34,
+                       height=38,
                        width=100)
     self.label.pack(side = BOTTOM)
     self.labelLogo = Label(frameRight,
@@ -108,6 +108,16 @@ class App:
                      width=20)
     self.text4.pack()
     self.text4.insert(END, "part_RNAstructure/RNA_STRAND_data")
+    self.getRNAPred = Button(frameLeft, 
+                         text="Get RNAFold", fg="red",
+                         command=self.getRNAPredFile)
+    self.getRNAPred.pack()
+    self.text8 = Text(frameLeft,
+                     bg="light blue",
+                     height=1,
+                     width=20)
+    self.text8.pack()
+    self.text8.insert(END, "RNAFold")
     self.labelGeneID = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
@@ -258,6 +268,11 @@ class App:
     drawtrees(err,self.label)
 
   # Different functions to get the directorys
+  def getRNAPredFile(self):
+    self.text8.delete(1.0, END)
+    self.fileDir = tkFileDialog.askopenfilename()
+    self.text8.insert(END, self.fileDir)
+
   def getInDirectoryTree(self):
     self.text7.delete(1.0, END)
     self.fileDir = tkFileDialog.askopenfilename(filetypes = [("FastA files", "*.fasta"), ("FastA files", "*.fa")])
@@ -317,6 +332,7 @@ class App:
     email = self.text3.get(1.0, END)
     dbPath = self.text4.get(1.0, END)
     vName = self.textVName.get(1.0, END)
+    rnaFold = self.text8.get(1.0, END)
 
     # Tests for incompleteness
     if path == "\n":
@@ -332,7 +348,7 @@ class App:
     # reading the input, getting sequence
     out = inputFromDB(GeneID, err, email, self.label)
     if out == -1:
-      self.label.config(text="Wrong GeneID! Please enter a valid one!")
+      self.label.config(text="Wrong RefSeqID! Please enter a valid one!")
       return
     # out = inputFromFile(path[:-1], err)
     seqRecord2fasta(path[:-1] + "/test.fa", out, err, self.label)
@@ -348,7 +364,7 @@ class App:
       return
 
     # getting secondary structure
-    mol = RNA_molecule(seqs[0], vName, "test", self.label)
+    mol = RNA_molecule(seqs[0], vName, "test", self.label, rnaFold)
     mol.db_parsed(dbPath[:-1] + '/', self.label)
     struc_db = parse_struc_db(mol.get_database())
     mol.search_rna_struc(struc_db, path[:-1], self.label)

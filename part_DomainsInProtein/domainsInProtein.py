@@ -11,6 +11,9 @@ from selenium import webdriver
 from pyvirtualdisplay import Display
 import PIL.Image
 from Tkinter import *
+sys.path.append("../part_PredictAndTranslateORFs")
+import predictORFs as p
+import translateToProtein as t
 
 
 __author__ = 'Felix Bartusch'
@@ -163,7 +166,6 @@ def queryPfam(seq, label, err):
         job_id = extractJobID(xml)
         b.close()
         c.close()
-        print result_url, job_id
         if not result_url:
             print "Error occured queriing pfam"
             err.write("________________")
@@ -208,6 +210,9 @@ def obtainQueryResult(protein, err):
 
 # Get the picture of domains
 def getPictureOfDomain(browser, json, baseDir):
+    url = "http://pfam.xfam.org/help/domain_graphics_example.html"
+    browser.get(url)
+    time.sleep(1)
     # Set the json string
     browser.find_element_by_id("seq").clear()
     browser.find_element_by_id("seq").send_keys(json)
@@ -362,6 +367,7 @@ def findDomains(proteins, baseDir, label, err):
             err.write("________________")
             err.write("DomainsInProtein:")
             err.write("\tError getting picture of domain")
+            err.write(str(e))
             return None
         # Save the picture and domains
         path = baseDir + 'domain_graphic' + str(count) + ".png"
@@ -399,7 +405,7 @@ def findDomains(proteins, baseDir, label, err):
 def main():
     # Error log
     r, err = os.pipe()
-    err = os.fdopen(err, 'w')
+    err = open("./errorLog.txt", 'w')
     # The example protein sequence
     seq = {"sequence": getExampleProteinSequence(),
            "start": 1, "end": 1337}
@@ -410,11 +416,22 @@ def main():
     frame.pack()
     label = Label(frame,
                   width = 100,
-                  height = 10)
+                  height = 50)
     label.pack()
     # root.mainloop()
     # Find domains in the protein
-    print findDomains([seq], ".", label, err)
+    virus1 = "../test_sequences/acuminataVietnam.fasta"
+    virus1_headers, virus1_seqs = p.readFasta(virus1, err)
+    virus1_seq = virus1_seqs[0]
+
+    # Find ORFs
+    virus1_orfs =  p.predictORFS(virus1_seq, label, err)
+
+    #print virus1_orfs
+
+    # Translate ORFs to proteins
+    virus1_proteins = t.translateToProtein(virus1_orfs, label, err)   
+    print findDomains(virus1_proteins, ".", label, err)
     
     root.mainloop()
 

@@ -3,13 +3,13 @@
 # Edgar Olijar
 # sequence_import.py
 
+import os
 import re
 import ntpath
 import datetime
 from Bio import SeqIO
 from Bio import Entrez
 from urllib2 import HTTPError
-import os
 
 #####################################################################
 
@@ -49,6 +49,20 @@ def inputFromDB(geneID,err,userEmail,label):
         tmp += "Multiple gene ID's are separated by comma."
         err.write(tmp)
     addtext(label,"Gene ID successfully checked!")
+    # check internet connection
+    # 74.125.228.100 is google ip address
+    # By specifying the timeout=1 parameter, the call 
+    # to urlopen will not take much longer than 1 second 
+    # even if the internet is not "on".
+    try:
+        response = urllib2.urlopen('http://74.125.228.100',timeout=1)
+        response.close()
+    except urllib2.URLError as e:
+        tmp = timeStamp+". Error in function 'inputFromDB'. "
+        tmp += "No internet connection. "
+        tmp += str(e)
+        # write error message to error file
+        err.write(tmp)
     Entrez.email = userEmail
     # try to download the sequence from database
     try:

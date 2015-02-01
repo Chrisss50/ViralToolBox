@@ -7,6 +7,7 @@ import os
 import re
 import ntpath
 import datetime
+import urllib2
 from Bio import SeqIO
 from Bio import Entrez
 from urllib2 import HTTPError

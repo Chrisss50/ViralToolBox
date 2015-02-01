@@ -1,1 +1,1 @@
-________________PredictORFs:	Input sequence is no DNA sequence.________________DomainsInProtein:	Error getting picture of domain
+________________PredictORFs:	Input sequence is no DNA sequence.

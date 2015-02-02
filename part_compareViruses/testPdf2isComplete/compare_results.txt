@@ -1,0 +1,25 @@
+Sequences
+Virus 1:
+Sequence of the virus isn't available
+HI-V:
+ACACGACGUAGCGUUAGACGUGACGUAGACGUAGAC
+Secondary structure:
+Virus 1:
+Structure of the virus isn't available
+HI-V:
+.....((((.((((((....))))))..))))....
+
+Energies of secondary structure:
+Virus 1: Energy of the secondary structure isn't available
+HI-V: -9.4
+
+GC content
+Virus 1: Sequence of Virus 1 is not available
+HI-V: 52.7777777778
+
+Number of Proteins
+Virus 1: Number of the proteins in the predicted ORFs aren't available and so the rest is also missing
+HI-V: 3
+
+Percentual similarity of domains: 0%
+

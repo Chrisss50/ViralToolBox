@@ -386,12 +386,16 @@ class App:
                      err, self.label)
 
     # Opens the pdf after the pipeline (only possible, if run as admin)
+    # As it doesn't throw any exception, it can't be catched.
+    # But as it doesn't crashes the program, it should be okay
+    # to use it
     if sys.platform.startswith('darwin'):
       os.system(path[:-1] + '/report.pdf')
     elif sys.platform.startswith('linux'):
       os.system(path[:-1] + '/report.pdf')
     elif sys.platform.startswith('win32'):
       os.startfile(path[:-1] + '/report.pdf')
+
 
 # Runs the GUI
 def main():

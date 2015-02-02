@@ -1,1 +1,1 @@
-________________PredictORFs:	Input sequence is no DNA sequence.
+02.02.2015 13:07:32. Error in function 'inputFromDB'. No internet connection. <urlopen error timed out>________________PredictORFs:	Input sequence is no DNA sequence.

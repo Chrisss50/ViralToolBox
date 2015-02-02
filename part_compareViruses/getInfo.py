@@ -8,7 +8,7 @@ def addTextToLabel(label, txt):
 
 
 #
-# get information
+# get information by searching for a substring in text
 #
 def getMetadata(substring, pdf, start=0, end=None):
     if end is None:
@@ -41,9 +41,15 @@ def getSecStructInfo(pdf):
 # returns a dictionary of proteins with proteins' positions
 # in sequence, aa sequence and dictionary of domains with position in protein,
 # desciption and identifier
+# if proteins' information is missing return error massage as proteins number
+# and an empty dictionary for proteins
 #
 def getProteinInfo(pdf):
-    numProteins = int(getMetadata('Number of proteins:', pdf))
+    numProteins = getMetadata('Number of proteins:', pdf)
+    if numProteins == "Number of the proteins in the predicted ORFs aren't available and so the rest is also missing":
+        proteins = {}
+        return numProteins, proteins
+    numProteins = int(numProteins)
     if numProteins > 0:
         proteins = {}
         i = 1

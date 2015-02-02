@@ -22,6 +22,3 @@ def convert_pdf_to_txt(path):
     str = retstr.getvalue()
     retstr.close()
     return str
-
-if __name__ == "__main__":
-    print convert_pdf_to_txt('test.pdf')

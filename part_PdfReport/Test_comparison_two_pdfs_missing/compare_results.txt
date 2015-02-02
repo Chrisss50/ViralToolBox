@@ -1,0 +1,25 @@
+Sequences
+Virus 1:
+Sequence of the virus isn't available
+Virus 2:
+Sequence of the virus isn't available
+Secondary structure:
+Virus 1:
+Structure of the virus isn't available
+Virus 2:
+Structure of the virus isn't available
+
+Energies of secondary structure:
+Virus 1: Energy of the secondary structure isn't available
+Virus 2: Energy of the secondary structure isn't available
+
+GC content
+Virus 1: Sequence of Virus 1 is not available
+Virus 2: Sequence of Virus 2 is not available
+
+Number of Proteins
+Virus 1: Number of the proteins in the predicted ORFs aren't available and so the rest is also missing
+Virus 2: Number of the proteins in the predicted ORFs aren't available and so the rest is also missing
+
+Percentual similarity of domains: 0%
+

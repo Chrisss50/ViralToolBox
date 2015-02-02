@@ -18,7 +18,7 @@ def findFileByName(path, name):
     if(checkDirExists(path) is False):
         error.append("The file doesn't exist")
         return error
-    elif(checkFileExists(path + name) is False):
+    elif (checkFileExists(path + name) is False):
         error.append("The file doesn't exist")
         return error
     else:

@@ -9,7 +9,6 @@ import sys
 import datetime
 import directoryFunctions as dF
 
-
 from reportlab.lib.enums import TA_JUSTIFY
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image
@@ -17,15 +16,18 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.units import inch
 
+
 # Print processing steps on the GUI
 def addTextToLabel(label, txt):
     currentLabelText = label["text"]
     currentLabelText += txt + '\n'
-    label.config(text = currentLabelText)
+    label.config(text=currentLabelText)
 
-# Get an timestamp 
+
+# Get an timestamp
 def getTimestamp():
     return str(datetime.datetime.now().strftime('%d-%m-%Y %H:%M:%S'))
+
 
 # Start writing the report
 def writeReportAsPdf(resultpath, outputpath, err, label):
@@ -34,8 +36,9 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
                             topMargin=40, bottomMargin=18)
 
     addTextToLabel(label, "Read in datapaths")
-    
-# Get the different files and parse the text out of them 
+
+
+# Get the different files and parse the text out of them by searching for keywords or with a regex
     Report = []
     Title = "Virus Report"
     Date = getTimestamp()
@@ -44,7 +47,7 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
     VirusSequence = dF.findNextLineByKeyword(VirusSecondaryStructureTxtPath, "SEQUENCE:")[0]
     VirusStructure = dF.findNextLineByKeyword(VirusSecondaryStructureTxtPath, "STRUCTURE:")[0]
     VirusEnergy = dF.findNextLineByKeyword(VirusSecondaryStructureTxtPath, "ENERGY:")[0]
-    IMGSecondaryStructurePath = dF.findFileByName(resultpath, "sec_struct.ps")[0]
+    IMGSecondaryStructurePath = dF.findFileByName(resultpath, "sec_struct.ps")
     VirusDomainsTxtPath = dF.findFileByName(resultpath, "result.txt")[0]
     NoOfProteins = dF.findNextLineByKeyword(VirusDomainsTxtPath, "NumberOfProteins")[0]
     NoOfDomains = dF.findNextLineByKeyword(VirusDomainsTxtPath, "NumberOfDomains")
@@ -80,6 +83,7 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
     ptext = '<font name=Helvetica size=12>%s</font>' % "Virus name:"
     Report.append(Paragraph(ptext, styles["Normal"]))
 
+# Check if the name is in the secondary strucure txt file
     if(VirusName == "NAME: couldn't be found"):
         err.write("________________")
         err.write("Virus name isn't available")
@@ -93,7 +97,8 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
 
     ptext = '<font name=Helvetica size=12>%s</font>' % "Sequence:"
     Report.append(Paragraph(ptext, styles["Normal"]))
-    
+
+# Check if the sequence is in the secondary strucure txt file
     if(VirusSequence == "SEQUENCE: couldn't be found"):
             err.write("________________")
             err.write("Virus sequence isn't available")
@@ -125,7 +130,7 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
     if(VirusEnergy == "ENERGY: couldn't be found"):
             err.write("________________")
             err.write("Energy of the secondary structure isn't available")
-            ptext = '<font name=Helvetica size=12>%s</font>' % "SEnergy of the secondary structure isn't available"
+            ptext = '<font name=Helvetica size=12>%s</font>' % "Energy of the secondary structure isn't available"
             Report.append(Paragraph(ptext, styles["Normal"]))
             Report.append(Spacer(1, 12))
     else:
@@ -136,12 +141,16 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
     ptext = '<font name=Helvetica size=12>%s</font>' % "RNA-Structure:"
     Report.append(Paragraph(ptext, styles["Normal"]))
     Report.append(Spacer(1, 12))
-    if(IMGSecondaryStructurePath == "The file doesn't exist"):
+    if not IMGSecondaryStructurePath:
+        ptext = '<font name=Helvetica-Bold size=14>%s</font>' % "Image of the structure couldn't be produced"
+        Report.append(Paragraph(ptext, styles["Normal"]))
+        Report.append(Spacer(1, 12))
+    elif(IMGSecondaryStructurePath[0] == "The file doesn't exist"):
         ptext = '<font name=Helvetica-Bold size=14>%s</font>' % "Image of the structure couldn't be produced"
         Report.append(Paragraph(ptext, styles["Normal"]))
         Report.append(Spacer(1, 12))
     else:
-        IMGSecondaryStructure = Image((IMGSecondaryStructurePath), 3.5*inch, 3.5*inch)
+        IMGSecondaryStructure = Image((IMGSecondaryStructurePath[0]), 3.5*inch, 3.5*inch)
         Report.append(IMGSecondaryStructure)
         Report.append(Spacer(1, 12))
 
@@ -155,7 +164,7 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
     if(NoOfProteins == "NumberOfProteins couldn't be found"):
             err.write("________________")
             err.write("Number of the proteins in the predicted ORFs aren't available")
-            ptext = '<font name=Helvetica size=12>%s</font>' % "Number of the proteins in the predicted ORFs aren't available"
+            ptext = '<font name=Helvetica size=12>%s</font>' % "Number of the proteins in the predicted ORFs aren't available and so the rest is also missing"
             Report.append(Paragraph(ptext, styles["Normal"]))
             Report.append(Spacer(1, 12))
     else:
@@ -309,6 +318,8 @@ def writeReportAsPdf(resultpath, outputpath, err, label):
             
     doc.build(Report)
     addTextToLabel(label, "Report.pdf has been created")
+
+
 if __name__ == "__main__":
     r, err = os.pipe()
     err = os.fdopen(err, 'w')

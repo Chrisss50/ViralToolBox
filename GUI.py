@@ -21,12 +21,13 @@ sys.path.append("part_phylogeny/")
 from phyl_functions import *
 
 class App:
+  # Global variables used for saving needed dialogs
   txt = ""
   fileDir = " "
   dbDir = " "
   logo = ""
 
-  # This builds the UI
+  # Building the UI
   def __init__(self, master):
     frame = Frame(master)
     frame.pack()
@@ -36,7 +37,7 @@ class App:
     frameRight.pack(side=RIGHT)
     self.logo = PhotoImage(file="Logo.gif")
 
-    
+    # Right-Frame (Status-Box)
     self.label = Label(frameRight, 
                        justify=LEFT,
                        anchor=SW,
@@ -50,6 +51,8 @@ class App:
                        image = self.logo)
     self.labelLogo.pack()
 
+    # Left-Frame (Buttons)
+    # Pipeline
     self.labelpipeStart = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
@@ -145,15 +148,11 @@ class App:
                      height=1,
                      width=20)
     self.text3.pack()
-    # self.button = Button(frameLeft, 
-    #                      text="QUIT", fg="red",
-    #                      command=frame.quit)
-    # self.button.pack()
     self.pipStart = Button(frameLeft,
                          text="Start",
                          command=self.startPipeline)
     self.pipStart.pack()
-
+    
     self.labelSep = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
@@ -163,6 +162,7 @@ class App:
     self.labelSep.pack()
     self.labelSep.config(text = "____________________")
 
+    # Compare
     self.labelpipeStart = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
@@ -219,6 +219,7 @@ class App:
     self.labelSep2.pack()
     self.labelSep2.config(text = "____________________")
 
+    # Phyl.-Tree.
     self.labelpipeStart = Label(frameLeft, 
                        justify=LEFT,
                        anchor=SW,
@@ -249,7 +250,7 @@ class App:
                          command=self.compTree)
     self.treeComp.pack()
 
-  # Theoretically tree building function (not tested)
+  # Function to call the phyl.-tree part
   def compTree(self):
     err = open("errorLog.txt", 'w')
 
@@ -267,7 +268,10 @@ class App:
     getconsensus(err,self.label) 
     drawtrees(err,self.label)
 
-  # Different functions to get the directorys
+  # Different functions to get the directorys for result, db, etc.
+  # First the text-field gets deleted
+  # Second the dialogue is called for getting the folder/file from user
+  # Third The folder/file-path is inserted into the text-field
   def getRNAPredFile(self):
     self.text8.delete(1.0, END)
     self.fileDir = tkFileDialog.askopenfilename()
@@ -275,17 +279,20 @@ class App:
 
   def getInDirectoryTree(self):
     self.text7.delete(1.0, END)
-    self.fileDir = tkFileDialog.askopenfilename(filetypes = [("FastA files", "*.fasta"), ("FastA files", "*.fa")])
+    self.fileDir = tkFileDialog.askopenfilename(filetypes =
+                [("FastA files","*.fasta"), ("FastA files", "*.fa")])
     self.text7.insert(END, self.fileDir)
 
   def getInDirectoryCom(self):
     self.text5.delete(1.0, END)
-    self.fileDir = tkFileDialog.askopenfilename(filetypes = [("PDF files", "*.pdf")])
+    self.fileDir = tkFileDialog.askopenfilename(filetypes = 
+                [("PDF files", "*.pdf")])
     self.text5.insert(END, self.fileDir)
 
   def getOutDirectoryCom(self):
     self.text6.delete(1.0, END)
-    self.fileDir = tkFileDialog.askopenfilename(filetypes = [("PDF files", "*.pdf")])
+    self.fileDir = tkFileDialog.askopenfilename(filetypes = 
+                [("PDF files", "*.pdf")])
     self.text6.insert(END, self.fileDir)
 
   def getDirectory(self):
@@ -300,15 +307,14 @@ class App:
 
   # Function to start the comparison of two viruses
   def compareV(self):
-    # pipe things
-    r, err = os.pipe()
-    err = os.fdopen(err, 'w')
+    # error-file
+    err = open("errorLog.txt", 'w')
 
     pathout = self.text1.get(1.0, END)
     path1 = self.text5.get(1.0, END)
     path2 = self.text6.get(1.0, END)
 
-    # Tests for incompleteness
+    # Tests for incompleteness (error-handling)
     if pathout == "\n":
       self.label.config(text="Please select an result-path!")
       return
@@ -317,13 +323,17 @@ class App:
       self.label.config(text="Please select both reports!")
       return
 
-    compare(path1[:-1], path2[:-1], pathout[:-1] + '/compareReport', err, self.label)
-    writeCompareReportAsPdf(pathout[:-1] + '/compareReport/', pathout[:-1] + '/compareReport/report_compared.pdf', err, self.label)
+    compare(path1[:-1], path2[:-1], 
+            pathout[:-1] + '/compareReport', 
+            err, self.label)
+    writeCompareReportAsPdf(pathout[:-1] + '/compareReport/', 
+                          pathout[:-1] + '/compareReport/report_compared.pdf',
+                          err, self.label)
 
   # The actual pipeline.
   # Get Sequence, predict ORFs, predict sec.struct and create a report
   def startPipeline(self):
-    # pipe things
+    # error-file
     err = open("errorLog.txt", 'w')
 
     # getting user-input
@@ -342,15 +352,15 @@ class App:
       self.label.config(text="Please enter a valid GeneID!")
       return
     if dbPath == "\n":
-      self.label.config(text="Please select a secondary structure prediction DB!")
+      self.label.config(text=
+              "Please select a secondary structure prediction DB!")
       return
 
-    # reading the input, getting sequence
+    # reading the input, getting sequence and error handling
     out = inputFromDB(GeneID, err, email, self.label)
     if out == -1:
       self.label.config(text="Wrong RefSeqID! Please enter a valid one!")
       return
-    # out = inputFromFile(path[:-1], err)
     seqRecord2fasta(path[:-1] + "/test.fa", out, err, self.label)
     headers, seqs = readFasta(path[:-1] + "/test.fa", err)
     seq = seqs[0]
@@ -360,7 +370,7 @@ class App:
     proteins = translateToProtein(orfs, self.label, err)
     domains = d.findDomains(proteins, path[:-1], self.label, err)
     if not domains:
-      self.label.config(text="Something went wrong predicting the domains! Sorry.")
+      self.label.config(text="Something went wrong predicting the domains!")
       return
 
     # getting secondary structure
@@ -371,9 +381,11 @@ class App:
     mol.writeTXT(path[:-1] + '/')
 
     # write PDF
-    # writeReportAsPdf(path[:-1] + '/', path[:-1] + '/', err, self.label)
-    writeReportAsPdf(path[:-1] + '/', path[:-1] + '/report.pdf', err, self.label)
+    writeReportAsPdf(path[:-1] + '/',
+                     path[:-1] + '/report.pdf', 
+                     err, self.label)
 
+    # Opens the pdf after the pipeline (only possible, if run as admin)
     if sys.platform.startswith('darwin'):
       os.system(path[:-1] + '/report.pdf')
     elif sys.platform.startswith('linux'):
@@ -381,6 +393,11 @@ class App:
     elif sys.platform.startswith('win32'):
       os.startfile(path[:-1] + '/report.pdf')
 
-root = Tk()
-app = App(root)
-root.mainloop()
+# Runs the GUI
+def main():
+  root = Tk()
+  app = App(root)
+  root.mainloop()
+
+if __name__ == "__main__":
+    main()

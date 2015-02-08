@@ -1,0 +1,141 @@
+Searching for biopython
+Best match: biopython 1.64
+Processing biopython-1.64-py2.7-win32.egg
+biopython 1.64 is already the active version in easy-install.pth
+
+Using d:\01. programme\anaconda-python\anaconda\lib\site-packages\biopython-1.64-py2.7-win32.egg
+Processing dependencies for biopython
+Finished processing dependencies for biopython
+Searching for pdfminer
+Reading https://pypi.python.org/simple/pdfminer/
+Best match: pdfminer 20140328
+Downloading https://pypi.python.org/packages/source/p/pdfminer/pdfminer-20140328.tar.gz#md5=dfe3eb1b7b7017ab514aad6751a7c2ea
+Processing pdfminer-20140328.tar.gz
+Writing c:\users\n2n\appdata\local\temp\easy_install-3dqhlj\pdfminer-20140328\setup.cfg
+Running pdfminer-20140328\setup.py -q bdist_egg --dist-dir c:\users\n2n\appdata\local\temp\easy_install-3dqhlj\pdfminer-20140328\egg-dist-tmp-jwf5yx
+Adding pdfminer 20140328 to easy-install.pth file
+Installing dumppdf.py script to D:\01. Programme\Anaconda-Python\anaconda\Scripts
+Installing latin2ascii.py script to D:\01. Programme\Anaconda-Python\anaconda\Scripts
+Installing pdf2txt.py script to D:\01. Programme\Anaconda-Python\anaconda\Scripts
+
+Installed d:\01. programme\anaconda-python\anaconda\lib\site-packages\pdfminer-20140328-py2.7.egg
+Processing dependencies for pdfminer
+Finished processing dependencies for pdfminer
+Searching for pycurl
+Best match: pycurl 7.19.5.1
+Processing pycurl-7.19.5.1-py2.7-win32.egg
+pycurl 7.19.5.1 is already the active version in easy-install.pth
+
+Using d:\01. programme\anaconda-python\anaconda\lib\site-packages\pycurl-7.19.5.1-py2.7-win32.egg
+Processing dependencies for pycurl
+Finished processing dependencies for pycurl
+Searching for urllib3
+Reading https://pypi.python.org/simple/urllib3/
+Best match: urllib3 1.10
+Downloading https://pypi.python.org/packages/source/u/urllib3/urllib3-1.10.tar.gz#md5=9badc8f09ea2d3c36cbb5071bfe52ebd
+Processing urllib3-1.10.tar.gz
+Writing c:\users\n2n\appdata\local\temp\easy_install-6bq7bk\urllib3-1.10\setup.cfg
+Running urllib3-1.10\setup.py -q bdist_egg --dist-dir c:\users\n2n\appdata\local\temp\easy_install-6bq7bk\urllib3-1.10\egg-dist-tmp-tcmzk_
+Adding urllib3 1.10 to easy-install.pth file
+
+Installed d:\01. programme\anaconda-python\anaconda\lib\site-packages\urllib3-1.10-py2.7.egg
+Processing dependencies for urllib3
+Finished processing dependencies for urllib3
+Searching for ete2
+Best match: ete2 2.2.1072
+Processing ete2-2.2.1072-py2.7.egg
+ete2 2.2.1072 is already the active version in easy-install.pth
+Installing etree2orthoxml script to D:\01. Programme\Anaconda-Python\anaconda\Scripts
+Installing ete2 script to D:\01. Programme\Anaconda-Python\anaconda\Scripts
+
+Using d:\01. programme\anaconda-python\anaconda\lib\site-packages\ete2-2.2.1072-py2.7.egg
+Processing dependencies for ete2
+Finished processing dependencies for ete2
+Searching for selenium
+Reading https://pypi.python.org/simple/selenium/
+Best match: selenium 2.44.0
+Downloading https://pypi.python.org/packages/source/s/selenium/selenium-2.44.0.tar.gz#md5=8802d73fb989d007ba1b43f070361cd1
+Processing selenium-2.44.0.tar.gz
+Writing c:\users\n2n\appdata\local\temp\easy_install-sc9tle\selenium-2.44.0\setup.cfg
+Running selenium-2.44.0\setup.py -q bdist_egg --dist-dir c:\users\n2n\appdata\local\temp\easy_install-sc9tle\selenium-2.44.0\egg-dist-tmp-6lxniz
+Adding selenium 2.44.0 to easy-install.pth file
+
+Installed d:\01. programme\anaconda-python\anaconda\lib\site-packages\selenium-2.44.0-py2.7.egg
+Processing dependencies for selenium
+Finished processing dependencies for selenium
+Searching for pyvirtualdisplay
+Best match: pyvirtualdisplay 0.1.5
+Processing pyvirtualdisplay-0.1.5-py2.7.egg
+pyvirtualdisplay 0.1.5 is already the active version in easy-install.pth
+
+Using d:\01. programme\anaconda-python\anaconda\lib\site-packages\pyvirtualdisplay-0.1.5-py2.7.egg
+Processing dependencies for pyvirtualdisplay
+Finished processing dependencies for pyvirtualdisplay
+Searching for Pillow
+Reading https://pypi.python.org/simple/Pillow/
+Best match: Pillow 2.7.0
+Downloading https://pypi.python.org/packages/2.7/P/Pillow/Pillow-2.7.0-py2.7-win32.egg#md5=3c594e54564162ff7d8b4519970057d8
+Processing Pillow-2.7.0-py2.7-win32.egg
+Moving Pillow-2.7.0-py2.7-win32.egg to d:\01. programme\anaconda-python\anaconda\lib\site-packages
+Adding Pillow 2.7.0 to easy-install.pth file
+Installing pildriver.py script to D:\01. Programme\Anaconda-Python\anaconda\Scripts
+Installing pilfile.py script to D:\01. Programme\Anaconda-Python\anaconda\Scripts
+Installing pilconvert.py script to D:\01. Programme\Anaconda-Python\anaconda\Scripts
+Installing pilprint.py script to D:\01. Programme\Anaconda-Python\anaconda\Scripts
+Installing pilfont.py script to D:\01. Programme\Anaconda-Python\anaconda\Scripts
+
+Installed d:\01. programme\anaconda-python\anaconda\lib\site-packages\pillow-2.7.0-py2.7-win32.egg
+Processing dependencies for Pillow
+Finished processing dependencies for Pillow
+Searching for reportlab
+Reading https://pypi.python.org/simple/reportlab/
+Best match: reportlab 3.1.44
+Downloading https://pypi.python.org/packages/source/r/reportlab/reportlab-3.1.44.tar.gz#md5=34f13c50b416c6bea12e3d8cb23ec7d7
+Processing reportlab-3.1.44.tar.gz
+Writing c:\users\n2n\appdata\local\temp\easy_install-slwb7t\reportlab-3.1.44\setup.cfg
+Running reportlab-3.1.44\setup.py -q bdist_egg --dist-dir c:\users\n2n\appdata\local\temp\easy_install-slwb7t\reportlab-3.1.44\egg-dist-tmp-k_45_e
+################################################
+#Attempting install of _rl_accel & pyHnj
+#extensions from 'c:\\users\\n2n\\appdata\\local\\temp\\easy_install-slwb7t\\reportlab-3.1.44\\src\\rl_addons\\rl_accel'
+################################################
+################################################
+#Attempting install of _renderPM
+#extensions from 'c:\\users\\n2n\\appdata\\local\\temp\\easy_install-slwb7t\\reportlab-3.1.44\\src\\rl_addons\\renderPM'
+will use package libart \2.3.12\
+# freetype lib 'c:\\ux\\xb33\\libs\\x86\\freetype.lib' not found
+# installing without freetype no ttf, sorry!
+# You need to install a static library version of the freetype2 software
+# If you need truetype support in renderPM
+# You may need to edit setup.cfg (win32)
+# or edit this file to access the library if it is installed
+################################################
+Downloading standard T1 font curves
+Finished download of standard T1 font curves
+()
+########## SUMMARY INFO #########
+################################################
+#Attempting install of _rl_accel & pyHnj
+#extensions from 'c:\\users\\n2n\\appdata\\local\\temp\\easy_install-slwb7t\\reportlab-3.1.44\\src\\rl_addons\\rl_accel'
+################################################
+################################################
+#Attempting install of _renderPM
+#extensions from 'c:\\users\\n2n\\appdata\\local\\temp\\easy_install-slwb7t\\reportlab-3.1.44\\src\\rl_addons\\renderPM'
+will use package libart \2.3.12\
+# freetype lib 'c:\\ux\\xb33\\libs\\x86\\freetype.lib' not found
+# installing without freetype no ttf, sorry!
+# You need to install a static library version of the freetype2 software
+# If you need truetype support in renderPM
+# You may need to edit setup.cfg (win32)
+# or edit this file to access the library if it is installed
+################################################
+Downloading standard T1 font curves
+Finished download of standard T1 font curves
+Adding reportlab 3.1.44 to easy-install.pth file
+
+Installed d:\01. programme\anaconda-python\anaconda\lib\site-packages\reportlab-3.1.44-py2.7-win32.egg
+Processing dependencies for reportlab
+Finished processing dependencies for reportlab
+Searching for VieannaRNA
+Reading https://pypi.python.org/simple/VieannaRNA/
+Scanning index of all packages (this may take a while)
+Reading https://pypi.python.org/simple/
